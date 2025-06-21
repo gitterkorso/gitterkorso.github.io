@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pyodide Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    pre {
+      background: #eee;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+</head>
+<body>
+  <h1>Pyodide med Live Server</h1>
+  <p>Tryck på knappen för att köra Python direkt i webbläsaren!</p>
+  <button onclick="runPython()">Kör Python</button>
+  <pre id="output">Resultat kommer visas här...</pre>
+
+  <script>
+    let pyodide;
+
+    async function startPyodide() {
+      document.getElementById("output").textContent = "Laddar Pyodide...";
+      pyodide = await loadPyodide();
+      document.getElementById("output").textContent = "Pyodide är redo! Tryck på knappen.";
+    }
+
+    async function runPython() {
+      const code = `
+import math
+def info():
+    return "Hej från Python! Kvadratroten ur 100 är " + str(math.sqrt(100))
+
+info()
+      `;
+      const result = await pyodide.runPythonAsync(code);
+      document.getElementById("output").textContent = result;
+    }
+
+    startPyodide();
+  </script>
+</body>
+</html>
