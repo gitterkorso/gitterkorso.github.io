@@ -167,25 +167,20 @@
 
   <nav>
       <button class="tablink" onclick="openTab('about-me')">About Me</button>
-      <button class="tablink" onclick="openTab('cv')">CV</button>
+      <button class="tablink" onclick="openTab('cv')">CV & Personal Letter</button>
       <button class="tablink" onclick="openTab('projekt')">Projekt</button>
       <button class="tablink" onclick="openTab('program')">Program</button>
       <button class="tablink" onclick="openTab('blogg')">Blogg</button>
-      <button class="tablink" onclick="openTab('personal-letter')">Personal Letter</button>
       <button class="tablink" onclick="openTab('python')">Python</button>
     </nav>
 
 <section id="cv" class="tabcontent">
-  <h2>CV</h2>
-  <p>Du kan ladda ner eller öppna mitt CV här:</p>
-  <a href="cv.pdf" target="_blank">Öppna CV (PDF)</a>
-</section>
-
-
-<section id="personal-letter" class="tabcontent" style="display:none">
-  <h2>Personal Letter</h2>
-  <p>Du kan ladda ner eller öppna mitt CV här:</p>
-  <a href="personal letter.pdf" target="_blank">Öppna personal letter (PDF)</a>
+  <h2>CV & Personal Letter</h2>
+  <p id="cv-content">Du kan ladda ner eller öppna mitt CV och personliga brev här:</p>
+  <ul>
+    <li><a href="cv.pdf" target="_blank" id="cv-link">Öppna CV (PDF)</a></li>
+    <li><a href="personal letter.pdf" target="_blank" id="personal-letter-link">Öppna personligt brev (PDF)</a></li>
+  </ul>
 </section>
 
 
