@@ -87,13 +87,13 @@
 
   <button onclick="calculate()">Beräkna</button>
 
-  <pre id="result">Iy: -\nIz: -</pre>
+  <pre id="result">Iy: -<br>Iz: -</pre>
 
   <py-script>
 def calculate_moi(h, b):
     Iy = (b * h ** 3) / 12
     Iz = (h * b ** 3) / 12
-    return f"Iy: {Iy:.2f} mm⁴\nIz: {Iz:.2f} mm⁴"
+    return f"Iy: {Iy:.2f} mm⁴<br>Iz: {Iz:.2f} mm⁴"
   </py-script>
 
   <script>
@@ -106,7 +106,7 @@ def calculate_moi(h, b):
       }
 
       const result = await pyscript.interpreter.globals.get("calculate_moi")(h, b);
-      document.getElementById("result").textContent = result;
+      document.getElementById("result").innerHTML = result;
     }
   </script>
 </section>
