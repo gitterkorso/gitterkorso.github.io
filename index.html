@@ -135,6 +135,34 @@
         background: #23272a;
       }
     }
+    /* Subtil animerad bakgrund med gradient-bollar */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 20% 30%, #6ec1e4 0%, transparent 60%),
+                  radial-gradient(circle at 80% 70%, #e4b06e 0%, transparent 60%),
+                  radial-gradient(circle at 60% 20%, #b06ee4 0%, transparent 60%);
+      opacity: 0.25;
+      animation: bgMove 16s ease-in-out infinite alternate;
+    }
+    @keyframes bgMove {
+      0% {
+        background-position:
+          20% 30%,
+          80% 70%,
+          60% 20%;
+      }
+      100% {
+        background-position:
+          25% 35%,
+          75% 65%,
+          65% 25%;
+      }
+    }
+    body { position: relative; z-index: 1; }
   </style>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
 </head>
@@ -163,7 +191,7 @@
   <div id="clock" class="clock"></div>
 
   <h1>Nick Westin</h1>
-  <h3>Structural Engineering Student at KTH Stockholm</h3>
+  <h3 id="subtitle">Byggnadsingenjör student på KTH Stockholm</h3>
 
   <nav>
       <button class="tablink" id="tab-about-me" onclick="openTab('about-me')">Om mig</button>
@@ -171,7 +199,6 @@
       <button class="tablink" id="tab-projekt" onclick="openTab('projekt')">Projekt</button>
       <button class="tablink" id="tab-program" onclick="openTab('program')">Program</button>
       <button class="tablink" id="tab-blogg" onclick="openTab('blogg')">Blogg</button>
-      <button class="tablink" id="tab-python" onclick="openTab('python')">Python</button>
     </nav>
 
 <section id="cv" class="tabcontent">
@@ -202,16 +229,6 @@
   <button id="run-calc">Beräkna</button>
 
   <pre id="result">Iy: -\nIz: -</pre>
-</section>
-
-<section id="python" class="tabcontent" style="display:none">
-  <h2>Python Math Sheet</h2>
-  <p>Skriv dina beräkningar eller definiera variabler i Python:</p>
-
-  <textarea id="mathcode" rows="8" style="width:100%; font-family:monospace;"></textarea>
-  <br />
-  <button id="run-math">Kör kod</button>
-  <pre id="math-output">Output visas här...</pre>
 </section>
 
 <section id="about-me" class="tabcontent" style="display:none">
@@ -275,20 +292,6 @@
       }
     });
 
-    // Python Math Sheet
-    document.getElementById("run-math").addEventListener("click", async function() {
-      const code = document.getElementById("mathcode").value;
-      const outputElem = document.getElementById("math-output");
-      const pyodide = await loadPyodideAndPackages();
-      try {
-        // Kör koden och samla variabler
-        await pyodide.runPythonAsync(code + "\nlocals_dict = {k: v for k, v in locals().items() if not k.startsWith('__')}");
-        const result = await pyodide.runPythonAsync("'\\n'.join(f'{k} = {v}' for k, v in locals_dict.items())");
-        outputElem.textContent = result;
-      } catch (e) {
-        outputElem.textContent = "Fel: " + e;
-      }
-    });
     // Språkväxling
     const translations = {
       sv: {
@@ -297,18 +300,18 @@
         'tab-projekt': 'Projekt',
         'tab-program': 'Program',
         'tab-blogg': 'Blogg',
-        'tab-python': 'Python',
         'about-me-title': 'About Me',
         'about-me-content': 'Hej! Mitt namn är Nick och jag studerar till civilingenjör inom samhällsbyggnad med inriktning mot byggnadskonstruktör. Jag är särskillt intresserad av konstruktion, programmering och problemlösning. Mina hobbies inkluderar längdskidåkinng och alpin skidåkning. Men även små projekt som denna att koda denna hemsida och att snickra intresserar mig.',
         'blogg-title': 'Blogg',
-        'blogg-content': 'Här kommer jag att dela tankar, projektuppdateringar och tips om teknik, studier och ingenjörsliv.',
-        'blogg-posts': `<ul><li><strong>22 juni 2025:</strong> Här är en bild från mitt senaste projekt!<br><img src="21.jpg" alt="Projektbild" style="max-width:300px; border-radius:8px; margin-top:8px;"></li><li><strong>21 juni 2025:</strong> Första blogginlägget! Sidan har nu stöd för mörkt och ljust tema samt nya flikar.</li></ul>`,
+        'blogg-content': 'Här kommer jag att dela lite allt möjligt från mitt liv',
+        'blogg-posts': `<ul><li><strong>21 juni 2025:</strong> Idag fick jag prova farbror Fredriks maskin!<br><img src="21.jpg" alt="Projektbild" style="max-width:300px; border-radius:8px; margin-top:8px;"></li><li><strong>21 juni 2025:</strong> Första blogginlägget! Sidan har nu stöd för mörkt och ljust tema samt nya flikar.</li></ul>`,
         'cv-title': 'CV',
         'cv-content': 'Du kan ladda ner eller öppna mitt CV här:',
         'cv-link': 'Öppna CV (PDF)',
         'personal-letter-title': 'Personal Letter',
         'personal-letter-content': 'Du kan ladda ner eller öppna mitt CV här:',
         'personal-letter-link': 'Öppna personal letter (PDF)',
+        'subtitle': 'Byggnadsingenjör student på KTH Stockholm',
       },
       en: {
         'tab-about-me': 'About Me',
@@ -316,7 +319,6 @@
         'tab-projekt': 'Projects',
         'tab-program': 'Calculator',
         'tab-blogg': 'Blog',
-        'tab-python': 'Python',
         'about-me-title': 'About Me',
         'about-me-content': "Hi! My name is Nick and I am studying to become a civil engineer in civil engineering with a focus on structural engineering. I am especially interested in construction, programming, and problem solving. My hobbies include cross-country and alpine skiing. But I also enjoy small projects like coding this website and woodworking.",
         'blogg-title': 'Blog',
@@ -328,19 +330,21 @@
         'personal-letter-title': 'Personal Letter',
         'personal-letter-content': 'You can download or open my personal letter here:',
         'personal-letter-link': 'Open personal letter (PDF)',
+        'subtitle': 'Structural Engineering Student at KTH Stockholm',
       }
     };
     function setLanguage(lang) {
       // Flagga
       document.getElementById('flag-sv').classList.toggle('selected', lang === 'sv');
       document.getElementById('flag-en').classList.toggle('selected', lang === 'en');
+      // Subtitle
+      document.getElementById('subtitle').textContent = translations[lang]['subtitle'];
       // Tabbar
       document.getElementById('tab-about-me').textContent = translations[lang]['tab-about-me'];
       document.getElementById('tab-cv').textContent = translations[lang]['tab-cv'];
       document.getElementById('tab-projekt').textContent = translations[lang]['tab-projekt'];
       document.getElementById('tab-program').textContent = translations[lang]['tab-program'];
       document.getElementById('tab-blogg').textContent = translations[lang]['tab-blogg'];
-      document.getElementById('tab-python').textContent = translations[lang]['tab-python'];
       // About Me
       document.querySelector('#about-me h2').textContent = translations[lang]['about-me-title'];
       document.querySelector('#about-me p').textContent = translations[lang]['about-me-content'];
@@ -354,10 +358,6 @@
       document.querySelector('#cv h2').textContent = translations[lang]['cv-title'];
       document.querySelector('#cv p').textContent = translations[lang]['cv-content'];
       document.querySelector('#cv a').textContent = translations[lang]['cv-link'];
-      // Personal Letter
-      document.querySelector('#personal-letter h2').textContent = translations[lang]['personal-letter-title'];
-      document.querySelector('#personal-letter p').textContent = translations[lang]['personal-letter-content'];
-      document.querySelector('#personal-letter a').textContent = translations[lang]['personal-letter-link'];
     }
     document.getElementById('flag-sv').addEventListener('click', () => setLanguage('sv'));
     document.getElementById('flag-en').addEventListener('click', () => setLanguage('en'));
