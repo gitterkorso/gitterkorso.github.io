@@ -90,10 +90,10 @@
   <pre id="result">Iy: -<br>Iz: -</pre>
 
   <py-script>
-def calculate_moi(h, b):
+def calculate_moi(h: float, b: float) -> str:
     Iy = (b * h ** 3) / 12
     Iz = (h * b ** 3) / 12
-    return f"Iy: {Iy:.2f} mm⁴<br>Iz: {Iz:.2f} mm⁴"
+    return f"Iy: {Iy:.2f} mm⁴&lt;br&gt;Iz: {Iz:.2f} mm⁴"
   </py-script>
 
   <script>
