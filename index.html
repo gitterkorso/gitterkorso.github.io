@@ -30,9 +30,12 @@
       margin-right: 0.5rem;
       cursor: pointer;
       background: #ddd;
-      color: #222;
       border: none;
       font-weight: bold;
+      transition: background 0.2s, transform 0.1s cubic-bezier(.4,2,.3,1);
+    }
+    .tablink:active {
+      transform: scale(0.93);
     }
     .tablink:hover {
       background: #ccc;
@@ -40,12 +43,15 @@
     .tabcontent {
       display: none;
       background: #eee;
-      color: #222;
       padding: 1rem;
-      transition: background 0.3s, color 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s cubic-bezier(.4,2,.3,1), transform 0.5s cubic-bezier(.4,2,.3,1);
     }
     .tabcontent.active {
       display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
     .clock {
       position: absolute;
@@ -135,17 +141,17 @@
         background: #23272a;
       }
     }
-    /* Subtil animerad bakgrund med gradient-bollar */
+    /* Subtil animerad bakgrund med svart/grå skala */
     body::before {
       content: '';
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(circle at 20% 30%, #6ec1e4 0%, transparent 60%),
-                  radial-gradient(circle at 80% 70%, #e4b06e 0%, transparent 60%),
-                  radial-gradient(circle at 60% 20%, #b06ee4 0%, transparent 60%);
-      opacity: 0.25;
+      background: radial-gradient(circle at 20% 30%, #444 0%, transparent 60%),
+                  radial-gradient(circle at 80% 70%, #222 0%, transparent 60%),
+                  radial-gradient(circle at 60% 20%, #888 0%, transparent 60%);
+      opacity: 0.22;
       animation: bgMove 16s ease-in-out infinite alternate;
     }
     @keyframes bgMove {
@@ -163,6 +169,117 @@
       }
     }
     body { position: relative; z-index: 1; }
+
+    /* Progress bar för studier */
+    .progress-container {
+      margin: 2rem 0 1.5rem 0;
+      background: #e0e0e0;
+      border-radius: 1rem;
+      height: 28px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #6ec1e4, #b06ee4);
+      border-radius: 1rem 0 0 1rem;
+      width: 60% !important;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 1rem;
+      transition: none;
+      box-sizing: border-box;
+    }
+    .progress-label {
+      margin-bottom: 0.5rem;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+    /* Dagens datum */
+    .date-today {
+      position: absolute;
+      top: 10px;
+      right: 220px;
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #6ec1e4;
+      letter-spacing: 0.5px;
+      background: rgba(255,255,255,0.85);
+      padding: 0.3em 0.9em;
+      border-radius: 0.7em;
+      z-index: 21;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    @media (prefers-color-scheme: dark) {
+      .date-today {
+        background: #23272a;
+        color: #6ec1e4;
+      }
+    }
+    /* Fyrverkeri canvas */
+    #fireworks-canvas {
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    /* Rita-på-sidan canvas */
+    #draw-canvas {
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9998;
+    }
+    h1#main-title {
+      display: inline-block;
+      min-height: unset;
+      margin-bottom: 0.2em;
+      letter-spacing: 1.5px;
+      font-size: 2.5rem;
+      font-family: inherit;
+      white-space: pre;
+      overflow: hidden;
+      line-height: 1.1;
+      vertical-align: middle;
+    }
+    .wave-letter {
+      display: inline-block;
+      animation: wave 1.2s 1;
+      animation-delay: calc(var(--i) * 0.08s);
+    }
+    @keyframes wave {
+      0% { transform: translateY(0); }
+      20% { transform: translateY(-0.35em); }
+      40%, 100% { transform: translateY(0); }
+    }
+    .canvas-hint {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      background: rgba(40,40,40,0.92);
+      color: #fff;
+      font-size: 1rem;
+      padding: 0.5em 1.2em;
+      border-radius: 1.2em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+      z-index: 10000;
+      pointer-events: none;
+      opacity: 0.92;
+      transition: opacity 0.5s;
+    }
+    .canvas-hint.hide {
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
 </head>
@@ -190,8 +307,14 @@
     </div>
   <div id="clock" class="clock"></div>
 
-  <h1>Nick Westin</h1>
+  <h1 id="main-title"></h1>
   <h3 id="subtitle">Byggnadsingenjör student på KTH Stockholm</h3>
+
+  <div class="date-today" id="date-today"></div>
+    <div class="progress-label" id="progress-label">Studieprogression</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar">60%</div>
+    </div>
 
   <nav>
       <button class="tablink" id="tab-about-me" onclick="openTab('about-me')">Om mig</button>
@@ -245,6 +368,12 @@
   </ul>
 </section>
 
+  <canvas id="fireworks-canvas"></canvas>
+  <canvas id="draw-canvas"></canvas>
+  <div class="canvas-hint" id="canvas-hint">
+    💡 Klicka för fyrverkeri! Klicka och dra för att rita på sidan.
+  </div>
+
   <script>
     function updateClock() {
       const now = new Date();
@@ -256,8 +385,15 @@
 
     function openTab(tabName) {
       const contents = document.querySelectorAll(".tabcontent");
-      contents.forEach(el => el.style.display = "none");
-      document.getElementById(tabName).style.display = "block";
+      contents.forEach(el => {
+        el.classList.remove("active");
+        el.style.display = "none";
+      });
+      const tab = document.getElementById(tabName);
+      tab.style.display = "block";
+      // Trigger reflow for animation
+      void tab.offsetWidth;
+      tab.classList.add("active");
     }
 
     // Visa första fliken som standard
@@ -365,6 +501,186 @@
     window.addEventListener('DOMContentLoaded', function() {
       setLanguage('sv');
     });
+
+    // Dagens datum (endast datum, uppe till höger)
+    function updateDateToday() {
+      const now = new Date();
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      document.getElementById('date-today').textContent = now.toLocaleDateString('sv-SE', options);
+    }
+    updateDateToday();
+    // Progress bar för studier (fast till 60%)
+    document.getElementById('progress-bar').style.width = '60%';
+    document.getElementById('progress-bar').textContent = '60%';
+
+    // Fyrverkeri-effekt på klick där det inte är en knapp
+    const canvas = document.getElementById('fireworks-canvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function randomColor() {
+      const colors = ['#fff', '#ffec6e', '#6ec1e4', '#b06ee4', '#e46e6e', '#888', '#222'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function createFirework(x, y) {
+      const particles = [];
+      const count = 24 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count;
+        const speed = 2 + Math.random() * 2.5;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          color: randomColor(),
+          size: 2 + Math.random() * 2
+        });
+      }
+      let frame = 0;
+      function animate() {
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        for (const p of particles) {
+          if (p.alpha > 0.05) {
+            alive = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.fill();
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vx *= 0.97;
+            p.vy *= 0.97;
+            p.vy += 0.04; // gravity
+            p.alpha *= 0.96;
+          }
+        }
+        ctx.globalAlpha = 1;
+        if (alive && frame < 60) {
+          requestAnimationFrame(animate);
+          frame++;
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      animate();
+    }
+
+    document.addEventListener('click', function(e) {
+      // Kolla om det är en knapp eller länk
+      let el = e.target;
+      while (el) {
+        if (el.tagName === 'BUTTON' || el.tagName === 'A') return;
+        el = el.parentElement;
+      }
+      createFirework(e.clientX, e.clientY);
+    });
+
+    // Typningsanimering med vågeffekt för "Nick Westin"
+    function waveTitle(text, el) {
+      el.textContent = '';
+      for (let i = 0; i < text.length; i++) {
+        const span = document.createElement('span');
+        span.textContent = text[i];
+        span.className = 'wave-letter';
+        span.style.setProperty('--i', i);
+        el.appendChild(span);
+      }
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+      const titleEl = document.getElementById('main-title');
+      waveTitle('Nick Westin', titleEl);
+    });
+
+    // Rita-på-sidan-funktion (endast om man inte håller på en knapp/länk)
+    const drawCanvas = document.getElementById('draw-canvas');
+    const drawCtx = drawCanvas.getContext('2d');
+    function resizeDrawCanvas() {
+      drawCanvas.width = window.innerWidth;
+      drawCanvas.height = window.innerHeight;
+    }
+    resizeDrawCanvas();
+    window.addEventListener('resize', resizeDrawCanvas);
+
+    let drawing = false;
+    let lastX = 0, lastY = 0;
+    function isButtonOrLink(el) {
+      while (el) {
+        if (el.tagName === 'BUTTON' || el.tagName === 'A') return true;
+        el = el.parentElement;
+      }
+      return false;
+    }
+    document.addEventListener('mousedown', function(e) {
+      if (isButtonOrLink(e.target)) return;
+      drawing = true;
+      drawCanvas.style.pointerEvents = 'auto';
+      lastX = e.clientX;
+      lastY = e.clientY;
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!drawing) return;
+      drawCtx.strokeStyle = '#6ec1e4';
+      drawCtx.lineWidth = 3;
+      drawCtx.lineCap = 'round';
+      drawCtx.beginPath();
+      drawCtx.moveTo(lastX, lastY);
+      drawCtx.lineTo(e.clientX, e.clientY);
+      drawCtx.stroke();
+      lastX = e.clientX;
+      lastY = e.clientY;
+    });
+    document.addEventListener('mouseup', function(e) {
+      if (drawing) {
+        drawing = false;
+        drawCanvas.style.pointerEvents = 'none';
+      }
+    });
+    // För touch
+    document.addEventListener('touchstart', function(e) {
+      if (isButtonOrLink(e.target)) return;
+      const t = e.touches[0];
+      drawing = true;
+      drawCanvas.style.pointerEvents = 'auto';
+      lastX = t.clientX;
+      lastY = t.clientY;
+    });
+    document.addEventListener('touchmove', function(e) {
+      if (!drawing) return;
+      const t = e.touches[0];
+      drawCtx.strokeStyle = '#6ec1e4';
+      drawCtx.lineWidth = 3;
+      drawCtx.lineCap = 'round';
+      drawCtx.beginPath();
+      drawCtx.moveTo(lastX, lastY);
+      drawCtx.lineTo(t.clientX, t.clientY);
+      drawCtx.stroke();
+      lastX = t.clientX;
+      lastY = t.clientY;
+    }, {passive: false});
+    document.addEventListener('touchend', function(e) {
+      if (drawing) {
+        drawing = false;
+        drawCanvas.style.pointerEvents = 'none';
+      }
+    });
+    // Dölj hint efter 15 sekunder eller vid första interaktion
+    function hideHint() {
+      const hint = document.getElementById('canvas-hint');
+      if (hint) hint.classList.add('hide');
+    }
+    setTimeout(hideHint, 15000);
+    document.addEventListener('mousedown', hideHint, { once: true });
+    document.addEventListener('touchstart', hideHint, { once: true });
   </script>
 </body>
 </html>
