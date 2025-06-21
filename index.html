@@ -20,11 +20,55 @@
       padding: 1rem;
       margin-top: 1rem;
     }
+    nav {
+      margin-bottom: 1rem;
+    }
+    .tablink {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      cursor: pointer;
+      background: #ddd;
+      border: none;
+      font-weight: bold;
+    }
+    .tablink:hover {
+      background: #ccc;
+    }
+    .tabcontent {
+      display: none;
+      background: #eee;
+      padding: 1rem;
+    }
+    .tabcontent.active {
+      display: block;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
 </head>
 <body>
   <h1>Pyodide med Live Server</h1>
+
+  <nav>
+    <button class="tablink" onclick="openTab('cv')">CV</button>
+    <button class="tablink" onclick="openTab('projekt')">Projekt</button>
+    <button class="tablink" onclick="openTab('program')">Program</button>
+  </nav>
+
+  <section id="cv" class="tabcontent">
+    <h2>CV</h2>
+    <p>Ditt CV-innehåll här...</p>
+  </section>
+
+  <section id="projekt" class="tabcontent" style="display:none">
+    <h2>Projekt</h2>
+    <p>Lista på projekt...</p>
+  </section>
+
+  <section id="program" class="tabcontent" style="display:none">
+    <h2>Program</h2>
+    <p>Beskriv dina program eller verktyg här...</p>
+  </section>
+
   <p>Tryck på knappen för att köra Python direkt i webbläsaren!</p>
   <button onclick="runPython()">Kör Python</button>
   <pre id="output">Resultat kommer visas här...</pre>
@@ -51,6 +95,15 @@ info()
     }
 
     startPyodide();
+
+    function openTab(tabName) {
+      const contents = document.querySelectorAll(".tabcontent");
+      contents.forEach(el => el.style.display = "none");
+      document.getElementById(tabName).style.display = "block";
+    }
+
+    // Visa första fliken som standard
+    openTab('cv');
   </script>
 </body>
 </html>
