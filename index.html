@@ -166,20 +166,20 @@
   <h3>Structural Engineering Student at KTH Stockholm</h3>
 
   <nav>
-      <button class="tablink" onclick="openTab('about-me')">About Me</button>
-      <button class="tablink" onclick="openTab('cv')">CV & Personal Letter</button>
-      <button class="tablink" onclick="openTab('projekt')">Projekt</button>
-      <button class="tablink" onclick="openTab('program')">Program</button>
-      <button class="tablink" onclick="openTab('blogg')">Blogg</button>
-      <button class="tablink" onclick="openTab('python')">Python</button>
+      <button class="tablink" id="tab-about-me" onclick="openTab('about-me')">Om mig</button>
+      <button class="tablink" id="tab-cv" onclick="openTab('cv')">CV och Personligt Brev</button>
+      <button class="tablink" id="tab-projekt" onclick="openTab('projekt')">Projekt</button>
+      <button class="tablink" id="tab-program" onclick="openTab('program')">Program</button>
+      <button class="tablink" id="tab-blogg" onclick="openTab('blogg')">Blogg</button>
+      <button class="tablink" id="tab-python" onclick="openTab('python')">Python</button>
     </nav>
 
 <section id="cv" class="tabcontent">
-  <h2>CV & Personal Letter</h2>
+  <h2>CV och Personligt Brev</h2>
   <p id="cv-content">Du kan ladda ner eller öppna mitt CV och personliga brev här:</p>
   <ul>
     <li><a href="cv.pdf" target="_blank" id="cv-link">Öppna CV (PDF)</a></li>
-    <li><a href="personal letter.pdf" target="_blank" id="personal-letter-link">Öppna personligt brev (PDF)</a></li>
+    <li><a href="#" id="personal-letter-link">Kommer snart</a></li>
   </ul>
 </section>
 
@@ -281,7 +281,7 @@
       const pyodide = await loadPyodideAndPackages();
       try {
         // Kör koden och samla variabler
-        await pyodide.runPythonAsync(code + "\nlocals_dict = {k: v for k, v in locals().items() if not k.startswith('__')}");
+        await pyodide.runPythonAsync(code + "\nlocals_dict = {k: v for k, v in locals().items() if not k.startsWith('__')}");
         const result = await pyodide.runPythonAsync("'\\n'.join(f'{k} = {v}' for k, v in locals_dict.items())");
         outputElem.textContent = result;
       } catch (e) {
@@ -291,6 +291,12 @@
     // Språkväxling
     const translations = {
       sv: {
+        'tab-about-me': 'Om mig',
+        'tab-cv': 'CV och Personligt Brev',
+        'tab-projekt': 'Projekt',
+        'tab-program': 'Program',
+        'tab-blogg': 'Blogg',
+        'tab-python': 'Python',
         'about-me-title': 'About Me',
         'about-me-content': 'Hej! Mitt namn är Nick och jag studerar till civilingenjör inom samhällsbyggnad med inriktning mot byggnadskonstruktör. Jag är särskillt intresserad av konstruktion, programmering och problemlösning. Mina hobbies inkluderar längdskidåkinng och alpin skidåkning. Men även små projekt som denna att koda denna hemsida och att snickra intresserar mig.',
         'blogg-title': 'Blogg',
@@ -304,8 +310,14 @@
         'personal-letter-link': 'Öppna personal letter (PDF)',
       },
       en: {
+        'tab-about-me': 'About Me',
+        'tab-cv': 'CV & Personal Letter',
+        'tab-projekt': 'Projects',
+        'tab-program': 'Calculator',
+        'tab-blogg': 'Blog',
+        'tab-python': 'Python',
         'about-me-title': 'About Me',
-        'about-me-content': "Hi! My name is Nick Westin and I'm studying Civil Engineering at KTH in Stockholm. I'm especially interested in structural engineering, programming, and problem solving. In my free time, I enjoy learning new things, building projects, and working out.",
+        'about-me-content': "Hi! My name is Nick and I am studying to become a civil engineer in civil engineering with a focus on structural engineering. I am especially interested in construction, programming, and problem solving. My hobbies include cross-country and alpine skiing. But I also enjoy small projects like coding this website and woodworking.",
         'blogg-title': 'Blog',
         'blogg-content': 'Here I will share thoughts, project updates, and tips about technology, studies, and engineering life.',
         'blogg-posts': '<ul><li><strong>June 21, 2025:</strong> First blog post! The site now supports dark and light theme and new tabs.</li></ul>',
@@ -321,6 +333,13 @@
       // Flagga
       document.getElementById('flag-sv').classList.toggle('selected', lang === 'sv');
       document.getElementById('flag-en').classList.toggle('selected', lang === 'en');
+      // Tabbar
+      document.getElementById('tab-about-me').textContent = translations[lang]['tab-about-me'];
+      document.getElementById('tab-cv').textContent = translations[lang]['tab-cv'];
+      document.getElementById('tab-projekt').textContent = translations[lang]['tab-projekt'];
+      document.getElementById('tab-program').textContent = translations[lang]['tab-program'];
+      document.getElementById('tab-blogg').textContent = translations[lang]['tab-blogg'];
+      document.getElementById('tab-python').textContent = translations[lang]['tab-python'];
       // About Me
       document.querySelector('#about-me h2').textContent = translations[lang]['about-me-title'];
       document.querySelector('#about-me p').textContent = translations[lang]['about-me-content'];
@@ -341,6 +360,10 @@
     }
     document.getElementById('flag-sv').addEventListener('click', () => setLanguage('sv'));
     document.getElementById('flag-en').addEventListener('click', () => setLanguage('en'));
+    // Visa svenska som standard vid sidladdning
+    window.addEventListener('DOMContentLoaded', function() {
+      setLanguage('sv');
+    });
   </script>
 </body>
 </html>
