@@ -44,6 +44,8 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 </head>
 <body>
   <h1>Nick Westin</h1>
@@ -53,12 +55,20 @@
     <button class="tablink" onclick="openTab('projekt')">Projekt</button>
     <button class="tablink" onclick="openTab('program')">Program</button>
   </nav>
-  
+
 <section id="cv" class="tabcontent">
   <h2>CV</h2>
   <p>Du kan ladda ner eller öppna mitt CV här:</p>
   <a href="cv.pdf" target="_blank">Öppna CV (PDF)</a>
 </section>
+
+
+<section id="Personal letter" class="tabcontent">
+  <h2>CV</h2>
+  <p>Du kan ladda ner eller öppna mitt CV här:</p>
+  <a href="personal letter.pdf" target="_blank">Öppna personal letter (PDF)</a>
+</section>
+
 
   <section id="projekt" class="tabcontent" style="display:none">
     <h2>Projekt</h2>
@@ -66,9 +76,40 @@
   </section>
 
   <section id="program" class="tabcontent" style="display:none">
-    <h2>Program</h2>
-    <p>Beskriv dina program eller verktyg här...</p>
-  </section>
+  <h2>Moment of Inertia Calculator</h2>
+  <p>Beräkna Iy och Iz (mm⁴) för en rektangel:</p>
+
+  <label for="height">Höjd (h, mm):</label>
+  <input type="number" id="height" />
+
+  <label for="width">Bredd (b, mm):</label>
+  <input type="number" id="width" />
+
+  <button onclick="calculate()">Beräkna</button>
+
+  <pre id="result">Iy: -\nIz: -</pre>
+
+  <py-script>
+def calculate_moi(h, b):
+    Iy = (b * h ** 3) / 12
+    Iz = (h * b ** 3) / 12
+    return f"Iy: {Iy:.2f} mm⁴\nIz: {Iz:.2f} mm⁴"
+  </py-script>
+
+  <script>
+    async function calculate() {
+      const h = parseFloat(document.getElementById("height").value);
+      const b = parseFloat(document.getElementById("width").value);
+      if (isNaN(h) || isNaN(b)) {
+        document.getElementById("result").textContent = "Felaktig inmatning.";
+        return;
+      }
+
+      const result = await pyscript.interpreter.globals.get("calculate_moi")(h, b);
+      document.getElementById("result").textContent = result;
+    }
+  </script>
+</section>
 
   <p>Tryck på knappen för att köra Python direkt i webbläsaren!</p>
   <button onclick="runPython()">Kör Python</button>
