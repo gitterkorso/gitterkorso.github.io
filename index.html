@@ -323,6 +323,7 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
     <div class="social-links">
@@ -367,6 +368,7 @@
       <button class="tablink" id="tab-projekt" onclick="openTab('projekt')">Projekt</button>
       <button class="tablink" id="tab-program" onclick="openTab('program')">Program</button>
       <button class="tablink" id="tab-blogg" onclick="openTab('blogg')">Blogg</button>
+      <button class="tablink" id="tab-pdf-merger" onclick="openTab('pdf-merger')">PDF Merger</button>
     </nav>
 
 <section id="cv" class="tabcontent" style="display:none">
@@ -434,6 +436,20 @@
       </div>
     </li>
   </ul>
+</section>
+
+<section id="pdf-merger" class="tabcontent" style="display:none">
+  <h2>PDF Merger</h2>
+  <p>Slå ihop flera PDF-filer direkt i webbläsaren. Ingen fil lämnar din dator!</p>
+  <div id="pdf-dropzone" style="border:2px dashed #0077B5; border-radius:10px; padding:1.2em; margin-bottom:1em; background:#f7faff; text-align:center; transition:background 0.2s; cursor:pointer; color:#1a2a3a; font-weight:600; font-size:1.08em;">
+    <strong>Dra och släpp PDF-filer här</strong>
+    <br>
+    <!-- input type="file" tas bort, men finns kvar i DOM (dolt) för JS -->
+    <input type="file" id="pdf-files" accept="application/pdf" multiple style="display:none;" />
+  </div>
+  <button id="merge-pdf-btn">Slå ihop PDF:er</button>
+  <a id="download-merged-pdf" style="display:none; margin-left:1em; font-weight:bold;" download="sammanfogad.pdf">Ladda ner sammanslagen PDF</a>
+  <div id="pdf-merge-status" style="margin-top:1em; color:#0077B5;"></div>
 </section>
 
   <canvas id="fireworks-canvas"></canvas>
@@ -519,6 +535,79 @@
       resultElem.textContent = `Max moment: ${Mmax.toFixed(2)} kNm\nMax nedböjning: ${fmax.toFixed(2)} mm`;
     });
 
+    // PDF Merger-funktionalitet
+    document.getElementById('merge-pdf-btn').addEventListener('click', async function() {
+      const files = document.getElementById('pdf-files').files;
+      const status = document.getElementById('pdf-merge-status');
+      const downloadLink = document.getElementById('download-merged-pdf');
+      if (!files.length) {
+        status.textContent = 'Välj minst två PDF-filer.';
+        downloadLink.style.display = 'none';
+        return;
+      }
+      status.textContent = 'Slår ihop PDF:er...';
+      try {
+        const mergedPdf = await PDFLib.PDFDocument.create();
+        for (let i = 0; i < files.length; i++) {
+          const arrayBuffer = await files[i].arrayBuffer();
+          const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+          const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+          copiedPages.forEach(page => mergedPdf.addPage(page));
+        }
+        const mergedBytes = await mergedPdf.save();
+        const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.style.display = 'inline-block';
+        status.textContent = 'Klar! Klicka på länken för att ladda ner.';
+      } catch (e) {
+        status.textContent = 'Fel vid sammanslagning: ' + e;
+        downloadLink.style.display = 'none';
+      }
+    });
+
+    // PDF Merger drag-and-drop
+    (function() {
+      const dropzone = document.getElementById('pdf-dropzone');
+      const fileInput = document.getElementById('pdf-files');
+      dropzone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropzone.style.background = '#e3f2fd';
+        dropzone.style.borderColor = '#005580';
+      });
+      dropzone.addEventListener('dragleave', function(e) {
+        dropzone.style.background = '#f7faff';
+        dropzone.style.borderColor = '#0077B5';
+      });
+      dropzone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropzone.style.background = '#f7faff';
+        dropzone.style.borderColor = '#0077B5';
+        const newFiles = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
+        if (!newFiles.length) {
+          document.getElementById('pdf-merge-status').textContent = 'Endast PDF-filer stöds.';
+          return;
+        }
+        // Kombinera redan valda filer med nya, undvik dubbletter (baserat på namn + storlek)
+        const currentFiles = Array.from(fileInput.files);
+        const allFiles = [...currentFiles];
+        newFiles.forEach(newFile => {
+          if (!allFiles.some(f => f.name === newFile.name && f.size === newFile.size)) {
+            allFiles.push(newFile);
+          }
+        });
+        // Skapa en DataTransfer med alla filer
+        const dt = new DataTransfer();
+        allFiles.forEach(f => dt.items.add(f));
+        fileInput.files = dt.files;
+        document.getElementById('pdf-merge-status').textContent = allFiles.length + ' PDF-fil(er) valda.';
+      });
+      // Klick på dropzone öppnar filväljaren
+      dropzone.addEventListener('click', function(e) {
+        if (e.target === fileInput) return;
+        fileInput.click();
+      });
+    })();
+
     // Språkväxling
     const translations = {
       sv: {
@@ -588,6 +677,24 @@
     function isFlag(el) {
       return el && el.classList && el.classList.contains('lang-flag');
     }
+    // Ny funktion: kolla om elementet eller dess förälder är text (ej bara whitespace)
+    function isTextOrContainsText(el) {
+      while (el) {
+        // Om det är knapp/länk/flagga, returnera false direkt (hanteras separat)
+        if (el.tagName === 'BUTTON' || el.tagName === 'A' || (el.classList && el.classList.contains('lang-flag'))) return false;
+        // Om det är ett element med synlig text (ej bara whitespace)
+        if (el.nodeType === Node.ELEMENT_NODE) {
+          // Kolla om någon av dess textnoder har synlig text
+          for (let node of el.childNodes) {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+              return true;
+            }
+          }
+        }
+        el = el.parentElement;
+      }
+      return false;
+    }
     document.getElementById('flag-sv').addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -599,12 +706,24 @@
       setLanguage('en');
     });
     document.addEventListener('click', function(e) {
-      // Kolla om det är en knapp, länk eller flagga
       let el = e.target;
-      while (el) {
-        if (el.tagName === 'BUTTON' || el.tagName === 'A' || (el.classList && el.classList.contains('lang-flag'))) return;
-        el = el.parentElement;
-      }
+      // Om det är en textnod, trigga INTE
+      if (el.nodeType === 3) return;
+      // Lista på element som ska IGNORERAS för fyrverkeri
+      const ignoreTags = [
+        'BUTTON','A','INPUT','SELECT','TEXTAREA','LABEL'
+      ];
+      // Lista på element som typiskt innehåller text
+      const textTags = [
+        'P','H1','H2','H3','H4','H5','H6','SPAN','LI','PRE','STRONG','EM','B','I','SMALL','MARK','CODE','CITE','BLOCKQUOTE','TD','TH','CAPTION','DT','DD'
+      ];
+      // Om du klickar på ett element som är i ignoreTags eller textTags, trigga INTE
+      if (el.tagName && (ignoreTags.includes(el.tagName) || textTags.includes(el.tagName))) return;
+      // Om du klickar på flagga, trigga INTE
+      if (el.classList && el.classList.contains('lang-flag')) return;
+      // Om du klickar på ett element som innehåller synlig text, trigga INTE
+      if (el.innerText && el.innerText.trim().length > 0) return;
+      // Om du klickar på ett område utan text, knapp, länk, input, etc – trigga
       if (typeof createFirework === 'function') {
         createFirework(e.clientX, e.clientY);
       }
