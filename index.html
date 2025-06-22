@@ -104,17 +104,27 @@
       z-index: 20;
     }
     .lang-flag {
-      width: 32px;
-      height: 22px;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0 2px;
       cursor: pointer;
-      border: 2px solid transparent;
+      width: 36px;
+      height: 24px;
       border-radius: 4px;
       transition: border 0.2s;
-      background: #fff;
-      object-fit: cover;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .lang-flag.selected {
       border: 2px solid #0077B5;
+    }
+    .lang-flag img {
+      width: 32px;
+      height: 22px;
+      border-radius: 3px;
+      display: block;
     }
     @media (prefers-color-scheme: dark) {
       body {
@@ -331,8 +341,12 @@
       </a>
     </div>
     <div class="lang-switcher">
-      <img src="https://flagcdn.com/se.svg" alt="Svenska" id="flag-sv" class="lang-flag selected" title="Svenska" />
-      <img src="https://flagcdn.com/gb.svg" alt="English" id="flag-en" class="lang-flag" title="English" />
+      <button id="flag-sv" class="lang-flag" aria-label="Svenska">
+        <img src="https://flagcdn.com/se.svg" alt="Svenska" />
+      </button>
+      <button id="flag-en" class="lang-flag" aria-label="English">
+        <img src="https://flagcdn.com/gb.svg" alt="English" />
+      </button>
     </div>
   <div id="clock" class="clock"></div>
 
@@ -565,23 +579,26 @@
       return el && el.classList && el.classList.contains('lang-flag');
     }
     document.getElementById('flag-sv').addEventListener('click', function(e) {
-      e.stopImmediatePropagation();
+      e.preventDefault();
+      e.stopPropagation();
       setLanguage('sv');
     });
     document.getElementById('flag-en').addEventListener('click', function(e) {
-      e.stopImmediatePropagation();
+      e.preventDefault();
+      e.stopPropagation();
       setLanguage('en');
     });
     document.addEventListener('click', function(e) {
+      // Kolla om det är en knapp, länk eller flagga
       let el = e.target;
       while (el) {
-        if (el.tagName === 'BUTTON' || el.tagName === 'A' || isFlag(el)) return;
+        if (el.tagName === 'BUTTON' || el.tagName === 'A' || (el.classList && el.classList.contains('lang-flag'))) return;
         el = el.parentElement;
       }
       if (typeof createFirework === 'function') {
         createFirework(e.clientX, e.clientY);
       }
-    }, true); // Lägg till capture så att denna körs efter flaggans egna
+    }, false);
     // Visa svenska som standard vid sidladdning
     window.addEventListener('DOMContentLoaded', function() {
       setLanguage('sv');
