@@ -238,6 +238,14 @@
       pointer-events: none;
       z-index: 9998;
     }
+    /* Partikeleffekt canvas */
+    #particles-bg {
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
+    }
     h1#main-title {
       display: inline-block;
       min-height: unset;
@@ -279,6 +287,27 @@
     .canvas-hint.hide {
       opacity: 0;
       transition: opacity 0.5s;
+    }
+    .clear-drawing-btn {
+      position: fixed;
+      bottom: 90px;
+      right: 32px;
+      z-index: 10001;
+      background: #fff;
+      color: #0077B5;
+      border: 2px solid #0077B5;
+      border-radius: 2em;
+      padding: 0.5em 1.3em;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      transition: background 0.2s, color 0.2s, border 0.2s;
+    }
+    .clear-drawing-btn:hover {
+      background: #0077B5;
+      color: #fff;
+      border: 2px solid #005580;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
@@ -340,19 +369,32 @@
   </section>
 
 <section id="program" class="tabcontent" style="display:none">
-  <h2>Moment of Inertia Calculator</h2>
-  <p>Beräkna Iy och Iz (mm⁴) för en rektangel:</p>
+      <h2>Moment of Inertia Calculator</h2>
+      <p>Beräkna Iy och Iz (mm⁴) för en rektangel:</p>
 
-  <label for="height">Höjd (h, mm):</label>
-  <input type="number" id="height" />
+      <label for="height">Höjd (h, mm):</label>
+      <input type="number" id="height" />
 
-  <label for="width">Bredd (b, mm):</label>
-  <input type="number" id="width" />
+      <label for="width">Bredd (b, mm):</label>
+      <input type="number" id="width" />
 
-  <button id="run-calc">Beräkna</button>
+      <button id="run-calc">Beräkna</button>
 
-  <pre id="result">Iy: -\nIz: -</pre>
-</section>
+      <pre id="result">Iy: -\nIz: -</pre>
+      <hr style="margin:2em 0;">
+      <h2>Fritt upplagd balk – Max moment & nedböjning</h2>
+      <p>Beräkna maximal moment och nedböjning för en fritt upplagd balk med jämnt utbredd last.</p>
+      <label for="beam-length">Längd (L, m):</label>
+      <input type="number" id="beam-length" step="0.01" min="0" />
+      <label for="beam-load">Last (q, kN/m):</label>
+      <input type="number" id="beam-load" step="0.01" min="0" />
+      <label for="beam-e">Elasticitetsmodul (E, MPa):</label>
+      <input type="number" id="beam-e" step="1" min="0" value="210000" />
+      <label for="beam-i">Tröghetsmoment (I, mm⁴):</label>
+      <input type="number" id="beam-i" step="1" min="0" />
+      <button id="run-beam">Beräkna</button>
+      <pre id="beam-result">Max moment: -\nMax nedböjning: -</pre>
+    </section>
 
 <section id="about-me" class="tabcontent" style="display:none">
   <h2>About Me</h2>
@@ -370,9 +412,11 @@
 
   <canvas id="fireworks-canvas"></canvas>
   <canvas id="draw-canvas"></canvas>
+  <canvas id="particles-bg"></canvas>
   <div class="canvas-hint" id="canvas-hint">
     💡 Klicka för fyrverkeri! Klicka och dra för att rita på sidan.
   </div>
+  <button class="clear-drawing-btn" id="clear-drawing-btn" title="Rensa ritning">Rensa ritning</button>
 
   <script>
     function updateClock() {
@@ -426,6 +470,27 @@
       } catch (e) {
         resultElem.textContent = "Fel: " + e;
       }
+    });
+
+    // Kalkylator för fritt upplagd balk
+    document.getElementById("run-beam").addEventListener("click", function() {
+      const L = parseFloat(document.getElementById("beam-length").value); // m
+      const q = parseFloat(document.getElementById("beam-load").value); // kN/m
+      const E = parseFloat(document.getElementById("beam-e").value); // MPa
+      const I = parseFloat(document.getElementById("beam-i").value); // mm^4
+      const resultElem = document.getElementById("beam-result");
+      if (isNaN(L) || isNaN(q) || isNaN(E) || isNaN(I) || L <= 0 || q <= 0 || E <= 0 || I <= 0) {
+        resultElem.textContent = "Felaktig inmatning.";
+        return;
+      }
+      // Max moment: Mmax = q*L^2/8 (kNm)
+      const Mmax = q * Math.pow(L, 2) / 8;
+      // Max nedböjning: fmax = (5*q*L^4)/(384*E*I) (E i MPa, I i mm^4, q i kN/m, L i m)
+      // Omvandla q till N/m, E till N/mm^2, I i mm^4, L till mm
+      const qN = q * 1000; // N/m
+      const Lmm = L * 1000; // mm
+      const fmax = (5 * qN * Math.pow(Lmm, 4)) / (384 * E * I); // mm
+      resultElem.textContent = `Max moment: ${Mmax.toFixed(2)} kNm\nMax nedböjning: ${fmax.toFixed(2)} mm`;
     });
 
     // Språkväxling
@@ -495,8 +560,28 @@
       document.querySelector('#cv p').textContent = translations[lang]['cv-content'];
       document.querySelector('#cv a').textContent = translations[lang]['cv-link'];
     }
-    document.getElementById('flag-sv').addEventListener('click', () => setLanguage('sv'));
-    document.getElementById('flag-en').addEventListener('click', () => setLanguage('en'));
+    // Förhindra fyrverkeri på språkflagga: använd capture och kontrollera eventkedjan
+    function isFlag(el) {
+      return el && el.classList && el.classList.contains('lang-flag');
+    }
+    document.getElementById('flag-sv').addEventListener('click', function(e) {
+      e.stopImmediatePropagation();
+      setLanguage('sv');
+    });
+    document.getElementById('flag-en').addEventListener('click', function(e) {
+      e.stopImmediatePropagation();
+      setLanguage('en');
+    });
+    document.addEventListener('click', function(e) {
+      let el = e.target;
+      while (el) {
+        if (el.tagName === 'BUTTON' || el.tagName === 'A' || isFlag(el)) return;
+        el = el.parentElement;
+      }
+      if (typeof createFirework === 'function') {
+        createFirework(e.clientX, e.clientY);
+      }
+    }, true); // Lägg till capture så att denna körs efter flaggans egna
     // Visa svenska som standard vid sidladdning
     window.addEventListener('DOMContentLoaded', function() {
       setLanguage('sv');
@@ -574,16 +659,6 @@
       }
       animate();
     }
-
-    document.addEventListener('click', function(e) {
-      // Kolla om det är en knapp eller länk
-      let el = e.target;
-      while (el) {
-        if (el.tagName === 'BUTTON' || el.tagName === 'A') return;
-        el = el.parentElement;
-      }
-      createFirework(e.clientX, e.clientY);
-    });
 
     // Typningsanimering med vågeffekt för "Nick Westin"
     function waveTitle(text, el) {
@@ -673,6 +748,12 @@
         drawCanvas.style.pointerEvents = 'none';
       }
     });
+    // För rensa ritning knapp
+    document.getElementById('clear-drawing-btn').addEventListener('click', function() {
+      const drawCanvas = document.getElementById('draw-canvas');
+      const ctx = drawCanvas.getContext('2d');
+      ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+    });
     // Dölj hint efter 15 sekunder eller vid första interaktion
     function hideHint() {
       const hint = document.getElementById('canvas-hint');
@@ -681,6 +762,57 @@
     setTimeout(hideHint, 15000);
     document.addEventListener('mousedown', hideHint, { once: true });
     document.addEventListener('touchstart', hideHint, { once: true });
+
+    // Subtil partikeleffekt i bakgrunden
+    const particlesCanvas = document.getElementById('particles-bg');
+    const pCtx = particlesCanvas.getContext('2d');
+    function resizeParticlesCanvas() {
+      particlesCanvas.width = window.innerWidth;
+      particlesCanvas.height = window.innerHeight;
+    }
+    resizeParticlesCanvas();
+    window.addEventListener('resize', resizeParticlesCanvas);
+
+    const PARTICLE_COUNT = 38;
+    const COLORS = ['#6ec1e4', '#e46e6e', '#b06ee4', '#e4b06e', '#6ee4b0', '#fff', '#f1f1f1'];
+    const particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      particles.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: 8 + Math.random() * 16,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.1 + Math.random() * 0.15,
+        alpha: 0.2 + Math.random() * 0.5,
+        angle: angle,
+        radius: 18 + Math.random() * 32
+      });
+    }
+    function animateParticles() {
+      pCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+      for (const p of particles) {
+        // Cirkulär långsam rörelse
+        p.x += Math.cos(p.angle) * 0.08;
+        p.y += Math.sin(p.angle) * 0.08;
+        p.angle += (Math.random() - 0.5) * 0.01;
+        // Fade in/out
+        const t = (Date.now() / 1200 + p.phase) % (2 * Math.PI);
+        const a = 0.18 + 0.32 * (0.5 + 0.5 * Math.sin(t));
+        pCtx.globalAlpha = a * p.alpha;
+        pCtx.beginPath();
+        pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        pCtx.fillStyle = p.color;
+        pCtx.shadowColor = p.color;
+        pCtx.shadowBlur = 16;
+        pCtx.fill();
+        pCtx.shadowBlur = 0;
+      }
+      pCtx.globalAlpha = 1;
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
   </script>
 </body>
 </html>
