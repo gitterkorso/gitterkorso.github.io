@@ -369,6 +369,7 @@
       <button class="tablink" id="tab-program" onclick="openTab('program')">Program</button>
       <button class="tablink" id="tab-blogg" onclick="openTab('blogg')">Blogg</button>
       <button class="tablink" id="tab-pdf-merger" onclick="openTab('pdf-merger')">PDF Merger</button>
+      <button class="tablink" id="tab-plot" onclick="openTab('plot')">Plot</button>
     </nav>
 
 <section id="cv" class="tabcontent" style="display:none">
@@ -450,6 +451,28 @@
   <button id="merge-pdf-btn">Slå ihop PDF:er</button>
   <a id="download-merged-pdf" style="display:none; margin-left:1em; font-weight:bold;" download="sammanfogad.pdf">Ladda ner sammanslagen PDF</a>
   <div id="pdf-merge-status" style="margin-top:1em; color:#0077B5;"></div>
+</section>
+
+<section id="plot" class="tabcontent" style="display:none">
+  <h2>Plotta funktioner (matplotlib)</h2>
+  <p>Ange en eller flera funktioner av x (t.ex. <code>sin(x)</code>, <code>x**2</code>, <code>exp(-x)*cos(2*x)</code>).<br>Separera flera funktioner med kommatecken.</p>
+  <form id="plot-form" style="margin-bottom:1em;">
+    <label for="plot-funcs">f(x):</label>
+    <input type="text" id="plot-funcs" placeholder="t.ex. sin(x), x**2" style="width:60%;max-width:340px;">
+    <label for="plot-xmin" style="margin-left:1em;">x från</label>
+    <input type="number" id="plot-xmin" value="-10" style="width:70px;">
+    <label for="plot-xmax">till</label>
+    <input type="number" id="plot-xmax" value="10" style="width:70px;">
+    <br>
+    <label for="plot-xlabel" style="margin-left:0.5em;">x-label:</label>
+    <input type="text" id="plot-xlabel" placeholder="x" style="width:90px;">
+    <label for="plot-ylabel" style="margin-left:0.5em;">y-label:</label>
+    <input type="text" id="plot-ylabel" placeholder="f(x)" style="width:90px;">
+    <button type="submit" id="plot-btn" style="margin-left:1em;">Plotta</button>
+  </form>
+  <div id="plot-status" style="color:#0077B5; margin-bottom:0.7em;"></div>
+  <img id="plot-img" style="max-width:100%; border:1px solid #bbb; border-radius:8px; display:none; background:#fff;" alt="Plot" />
+  <a id="plot-download" href="#" download="plot.png" style="display:none; margin-top:0.7em; font-weight:bold; color:#0077B5; text-decoration:underline;">Ladda ner plot</a>
 </section>
 
   <canvas id="fireworks-canvas"></canvas>
@@ -605,6 +628,69 @@
       dropzone.addEventListener('click', function(e) {
         if (e.target === fileInput) return;
         fileInput.click();
+      });
+    })();
+
+    // Plot-funktion med matplotlib via Pyodide
+    (function() {
+      const form = document.getElementById('plot-form');
+      const funcsInput = document.getElementById('plot-funcs');
+      const xminInput = document.getElementById('plot-xmin');
+      const xmaxInput = document.getElementById('plot-xmax');
+      const xlabelInput = document.getElementById('plot-xlabel');
+      const ylabelInput = document.getElementById('plot-ylabel');
+      const status = document.getElementById('plot-status');
+      const img = document.getElementById('plot-img');
+      const download = document.getElementById('plot-download');
+      if (!form) return;
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        status.textContent = 'Ritar...';
+        img.style.display = 'none';
+        download.style.display = 'none';
+        const funcs = funcsInput.value.split(',').map(f => f.trim()).filter(f => f.length > 0);
+        const xmin = parseFloat(xminInput.value);
+        const xmax = parseFloat(xmaxInput.value);
+        const xlabel = xlabelInput.value.trim();
+        const ylabel = ylabelInput.value.trim();
+        if (!funcs.length) {
+          status.textContent = 'Ange minst en funktion.';
+          return;
+        }
+        if (isNaN(xmin) || isNaN(xmax) || xmin >= xmax) {
+          status.textContent = 'Felaktigt x-intervall.';
+          return;
+        }
+        try {
+          const pyodide = await loadPyodideAndPackages();
+          await pyodide.loadPackage(['matplotlib', 'numpy']);
+          pyodide.runPython(`import matplotlib; matplotlib.use('AGG')`);
+          pyodide.runPython(`import matplotlib.pyplot as plt; import numpy as np`);
+          pyodide.runPython('plt.clf()');
+          pyodide.runPython(`x = np.linspace(${xmin}, ${xmax}, 500)`);
+          for (const f of funcs) {
+            pyodide.runPython(`plt.plot(x, [${f} for x in x], label='${f}')`);
+          }
+          if (xlabel) pyodide.runPython(`plt.xlabel(r'''${xlabel}''')`);
+          if (ylabel) pyodide.runPython(`plt.ylabel(r'''${ylabel}''')`);
+          pyodide.runPython('plt.legend()');
+          pyodide.runPython('plt.grid(True)');
+          pyodide.runPython('plt.tight_layout()');
+          pyodide.runPython('import io');
+          pyodide.runPython('buf = io.BytesIO()');
+          pyodide.runPython('plt.savefig(buf, format="png", dpi=120)');
+          pyodide.runPython('buf.seek(0)');
+          const base64 = pyodide.runPython('import base64; base64.b64encode(buf.getvalue()).decode()');
+          img.src = 'data:image/png;base64,' + base64;
+          img.style.display = 'block';
+          download.href = img.src;
+          download.style.display = 'inline-block';
+          status.textContent = '';
+        } catch (err) {
+          status.textContent = 'Fel vid plotting: ' + err;
+          img.style.display = 'none';
+          download.style.display = 'none';
+        }
       });
     })();
 
