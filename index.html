@@ -369,9 +369,14 @@
       <button class="tablink" id="tab-blogg" onclick="openTab('blogg')">Blogg</button>
     </nav>
 
-<section id="cv" class="tabcontent">
+<section id="cv" class="tabcontent" style="display:none">
   <h2>CV och Personligt Brev</h2>
   <p id="cv-content">Du kan ladda ner eller öppna mitt CV och personliga brev här:</p>
+  <div style="margin-bottom:1em;">
+    <object data="cv.pdf" type="application/pdf" width="100%" height="600px" style="max-width:700px; width:100%; border:1px solid #bbb; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.07); display:block; margin:0 auto 1em auto;">
+      <p>Det gick inte att visa PDF-filen. <a href="cv.pdf" target="_blank">Öppna CV (PDF)</a></p>
+    </object>
+  </div>
   <ul>
     <li><a href="cv.pdf" target="_blank" id="cv-link">Öppna CV (PDF)</a></li>
     <li><a href="#" id="personal-letter-link">Kommer snart</a></li>
@@ -421,8 +426,13 @@
   <h2>Blogg</h2>
   <p>Välkommen till bloggen! här händer lite allt möjligt!</p>
   <ul>
-    <li><strong>21 juni 2025:</strong> Testade köra farbror Fredriks maskin!<br><img src="21.jpg" alt="Mäktigt!" style="max-width:300px; border-radius:8px; margin-top:8px;"></li>
-    <li><strong>21 juni 2025:</strong> Första blogginlägget! Sidan har nu stöd för mörkt och ljust tema samt nya flikar.</li>
+    <li><strong>22 juni 2025:</strong> Idag har jag snickrat skrivbord med farsan!<br><img src="22.jpg" alt="Skrivbord" style="max-width:300px; border-radius:8px; margin-top:8px;"></li>
+    <li><strong>21 juni 2025:</strong> Idag skapade jag min första hemsida! (denna) och snickrade vidare med farsan samt fick prova köra farbror Fredriks nya maskin!<br>
+      <div style="display:flex; gap:12px; margin-top:8px; flex-wrap:wrap;">
+        <img src="21.jpg" alt="Mäktigt!" style="max-width:300px; border-radius:8px;">
+        <img src="21.2.jpg" alt="Fler bilder" style="max-width:300px; border-radius:8px;">
+      </div>
+    </li>
   </ul>
 </section>
 
@@ -568,9 +578,7 @@
       // Blogg
       document.querySelector('#blogg h2').textContent = translations[lang]['blogg-title'];
       document.querySelector('#blogg p').textContent = translations[lang]['blogg-content'];
-      document.querySelector('#blogg ul')?.remove();
-      const bloggSection = document.getElementById('blogg');
-      bloggSection.insertAdjacentHTML('beforeend', translations[lang]['blogg-posts']);
+      // Ta INTE bort eller skriv över blogg-listan i HTML längre!
       // CV
       document.querySelector('#cv h2').textContent = translations[lang]['cv-title'];
       document.querySelector('#cv p').textContent = translations[lang]['cv-content'];
