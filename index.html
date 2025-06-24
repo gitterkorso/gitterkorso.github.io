@@ -357,9 +357,9 @@
   <h3 id="subtitle">Byggnadsingenjör student på KTH Stockholm</h3>
 
   <div class="date-today" id="date-today"></div>
-    <div class="progress-label" id="progress-label">Studieprogression</div>
+    <div class="progress-label" id="progress-label">Studieprogression: 151,5 / 300 hp</div>
     <div class="progress-container">
-      <div class="progress-bar" id="progress-bar">60%</div>
+      <div class="progress-bar" id="progress-bar">50,5%</div>
     </div>
 
   <nav>
@@ -429,6 +429,12 @@
   <h2>Blogg</h2>
   <p>Välkommen till bloggen! här händer lite allt möjligt!</p>
   <ul>
+    <li><strong>23 juni 2025:</strong> Idag har jag fixat kabelhål och hylla till skrivbordet, samt spacklat och bastat!<br>
+      <div style="display:flex; gap:12px; margin-top:8px; flex-wrap:wrap;">
+        <img src="23.1.jpg" alt="Kabelhål och hylla" style="max-width:300px; border-radius:8px;">
+        <img src="23.jpg" alt="Skrivbordet" style="max-width:300px; border-radius:8px;">
+      </div>
+    </li>
     <li><strong>22 juni 2025:</strong> Idag har jag snickrat skrivbord med farsan!<br><img src="22.jpg" alt="Skrivbord" style="max-width:300px; border-radius:8px; margin-top:8px;"></li>
     <li><strong>21 juni 2025:</strong> Idag skapade jag min första hemsida! (denna) och snickrade vidare med farsan samt fick prova köra farbror Fredriks nya maskin!<br>
       <div style="display:flex; gap:12px; margin-top:8px; flex-wrap:wrap;">
@@ -829,6 +835,14 @@
     // Progress bar för studier (fast till 60%)
     document.getElementById('progress-bar').style.width = '60%';
     document.getElementById('progress-bar').textContent = '60%';
+
+    // HP Progression (151,5 av 300 hp)
+    const currentHp = 151.5;
+    const maxHp = 300;
+    const percent = Math.round((currentHp / maxHp) * 1000) / 10;
+    document.getElementById('progress-label').textContent = `Studieprogression: ${currentHp.toString().replace('.', ',')} / ${maxHp} hp`;
+    document.getElementById('progress-bar').style.width = percent + '%';
+    document.getElementById('progress-bar').textContent = percent + '%';
 
     // Fyrverkeri-effekt på klick där det inte är en knapp
     const canvas = document.getElementById('fireworks-canvas');
