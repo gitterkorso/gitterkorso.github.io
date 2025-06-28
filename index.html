@@ -532,23 +532,33 @@
 
 <section id="plot" class="tabcontent" style="display:none">
   <h2>Plotta funktioner (matplotlib)</h2>
-  <p>Ange en eller flera funktioner av x (t.ex. <code>sin(x)</code>, <code>x**2</code>, <code>exp(-x)*cos(2*x)</code>).<br>Separera flera funktioner med kommatecken.</p>
-  <form id="plot-form" style="margin-bottom:1em;">
-    <label for="plot-funcs">f(x):</label>
-    <input type="text" id="plot-funcs" placeholder="t.ex. sin(x), x**2" style="width:60%;max-width:340px;">
-    <label for="plot-xmin" style="margin-left:1em;">x från</label>
-    <input type="number" id="plot-xmin" value="-10" style="width:70px;">
-    <label for="plot-xmax">till</label>
-    <input type="number" id="plot-xmax" value="10" style="width:70px;">
-    <br>
-    <label for="plot-xlabel" style="margin-left:0.5em;">x-label:</label>
-    <input type="text" id="plot-xlabel" placeholder="x" style="width:90px;">
-    <label for="plot-ylabel" style="margin-left:0.5em;">y-label:</label>
-    <input type="text" id="plot-ylabel" placeholder="f(x)" style="width:90px;">
-    <button type="submit" id="plot-btn" style="margin-left:1em;">Plotta</button>
+  <form id="plot-form" autocomplete="off" onsubmit="return false;">
+    <div class="plot-form-row">
+      <div class="plot-form-field" style="min-width:180px;">
+        <label for="plot-funcs" style="font-weight:500;">f(x):</label>
+        <input type="text" id="plot-funcs" placeholder="t.ex. sin(x), x**2" style="padding:0.5em 1em; border-radius:8px; border:1.5px solid #b0b0b0; font-size:1.1em; width:180px; background:#f7faff;" />
+      </div>
+      <div class="plot-form-field">
+        <label for="plot-xmin" style="font-weight:500;">x från</label>
+        <input type="number" id="plot-xmin" value="-10" style="padding:0.5em 1em; border-radius:8px; border:1.5px solid #b0b0b0; font-size:1.1em; width:90px; background:#f7faff;" />
+      </div>
+      <div class="plot-form-field">
+        <label for="plot-xmax" style="font-weight:500;">till</label>
+        <input type="number" id="plot-xmax" value="10" style="padding:0.5em 1em; border-radius:8px; border:1.5px solid #b0b0b0; font-size:1.1em; width:90px; background:#f7faff;" />
+      </div>
+      <div class="plot-form-field">
+        <label for="plot-xlabel" style="font-weight:500;">x-label:</label>
+        <input type="text" id="plot-xlabel" placeholder="x" style="padding:0.5em 1em; border-radius:8px; border:1.5px solid #b0b0b0; font-size:1.1em; width:90px; background:#f7faff;" />
+      </div>
+      <div class="plot-form-field">
+        <label for="plot-ylabel" style="font-weight:500;">y-label:</label>
+        <input type="text" id="plot-ylabel" placeholder="f(x)" style="padding:0.5em 1em; border-radius:8px; border:1.5px solid #b0b0b0; font-size:1.1em; width:90px; background:#f7faff;" />
+      </div>
+      <button type="submit" id="plot-btn" style="padding:0.7em 2em; border-radius:10px; background:linear-gradient(90deg,#6ec1e4,#b06ee4); color:#fff; font-weight:600; font-size:1.1em; border:none; box-shadow:0 2px 8px rgba(0,0,0,0.07); cursor:pointer; transition:background 0.2s; margin-top:1.7em;">Plotta</button>
+    </div>
   </form>
   <div id="plot-status" style="color:#0077B5; margin-bottom:0.7em;"></div>
-  <img id="plot-img" style="max-width:100%; border:1px solid #bbb; border-radius:8px; display:none; background:#fff;" alt="Plot" />
+  <img id="plot-img" style="max-width:100%; border:1px solid #bbb; border-radius:8px; display:none; background:#fff; margin-top:0.7em;" alt="Plot" />
   <a id="plot-download" href="#" download="plot.png" style="display:none; margin-top:0.7em; font-weight:bold; color:#0077B5; text-decoration:underline;">Ladda ner plot</a>
 </section>
 
