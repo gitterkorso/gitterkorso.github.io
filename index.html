@@ -243,13 +243,6 @@
       pointer-events: none;
       z-index: 9999;
     }
-    /* Rita-på-sidan canvas */
-    #draw-canvas {
-      position: fixed;
-      left: 0; top: 0; width: 100vw; height: 100vh;
-      pointer-events: none;
-      z-index: 9998;
-    }
     /* Partikeleffekt canvas */
     #particles-bg {
       position: fixed;
@@ -280,7 +273,8 @@
       20% { transform: translateY(-0.35em); }
       40%, 100% { transform: translateY(0); }
     }
-    .canvas-hint {
+    /* Ta bort ritfunktion, canvas och relaterad stil */
+    /* .canvas-hint {
       position: fixed;
       left: 50%;
       bottom: 16px;
@@ -320,7 +314,7 @@
       background: #0077B5;
       color: #fff;
       border: 2px solid #005580;
-    }
+    } */
   </style>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
@@ -409,15 +403,42 @@
   </section>
 
 <section id="program" class="tabcontent" style="display:none">
-      <h2>Areatröghetsmoment – Rektangel</h2>
+      <h2>Areatröghetsmoment – <span id="shape-title">Rektangel</span></h2>
       <div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; margin-bottom: 1em;">
         <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="shape-select" style="font-weight: 500;">Form:</label>
+          <select id="shape-select" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 140px; background: #f7faff;">
+            <option value="rect">Rektangel</option>
+            <option value="circle">Cirkel</option>
+            <option value="tube">Rör (cirkulärt)</option>
+            <option value="i-beam">I-balk (förenklad)</option>
+          </select>
+        </div>
+        <div id="input-rect" style="display: flex; flex-direction: column; gap: 6px;">
           <label for="height" style="font-weight: 500;">Höjd (h, mm):</label>
           <input type="number" id="height" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 6px;">
           <label for="width" style="font-weight: 500;">Bredd (b, mm):</label>
           <input type="number" id="width" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <div id="input-circle" style="display:none; flex-direction: column; gap: 6px;">
+          <label for="diameter" style="font-weight: 500;">Diameter (d, mm):</label>
+          <input type="number" id="diameter" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <div id="input-tube" style="display:none; flex-direction: column; gap: 6px;">
+          <label for="d-outer" style="font-weight: 500;">Yttre diameter (D, mm):</label>
+          <input type="number" id="d-outer" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+          <label for="d-inner" style="font-weight: 500;">Inre diameter (d, mm):</label>
+          <input type="number" id="d-inner" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <div id="input-ibeam" style="display:none; flex-direction: column; gap: 6px;">
+          <label for="ibeam-h" style="font-weight: 500;">Total höjd (h, mm):</label>
+          <input type="number" id="ibeam-h" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+          <label for="ibeam-b" style="font-weight: 500;">Flänsbredd (b, mm):</label>
+          <input type="number" id="ibeam-b" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+          <label for="ibeam-tf" style="font-weight: 500;">Flänstjocklek (tf, mm):</label>
+          <input type="number" id="ibeam-tf" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+          <label for="ibeam-tw" style="font-weight: 500;">Livtjocklek (tw, mm):</label>
+          <input type="number" id="ibeam-tw" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
         </div>
         <button id="run-calc" style="padding: 0.7em 2em; border-radius: 10px; background: linear-gradient(90deg,#6ec1e4,#b06ee4); color: #fff; font-weight: 600; font-size: 1.1em; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.07); cursor: pointer; transition: background 0.2s;">Beräkna</button>
       </div>
@@ -531,12 +552,7 @@
 </section>
 
   <canvas id="fireworks-canvas"></canvas>
-  <canvas id="draw-canvas"></canvas>
   <canvas id="particles-bg"></canvas>
-  <div class="canvas-hint" id="canvas-hint">
-    💡 Klicka för fyrverkeri! Klicka och dra för att rita på sidan.
-  </div>
-  <button class="clear-drawing-btn" id="clear-drawing-btn" title="Rensa ritning">Rensa ritning</button>
 
   <script>
     function updateClock() {
@@ -572,24 +588,82 @@
     }
 
     // Moment of Inertia Calculator
+    // Ny selector för form
+    const shapeSelect = document.getElementById("shape-select");
+    const inputRect = document.getElementById("input-rect");
+    const inputCircle = document.getElementById("input-circle");
+    const inputTube = document.getElementById("input-tube");
+    const inputIbeam = document.getElementById("input-ibeam");
+    const shapeTitle = document.getElementById("shape-title");
+    shapeSelect.addEventListener("change", function() {
+      inputRect.style.display = this.value === "rect" ? "flex" : "none";
+      inputCircle.style.display = this.value === "circle" ? "flex" : "none";
+      inputTube.style.display = this.value === "tube" ? "flex" : "none";
+      inputIbeam.style.display = this.value === "i-beam" ? "flex" : "none";
+      shapeTitle.textContent = this.options[this.selectedIndex].text;
+    });
     document.getElementById("run-calc").addEventListener("click", async function() {
-      const h = parseFloat(document.getElementById("height").value);
-      const b = parseFloat(document.getElementById("width").value);
       const resultElem = document.getElementById("result");
-      if (isNaN(h) || isNaN(b)) {
-        resultElem.textContent = "Felaktig inmatning.";
-        return;
+      let code = "";
+      let valid = true;
+      let output = "";
+      if (shapeSelect.value === "rect") {
+        const h = parseFloat(document.getElementById("height").value);
+        const b = parseFloat(document.getElementById("width").value);
+        if (isNaN(h) || isNaN(b)) valid = false;
+        code = `Iy = (b * h ** 3) / 12\nIz = (h * b ** 3) / 12\nf'Iy: {Iy:.2f} mm⁴\\nIz: {Iz:.2f} mm⁴'`;
+        if (valid) {
+          const pyodide = await loadPyodideAndPackages();
+          pyodide.globals.set('h', h);
+          pyodide.globals.set('b', b);
+          try {
+            output = await pyodide.runPythonAsync(code);
+          } catch (e) { output = "Fel: " + e; }
+        }
+      } else if (shapeSelect.value === "circle") {
+        const d = parseFloat(document.getElementById("diameter").value);
+        if (isNaN(d)) valid = false;
+        code = `Iy = (3.1416/64)*d**4\nIz = Iy\nf'Iy: {Iy:.2f} mm⁴\\nIz: {Iz:.2f} mm⁴'`;
+        if (valid) {
+          const pyodide = await loadPyodideAndPackages();
+          pyodide.globals.set('d', d);
+          try {
+            output = await pyodide.runPythonAsync(code);
+          } catch (e) { output = "Fel: " + e; }
+        }
+      } else if (shapeSelect.value === "tube") {
+        const D = parseFloat(document.getElementById("d-outer").value);
+        const d = parseFloat(document.getElementById("d-inner").value);
+        if (isNaN(D) || isNaN(d) || D <= d) valid = false;
+        code = `Iy = (3.1416/64)*(D**4 - d**4)\nIz = Iy\nf'Iy: {Iy:.2f} mm⁴\\nIz: {Iz:.2f} mm⁴'`;
+        if (valid) {
+          const pyodide = await loadPyodideAndPackages();
+          pyodide.globals.set('D', D);
+          pyodide.globals.set('d', d);
+          try {
+            output = await pyodide.runPythonAsync(code);
+          } catch (e) { output = "Fel: " + e; }
+        }
+      } else if (shapeSelect.value === "i-beam") {
+        const h = parseFloat(document.getElementById("ibeam-h").value);
+        const b = parseFloat(document.getElementById("ibeam-b").value);
+        const tf = parseFloat(document.getElementById("ibeam-tf").value);
+        const tw = parseFloat(document.getElementById("ibeam-tw").value);
+        if ([h,b,tf,tw].some(x => isNaN(x) || x <= 0) || tf*2 >= h || tw >= b) valid = false;
+        code = `Iy = (b*h**3/12) - ((b-tw)*(h-2*tf)**3/12)\nIz = (2*tf*b**3/12) + ((h-2*tf)*tw**3/12)\nf'Iy: {Iy:.2f} mm⁴\\nIz: {Iz:.2f} mm⁴'`;
+        if (valid) {
+          const pyodide = await loadPyodideAndPackages();
+          pyodide.globals.set('h', h);
+          pyodide.globals.set('b', b);
+          pyodide.globals.set('tf', tf);
+          pyodide.globals.set('tw', tw);
+          try {
+            output = await pyodide.runPythonAsync(code);
+          } catch (e) { output = "Fel: " + e; }
+        }
       }
-      const pyodide = await loadPyodideAndPackages();
-      pyodide.globals.set('h', h);
-      pyodide.globals.set('b', b);
-      const code = `Iy = (b * h ** 3) / 12\nIz = (h * b ** 3) / 12\nf'Iy: {Iy:.2f} mm⁴\\nIz: {Iz:.2f} mm⁴'`;
-      try {
-        const output = await pyodide.runPythonAsync(code);
-        resultElem.textContent = output;
-      } catch (e) {
-        resultElem.textContent = "Fel: " + e;
-      }
+      if (!valid) output = "Felaktig inmatning.";
+      resultElem.textContent = output;
     });
 
     // Kalkylator för fritt upplagd balk
@@ -970,93 +1044,6 @@
       const titleEl = document.getElementById('main-title');
       waveTitle('Nick Westin', titleEl);
     });
-
-    // Rita-på-sidan-funktion (endast om man inte håller på en knapp/länk)
-    const drawCanvas = document.getElementById('draw-canvas');
-    const drawCtx = drawCanvas.getContext('2d');
-    function resizeDrawCanvas() {
-      drawCanvas.width = window.innerWidth;
-      drawCanvas.height = window.innerHeight;
-    }
-    resizeDrawCanvas();
-    window.addEventListener('resize', resizeDrawCanvas);
-
-    let drawing = false;
-    let lastX = 0, lastY = 0;
-    function isButtonOrLink(el) {
-      while (el) {
-        if (el.tagName === 'BUTTON' || el.tagName === 'A') return true;
-        el = el.parentElement;
-      }
-      return false;
-    }
-    document.addEventListener('mousedown', function(e) {
-      if (isButtonOrLink(e.target)) return;
-      drawing = true;
-      drawCanvas.style.pointerEvents = 'auto';
-      lastX = e.clientX;
-      lastY = e.clientY;
-    });
-    document.addEventListener('mousemove', function(e) {
-      if (!drawing) return;
-      drawCtx.strokeStyle = '#6ec1e4';
-      drawCtx.lineWidth = 3;
-      drawCtx.lineCap = 'round';
-      drawCtx.beginPath();
-      drawCtx.moveTo(lastX, lastY);
-      drawCtx.lineTo(e.clientX, e.clientY);
-      drawCtx.stroke();
-      lastX = e.clientX;
-      lastY = e.clientY;
-    });
-    document.addEventListener('mouseup', function(e) {
-      if (drawing) {
-        drawing = false;
-        drawCanvas.style.pointerEvents = 'none';
-      }
-    });
-    // För touch
-    document.addEventListener('touchstart', function(e) {
-      if (isButtonOrLink(e.target)) return;
-      const t = e.touches[0];
-      drawing = true;
-      drawCanvas.style.pointerEvents = 'auto';
-      lastX = t.clientX;
-      lastY = t.clientY;
-    });
-    document.addEventListener('touchmove', function(e) {
-      if (!drawing) return;
-      const t = e.touches[0];
-      drawCtx.strokeStyle = '#6ec1e4';
-      drawCtx.lineWidth = 3;
-      drawCtx.lineCap = 'round';
-      drawCtx.beginPath();
-      drawCtx.moveTo(lastX, lastY);
-      drawCtx.lineTo(t.clientX, t.clientY);
-      drawCtx.stroke();
-      lastX = t.clientX;
-      lastY = t.clientY;
-    }, {passive: false});
-    document.addEventListener('touchend', function(e) {
-      if (drawing) {
-        drawing = false;
-        drawCanvas.style.pointerEvents = 'none';
-      }
-    });
-    // För rensa ritning knapp
-    document.getElementById('clear-drawing-btn').addEventListener('click', function() {
-      const drawCanvas = document.getElementById('draw-canvas');
-      const ctx = drawCanvas.getContext('2d');
-      ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    });
-    // Dölj hint efter 15 sekunder eller vid första interaktion
-    function hideHint() {
-      const hint = document.getElementById('canvas-hint');
-      if (hint) hint.classList.add('hide');
-    }
-    setTimeout(hideHint, 15000);
-    document.addEventListener('mousedown', hideHint, { once: true });
-    document.addEventListener('touchstart', hideHint, { once: true });
 
     // Subtil partikeleffekt i bakgrunden
     const particlesCanvas = document.getElementById('particles-bg');
