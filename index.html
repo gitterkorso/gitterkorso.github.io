@@ -409,31 +409,41 @@
   </section>
 
 <section id="program" class="tabcontent" style="display:none">
-      <h2>Moment of Inertia Calculator</h2>
-      <p>Beräkna Iy och Iz (mm⁴) för en rektangel:</p>
-
-      <label for="height">Höjd (h, mm):</label>
-      <input type="number" id="height" />
-
-      <label for="width">Bredd (b, mm):</label>
-      <input type="number" id="width" />
-
-      <button id="run-calc">Beräkna</button>
-
-      <pre id="result">Iy: -\nIz: -</pre>
+      <h2>Areatröghetsmoment – Rektangel</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; margin-bottom: 1em;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="height" style="font-weight: 500;">Höjd (h, mm):</label>
+          <input type="number" id="height" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="width" style="font-weight: 500;">Bredd (b, mm):</label>
+          <input type="number" id="width" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <button id="run-calc" style="padding: 0.7em 2em; border-radius: 10px; background: linear-gradient(90deg,#6ec1e4,#b06ee4); color: #fff; font-weight: 600; font-size: 1.1em; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.07); cursor: pointer; transition: background 0.2s;">Beräkna</button>
+      </div>
+      <pre id="result" style="background: #f7faff; color: #0077B5; border-radius: 8px; font-size: 1.13em; font-weight: 500; min-height: 2.5em;">Iy: -\nIz: -</pre>
       <hr style="margin:2em 0;">
       <h2>Fritt upplagd balk – Max moment & nedböjning</h2>
-      <p>Beräkna maximal moment och nedböjning för en fritt upplagd balk med jämnt utbredd last.</p>
-      <label for="beam-length">Längd (L, m):</label>
-      <input type="number" id="beam-length" step="0.01" min="0" />
-      <label for="beam-load">Last (q, kN/m):</label>
-      <input type="number" id="beam-load" step="0.01" min="0" />
-      <label for="beam-e">Elasticitetsmodul (E, MPa):</label>
-      <input type="number" id="beam-e" step="1" min="0" value="210000" />
-      <label for="beam-i">Tröghetsmoment (I, mm⁴):</label>
-      <input type="number" id="beam-i" step="1" min="0" />
-      <button id="run-beam">Beräkna</button>
-      <pre id="beam-result">Max moment: -\nMax nedböjning: -</pre>
+      <form id="beam-form" style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; margin-bottom: 1em;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="beam-length" style="font-weight: 500;">Längd (L, m):</label>
+          <input type="number" id="beam-length" step="0.01" min="0" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="beam-load" style="font-weight: 500;">Last (q, kN/m):</label>
+          <input type="number" id="beam-load" step="0.01" min="0" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="beam-e" style="font-weight: 500;">Elasticitetsmodul (E, MPa):</label>
+          <input type="number" id="beam-e" step="1" min="0" value="210000" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="beam-i" style="font-weight: 500;">Tröghetsmoment (I, mm⁴):</label>
+          <input type="number" id="beam-i" step="1" min="0" style="padding: 0.5em 1em; border-radius: 8px; border: 1.5px solid #b0b0b0; font-size: 1.1em; width: 120px; background: #f7faff;" />
+        </div>
+        <button id="run-beam" type="button" style="padding: 0.7em 2em; border-radius: 10px; background: linear-gradient(90deg,#6ec1e4,#b06ee4); color: #fff; font-weight: 600; font-size: 1.1em; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.07); cursor: pointer; transition: background 0.2s;">Beräkna</button>
+      </form>
+      <pre id="beam-result" style="background: #f7faff; color: #0077B5; border-radius: 8px; font-size: 1.13em; font-weight: 500; min-height: 2.5em;">Max moment: -\nMax nedböjning: -</pre>
     </section>
 
 <section id="about-me" class="tabcontent" style="display:none">
@@ -745,7 +755,7 @@
         'tab-about-me': 'Om mig',
         'tab-cv': 'CV och Personligt Brev',
         'tab-projekt': 'Projekt',
-        'tab-program': 'Calculator',
+        'tab-program': 'Kalkylator',
         'tab-blogg': 'Blogg',
         'about-me-title': 'About Me',
         'about-me-content': 'Hej! Mitt namn är Nick och jag studerar till civilingenjör inom samhällsbyggnad med inriktning mot byggnadskonstruktör. Jag är särskillt intresserad av konstruktion, programmering och problemlösning. Mina hobbies inkluderar längdskidåkinng och alpin skidåkning. Men även små projekt som denna att koda denna hemsida och att snickra intresserar mig.',
