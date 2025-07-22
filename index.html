@@ -507,13 +507,13 @@
   <h2>Blogg</h2>
   <p>Välkommen till bloggen! här händer lite allt möjligt!</p>
 
-
-  <ul style="display: flex; flex-direction: column; gap: 1.5em; padding-left: 0;">
-      <li><strong>21 juli 2025:</strong> Frukost på bryggan med morgondopp!</li>
-   <div style="display:flex; gap:12px; margin-top:8px; flex-wrap:wrap;">
-        <img src="Bilder/21juli.jpg" alt="Farfar och boken" style="max-width:400px; border-radius:8px;">
+   <li><strong>21 juli 2025:</strong> Frukost på bryggan med morgondopp! + besök från Walenna II
+      <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px; align-items:flex-start;">
+        <img src="Bilder/21juli.jpg" alt="Farfar och boken" style="max-width:420px; width:100%; border-radius:8px;">
+        <img src="Bilder/21.2juli.jpg" alt="Minnen från farfar och farmor" style="max-width:300px; border-radius:8px;">
       </div>
     </li> 
+
 
   <ul style="display: flex; flex-direction: column; gap: 1.5em; padding-left: 0;">
       <li><strong>20 juli 2025:</strong> Utegym & måla garderobsdörrar o en kvälltur!</li>
@@ -702,6 +702,22 @@
         <label for="plot-ylabel" style="font-weight:500;">y-label:</label>
         <input type="text" id="plot-ylabel" placeholder="f(x)" style="padding:0.5em 1em; border-radius:8px; border:1.5px solid #b0b0b0; font-size:1.1em; width:90px; background:#f7faff;" />
       </div>
+      <div class="plot-form-field" style="margin-top:1.2em;">
+        <label for="plot-fill" style="font-weight:500; display:flex; align-items:center; gap:6px; cursor:pointer;">
+          <input type="checkbox" id="plot-fill" style="margin-right:6px;"> Fyll under funktion till x-axeln
+        </label>
+      </div>
+      <div class="plot-form-field" style="margin-top:1.2em;">
+        <label for="plot-color" style="font-weight:500;">Färg på graf:</label>
+        <select id="plot-color" style="padding:0.5em 1em; border-radius:8px; border:1.5px solid #b0b0b0; font-size:1.1em;">
+          <option value="blue">Blå</option>
+          <option value="red">Röd</option>
+          <option value="green">Grön</option>
+          <option value="orange">Orange</option>
+          <option value="purple">Lila</option>
+          <option value="black">Svart</option>
+        </select>
+      </div>
       <button type="submit" id="plot-btn" style="padding:0.7em 2em; border-radius:10px; background:linear-gradient(90deg,#6ec1e4,#b06ee4); color:#fff; font-weight:600; font-size:1.1em; border:none; box-shadow:0 2px 8px rgba(0,0,0,0.07); cursor:pointer; transition:background 0.2s; margin-top:1.7em;">Plotta</button>
     </div>
   </form>
@@ -709,6 +725,7 @@
   <img id="plot-img" style="max-width:100%; border:1px solid #bbb; border-radius:8px; display:none; background:#fff; margin-top:0.7em;" alt="Plot" />
   <a id="plot-download" href="#" download="plot.png" style="display:none; margin-top:0.7em; font-weight:bold; color:#0077B5; text-decoration:underline;">Ladda ner plot</a>
 </section>
+
 
   <canvas id="fireworks-canvas"></canvas>
   <canvas id="particles-bg"></canvas>
@@ -927,6 +944,8 @@
       const xmaxInput = document.getElementById('plot-xmax');
       const xlabelInput = document.getElementById('plot-xlabel');
       const ylabelInput = document.getElementById('plot-ylabel');
+      const fillInput = document.getElementById('plot-fill');
+      const colorInput = document.getElementById('plot-color');
       const status = document.getElementById('plot-status');
       const img = document.getElementById('plot-img');
       const download = document.getElementById('plot-download');
@@ -941,6 +960,8 @@
         const xmax = parseFloat(xmaxInput.value);
         const xlabel = xlabelInput.value.trim();
         const ylabel = ylabelInput.value.trim();
+        const fill = fillInput && fillInput.checked;
+        const color = colorInput ? colorInput.value : 'blue';
         if (!funcs.length) {
           status.textContent = 'Ange minst en funktion.';
           return;
@@ -957,7 +978,12 @@
           pyodide.runPython('plt.clf()');
           pyodide.runPython(`x = np.linspace(${xmin}, ${xmax}, 500)`);
           for (const f of funcs) {
-            pyodide.runPython(`plt.plot(x, [${f} for x in x], label='${f}')`);
+            if (fill) {
+              pyodide.runPython(`plt.plot(x, [${f} for x in x], label='${f}', color='${color}')`);
+              pyodide.runPython(`plt.fill_between(x, [${f} for x in x], 0, alpha=0.18, color='${color}')`);
+            } else {
+              pyodide.runPython(`plt.plot(x, [${f} for x in x], label='${f}', color='${color}')`);
+            }
           }
           if (xlabel) pyodide.runPython(`plt.xlabel(r'''${xlabel}''')`);
           if (ylabel) pyodide.runPython(`plt.ylabel(r'''${ylabel}''')`);
@@ -1020,7 +1046,7 @@
         'personal-letter-title': 'Personal Letter',
         'personal-letter-content': 'You can download or open my personal letter here:',
         'personal-letter-link': 'Open personal letter (PDF)',
-        'subtitle': 'Structural Engineering Student at KTH Stockholm',
+               'subtitle': 'Structural Engineering Student at KTH Stockholm',
       }
     };
     function setLanguage(lang) {
@@ -1254,6 +1280,7 @@
       requestAnimationFrame(animateParticles);
     }
     animateParticles();
+
   </script>
 </body>
 </html>
