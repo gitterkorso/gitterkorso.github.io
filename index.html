@@ -354,7 +354,7 @@
   <h3 id="subtitle">Byggnadsingenjör student på KTH Stockholm</h3>
 
   <div class="date-today" id="date-today"></div>
-    <div class="progress-label" id="progress-label">Studieprogression: 151,5 / 300 hp</div>
+    <div class="progress-label" id="progress-label">Studieprogression: 181,5 / 300 hp</div>
     <div class="progress-container">
       <div class="progress-bar" id="progress-bar">50,5%</div>
     </div>
@@ -368,6 +368,7 @@
       <button class="tablink" id="tab-pdf-merger" onclick="openTab('pdf-merger')">PDF Merger</button>
       <button class="tablink" id="tab-plot" onclick="openTab('plot')">Plot</button>
       <button class="tablink" id="tab-qrcode" onclick="openTab('qrcode')">QR Code</button>
+      <button class="tablink" id="tab-af2130" onclick="openTab('af2130')">AF2130</button>
     </nav>
 
 <section id="cv" class="tabcontent" style="display:none">
@@ -805,6 +806,11 @@
     <p>Använd denna Google Colab för att generera QR-koder:</p>
     <a href="https://colab.research.google.com/drive/1aAUvTtXHqOpMpg_3kBDpIhiUkIypfAi2?usp=sharing" target="_blank" style="display:inline-block; padding:0.7em 2em; border-radius:10px; background:linear-gradient(90deg,#6ec1e4,#b06ee4); color:#fff; font-weight:600; font-size:1.1em; text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,0.07);">Öppna Google Colab →</a>
   </div>
+</section>
+
+<section id="af2130" class="tabcontent" style="display:none;">
+  <h2>AF2130</h2>
+  <p>Innehåll för AF2130 kommer här.</p>
 </section>
 
 <section id="plot" class="tabcontent" style="display:none">
@@ -1274,7 +1280,7 @@
     document.getElementById('progress-bar').textContent = '60%';
 
     // HP Progression (166,5 av 300 hp)
-    const currentHp = 166.5;
+    const currentHp = 181.5;
     const maxHp = 300;
     const percent = Math.round((currentHp / maxHp) * 1000) / 10;
     document.getElementById('progress-label').textContent = `Studieprogression: ${currentHp.toString().replace('.', ',')} / ${maxHp} hp`;
