@@ -367,6 +367,7 @@
       <button class="tablink" id="tab-blogg" onclick="openTab('blogg')">Blogg</button>
       <button class="tablink" id="tab-pdf-merger" onclick="openTab('pdf-merger')">PDF Merger</button>
       <button class="tablink" id="tab-plot" onclick="openTab('plot')">Plot</button>
+      <button class="tablink" id="tab-qrcode" onclick="openTab('qrcode')">QR Code</button>
     </nav>
 
 <section id="cv" class="tabcontent" style="display:none">
@@ -794,6 +795,16 @@
   <button id="merge-pdf-btn">Slå ihop PDF:er</button>
   <a id="download-merged-pdf" style="display:none; margin-left:1em; font-weight:bold;" download="sammanfogad.pdf">Ladda ner sammanslagen PDF</a>
   <div id="pdf-merge-status" style="margin-top:1em; color:#0077B5;"></div>
+</section>
+
+
+
+<section id="qrcode" class="tabcontent" style="display:none;">
+  <h2>QR Code Generator</h2>
+  <div style="margin-bottom:2em; color:#555;">
+    <p>Använd denna Google Colab för att generera QR-koder:</p>
+    <a href="https://colab.research.google.com/drive/1aAUvTtXHqOpMpg_3kBDpIhiUkIypfAi2?usp=sharing" target="_blank" style="display:inline-block; padding:0.7em 2em; border-radius:10px; background:linear-gradient(90deg,#6ec1e4,#b06ee4); color:#fff; font-weight:600; font-size:1.1em; text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,0.07);">Öppna Google Colab →</a>
+  </div>
 </section>
 
 <section id="plot" class="tabcontent" style="display:none">
