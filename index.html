@@ -354,9 +354,9 @@
   <h3 id="subtitle">Byggnadsingenjör student på KTH Stockholm</h3>
 
   <div class="date-today" id="date-today"></div>
-    <div class="progress-label" id="progress-label">Studieprogression: 181,5 / 300 hp</div>
+    <div class="progress-label" id="progress-label">Studieprogression: 190.5 / 300 hp</div>
     <div class="progress-container">
-      <div class="progress-bar" id="progress-bar">50,5%</div>
+      <div class="progress-bar" id="progress-bar">63.5%</div>
     </div>
 
   <nav>
@@ -364,6 +364,7 @@
       <button class="tablink" id="tab-cv" onclick="openTab('cv')">CV, Kurser & Personligt Brev</button>
       <button class="tablink" id="tab-projekt" onclick="openTab('projekt')">Projekt</button>
       <button class="tablink" id="tab-program" onclick="openTab('program')">Program</button>
+      <button class="tablink" id="tab-mathchad" onclick="openTab('mathchad')">Mathchad</button>
       <button class="tablink" id="tab-blogg" onclick="openTab('blogg')">Blogg</button>
       <button class="tablink" id="tab-pdf-merger" onclick="openTab('pdf-merger')">PDF Merger</button>
       <button class="tablink" id="tab-plot" onclick="openTab('plot')">Plot</button>
@@ -383,6 +384,14 @@
     <li><a href="cv.pdf" target="_blank" id="cv-link">Ladda ner CV (PDF)</a></li>
     <li><a href="#" id="personal-letter-link">Ladda ner personligt brev (Kommer snart)</a></li>
   </ul>
+      <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; max-width:100%;">
+        <iframe src="https://www.youtube.com/embed/OEyhHusm0hg"
+            style="position:absolute; top:0; left:0; width:100%; height:100%;"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+        </iframe>
+      </div>
 
 
   <h2>Kurser</h2>
@@ -435,6 +444,25 @@
       <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:10px;">
         <img src="Bilder/smahus6.png" alt="Småhusprojektet vy 6" style="max-width:320px; border-radius:8px;">
       </div>
+    </div>
+
+    <div style="margin-top:1.5em;">
+      <h3>Conceptual Bridge Design Project</h3>
+      <p>
+        Kort beskrivning av projektet. Exempel: vad du byggde, vilka verktyg du använde och vad målet var.
+      </p>
+      <p>
+        <strong>Status:</strong> Pågående / Klart &nbsp; • &nbsp;
+        <strong>År:</strong> 2026
+      </p>
+      <!-- Valfritt: lägg till bilder här (kopiera samma img-format som ovan)
+      <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:10px;">
+        <img src="Bilder/dinbild.jpg" alt="Nytt projekt" style="max-width:320px; border-radius:8px;">
+      </div>
+      -->
+      <!-- Valfritt: lägg till länk
+      <p><a href="https://..." target="_blank">Se mer</a></p>
+      -->
     </div>
     <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; max-width:100%;">
       <iframe src="https://www.youtube.com/embed/7noqyiIhx3o"
@@ -511,6 +539,13 @@
       </form>
       <pre id="beam-result" style="background: #f7faff; color: #0077B5; border-radius: 8px; font-size: 1.13em; font-weight: 500; min-height: 2.5em;">Max moment: -\nMax nedböjning: -</pre>
     </section>
+
+<section id="mathchad" class="tabcontent" style="display:none">
+  <h2 id="mathchad-title">Mathchad</h2>
+  <p>
+    <a href="mathchad%20dist/Mathchad_0.1.0_aarch64.dmg" download style="font-weight:bold; color:#0077B5; text-decoration:underline;">Ladda ner Mathchad (zip)</a>
+  </p>
+</section>
 
 <section id="about-me" class="tabcontent" style="display:none">
   <h2>About Me</h2>
@@ -1150,7 +1185,9 @@
         'tab-cv': 'CV, Kurser & Personligt Brev',
         'tab-projekt': 'Projekt',
         'tab-program': 'Kalkylator',
+        'tab-mathchad': 'Mathchad',
         'tab-blogg': 'Blogg',
+        'mathchad-title': 'Mathchad',
         'about-me-title': 'About Me',
         'about-me-content': 'Hej! Mitt namn är Nick och jag studerar till civilingenjör inom samhällsbyggnad med inriktning mot byggnadskonstruktör. Jag är särskillt intresserad av konstruktion, programmering och problemlösning. Mina hobbies inkluderar längdskidåkinng och alpin skidåkning såväl som vattenskidor och kayak! Men även små projekt som att koda och snickra!',
         'blogg-title': 'Blogg',
@@ -1169,7 +1206,9 @@
         'tab-cv': 'CV & Personal Letter',
         'tab-projekt': 'Projects',
         'tab-program': 'Calculator',
+        'tab-mathchad': 'Mathchad',
         'tab-blogg': 'Blog',
+        'mathchad-title': 'Mathchad',
         'about-me-title': 'About Me',
         'about-me-content': "Hi! My name is Nick and I am studying to become a civil engineer in civil engineering with a focus on structural engineering. I am especially interested in construction, programming, and problem solving. My hobbies include cross-country and alpine skiing. But I also enjoy small projects like coding this website and woodworking.",
         'blogg-title': 'Blog',
@@ -1195,7 +1234,10 @@
       document.getElementById('tab-cv').textContent = translations[lang]['tab-cv'];
       document.getElementById('tab-projekt').textContent = translations[lang]['tab-projekt'];
       document.getElementById('tab-program').textContent = translations[lang]['tab-program'];
+      document.getElementById('tab-mathchad').textContent = translations[lang]['tab-mathchad'];
       document.getElementById('tab-blogg').textContent = translations[lang]['tab-blogg'];
+      // Mathchad
+      document.getElementById('mathchad-title').textContent = translations[lang]['mathchad-title'];
       // About Me
       document.querySelector('#about-me h2').textContent = translations[lang]['about-me-title'];
       document.querySelector('#about-me p').textContent = translations[lang]['about-me-content'];
