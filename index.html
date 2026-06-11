@@ -385,9 +385,62 @@
       background: var(--accent); color: #fff; padding: 8px 16px; border-radius: 8px;
     }
     .skip-link:focus { left: 8px; }
+
+    /* ===================== Effekter ===================== */
+    #bg-canvas, #fx-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; }
+    #bg-canvas { z-index: 0; }
+    #fx-canvas { z-index: 250; }
+    #cursor-glow {
+      position: fixed; left: 0; top: 0; width: 640px; height: 640px; border-radius: 50%;
+      pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.5s ease;
+      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 62%);
+      will-change: transform;
+    }
+    .page, .site-footer { position: relative; z-index: 1; }
+    body::after {
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px);
+      background-size: 54px 54px;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 78%);
+      mask-image: radial-gradient(ellipse at 50% 0%, #000 25%, transparent 78%);
+    }
+    .fx-ripple {
+      position: absolute; border-radius: 50%; pointer-events: none;
+      background: currentColor; opacity: 0.22; transform: scale(0);
+      animation: fxRipple 0.55s ease-out forwards;
+    }
+    @keyframes fxRipple { to { transform: scale(1); opacity: 0; } }
+    .fx-on .btn, .fx-on .nav-link, .fx-on .filterchip, .fx-on .iconbtn, .fx-on .tool-card, .fx-on .tool-back { position: relative; overflow: hidden; }
+    .fx-on .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.2,.7,.3,1); }
+    .fx-on .reveal.in { opacity: 1; transform: none; }
+    .fx-on #hero-name .wl {
+      display: inline-block; opacity: 0; transform: translateY(0.55em) rotate(4deg);
+      animation: fxLetter 0.55s cubic-bezier(.2,.7,.3,1.2) forwards;
+      animation-delay: calc(var(--i) * 42ms);
+    }
+    @keyframes fxLetter { to { opacity: 1; transform: none; } }
+    .fx-on .progress-fill { position: relative; overflow: hidden; }
+    .fx-on .progress-fill::after {
+      content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+      background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
+      animation: fxShimmer 3s ease-in-out 1.2s infinite;
+    }
+    @keyframes fxShimmer { 60%, 100% { transform: translateX(100%); } }
+    .fx-on #theme-toggle.spin svg { animation: fxSpin 0.45s ease; }
+    @keyframes fxSpin { from { transform: rotate(-180deg) scale(0.6); opacity: 0; } to { transform: none; opacity: 1; } }
+    .fx-on .brand-mark { transition: transform 0.25s cubic-bezier(.3,1.6,.4,1); }
+    .fx-on .brand:hover .brand-mark { transform: rotate(-6deg) scale(1.08); }
+    .fx-on .tool-card, .fx-on .hero-card { will-change: transform; }
+    .fx-on .diagram-box svg { animation: fadeUp 0.45s ease; }
+    @media (max-width: 700px) { #cursor-glow { display: none; } }
   </style>
 </head>
 <body>
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div id="cursor-glow" aria-hidden="true"></div>
+  <canvas id="fx-canvas" aria-hidden="true"></canvas>
   <a class="skip-link" href="#main">Till innehållet</a>
 
   <header class="site-header">
@@ -426,7 +479,7 @@
       <div class="hero">
         <div class="hero-card">
           <span class="eyebrow" data-i18n="hero.eyebrow">Portfölj · KTH Stockholm</span>
-          <h1>Nick Westin</h1>
+          <h1 id="hero-name">Nick Westin</h1>
           <p class="role" id="subtitle" data-i18n="hero.role">Civilingenjörsstudent i samhällsbyggnad på KTH</p>
           <p class="intro" data-i18n="hero.intro">Hej! Jag heter Nick Westin och studerar till civilingenjör i samhällsbyggnad på KTH i Stockholm, med inriktning mot byggnadskonstruktion. Jag är särskilt intresserad av konstruktion, programmering och problemlösning. På fritiden gillar jag att lära mig nya saker, bygga projekt och träna – allt från längdskidor och alpint till vattenskidor, kajak och snickeri.</p>
           <div class="hero-actions">
@@ -2231,6 +2284,244 @@ Iz: –</div>
   setLanguage(currentLang);
   if (!location.hash) location.replace('#/hem');
   showRoute();
+  </script>
+
+  <script>
+  'use strict';
+  /* ===================== Effektmotor ===================== */
+  (function () {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+    document.body.classList.add('fx-on');
+
+    /* ---------- Färger (följer tema) ---------- */
+    let accent = '#0077B5';
+    let palette = ['#0077B5', '#6ec1e4', '#b06ee4', '#e2b93b'];
+    function refreshColors() {
+      const cs = getComputedStyle(document.documentElement);
+      accent = cs.getPropertyValue('--accent').trim() || accent;
+      palette = [accent, '#6ec1e4', '#b06ee4', '#e2b93b'];
+    }
+    refreshColors();
+    new MutationObserver(refreshColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    /* ---------- Bakgrund: fackverksnätverk ---------- */
+    const bg = document.getElementById('bg-canvas');
+    const bctx = bg.getContext('2d');
+    const fx = document.getElementById('fx-canvas');
+    const fctx = fx.getContext('2d');
+    if (!bctx || !fctx) return;
+    let W = 0, H = 0, nodes = [], sparks = [], running = true, rafId = null;
+    const mouse = { x: -1e4, y: -1e4 };
+    const LINK_DIST = 125, MOUSE_DIST = 170;
+
+    function sizeCanvases() {
+      W = window.innerWidth; H = window.innerHeight;
+      bg.width = W; bg.height = H;
+      fx.width = W; fx.height = H;
+    }
+    function buildNodes() {
+      const count = Math.min(85, Math.max(30, Math.floor(W * H / 21000)));
+      nodes = [];
+      for (let i = 0; i < count; i++) {
+        nodes.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.45, vy: (Math.random() - 0.5) * 0.45,
+          r: 1.2 + Math.random() * 1.4
+        });
+      }
+    }
+    sizeCanvases(); buildNodes();
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { sizeCanvases(); buildNodes(); }, 150);
+    });
+    window.addEventListener('pointermove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+    window.addEventListener('pointerleave', function () { mouse.x = -1e4; mouse.y = -1e4; });
+
+    function drawNetwork() {
+      bctx.clearRect(0, 0, W, H);
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const baseAlpha = isDark ? 0.30 : 0.22;
+      for (const n of nodes) {
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < -20) n.x = W + 20; else if (n.x > W + 20) n.x = -20;
+        if (n.y < -20) n.y = H + 20; else if (n.y > H + 20) n.y = -20;
+      }
+      bctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < LINK_DIST * LINK_DIST) {
+            bctx.globalAlpha = (1 - Math.sqrt(d2) / LINK_DIST) * baseAlpha;
+            bctx.strokeStyle = accent;
+            bctx.beginPath(); bctx.moveTo(a.x, a.y); bctx.lineTo(b.x, b.y); bctx.stroke();
+          }
+        }
+        const mdx = a.x - mouse.x, mdy = a.y - mouse.y;
+        const md2 = mdx * mdx + mdy * mdy;
+        if (md2 < MOUSE_DIST * MOUSE_DIST) {
+          bctx.globalAlpha = (1 - Math.sqrt(md2) / MOUSE_DIST) * (baseAlpha + 0.15);
+          bctx.strokeStyle = accent;
+          bctx.beginPath(); bctx.moveTo(a.x, a.y); bctx.lineTo(mouse.x, mouse.y); bctx.stroke();
+        }
+      }
+      bctx.globalAlpha = baseAlpha + 0.25;
+      bctx.fillStyle = accent;
+      for (const n of nodes) {
+        bctx.beginPath(); bctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); bctx.fill();
+      }
+      bctx.globalAlpha = 1;
+    }
+
+    /* ---------- Gnistor vid klick ---------- */
+    function burst(x, y) {
+      const n = 11 + Math.floor(Math.random() * 5);
+      for (let i = 0; i < n; i++) {
+        const ang = Math.PI * 2 * i / n + Math.random() * 0.5;
+        const sp = 1.4 + Math.random() * 2.4;
+        sparks.push({
+          x: x, y: y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 0.6,
+          alpha: 1, size: 1.4 + Math.random() * 1.8,
+          color: palette[Math.floor(Math.random() * palette.length)]
+        });
+      }
+    }
+    document.addEventListener('pointerdown', function (e) {
+      if (e.target.closest('input, textarea, select, video, iframe, .lightbox')) return;
+      burst(e.clientX, e.clientY);
+    });
+    function drawSparks() {
+      fctx.clearRect(0, 0, W, H);
+      sparks = sparks.filter(function (p) { return p.alpha > 0.04; });
+      for (const p of sparks) {
+        fctx.globalAlpha = p.alpha;
+        fctx.fillStyle = p.color;
+        fctx.beginPath(); fctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); fctx.fill();
+        p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.965; p.vy *= 0.965; p.vy += 0.055;
+        p.alpha *= 0.93;
+      }
+      fctx.globalAlpha = 1;
+    }
+
+    function loop() {
+      drawNetwork();
+      drawSparks();
+      rafId = requestAnimationFrame(loop);
+    }
+    loop();
+
+    /* ---------- Muspekar-glöd ---------- */
+    const glow = document.getElementById('cursor-glow');
+    let gx = -1000, gy = -1000, tx = -1000, ty = -1000, glowOn = false;
+    window.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
+      tx = e.clientX; ty = e.clientY;
+      if (!glowOn) { glowOn = true; glow.style.opacity = '0.55'; glowLoop(); }
+    }, { passive: true });
+    function glowLoop() {
+      gx += (tx - gx) * 0.08; gy += (ty - gy) * 0.08;
+      glow.style.transform = 'translate(' + (gx - 320) + 'px,' + (gy - 320) + 'px)';
+      if (glowOn) requestAnimationFrame(glowLoop);
+    }
+
+    /* ---------- Ripple på knappar ---------- */
+    document.addEventListener('click', function (e) {
+      const el = e.target.closest('.btn, .nav-link, .filterchip, .iconbtn, .tool-card, .tool-back');
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const d = Math.max(r.width, r.height) * 2;
+      const s = document.createElement('span');
+      s.className = 'fx-ripple';
+      s.style.width = s.style.height = d + 'px';
+      s.style.left = (e.clientX - r.left - d / 2) + 'px';
+      s.style.top = (e.clientY - r.top - d / 2) + 'px';
+      el.appendChild(s);
+      setTimeout(function () { s.remove(); }, 600);
+    });
+
+    /* ---------- 3D-tilt på kort ---------- */
+    function addTilt(el, max) {
+      el.addEventListener('pointermove', function (ev) {
+        if (ev.pointerType === 'touch') return;
+        const r = el.getBoundingClientRect();
+        const rx = ((ev.clientY - r.top) / r.height - 0.5) * -max;
+        const ry = ((ev.clientX - r.left) / r.width - 0.5) * max;
+        el.style.transform = 'perspective(750px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg)' +
+          (el.classList.contains('tool-card') ? ' translateY(-3px)' : '');
+      });
+      el.addEventListener('pointerleave', function () { el.style.transform = ''; });
+    }
+    document.querySelectorAll('.tool-card').forEach(function (el) { addTilt(el, 7); });
+    document.querySelectorAll('.hero-card').forEach(function (el) { addTilt(el, 2.5); });
+
+    /* ---------- Scroll-reveal ---------- */
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en, i) {
+        if (en.isIntersecting) {
+          en.target.style.transitionDelay = Math.min(i * 55, 330) + 'ms';
+          en.target.classList.add('in');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    function markReveals(root) {
+      (root || document).querySelectorAll('.card, .post, .tool-card, .panel, .hero-card').forEach(function (el) {
+        if (!el.classList.contains('reveal')) {
+          el.classList.add('reveal');
+          io.observe(el);
+        }
+      });
+    }
+    markReveals();
+    const blogList = document.getElementById('blog-list');
+    if (blogList) new MutationObserver(function () { markReveals(blogList); }).observe(blogList, { childList: true });
+    window.addEventListener('hashchange', function () { setTimeout(function () { markReveals(); }, 30); });
+
+    /* ---------- Bokstavsanimation på namnet ---------- */
+    const hn = document.getElementById('hero-name');
+    if (hn) {
+      const txt = hn.textContent;
+      hn.textContent = '';
+      Array.from(txt).forEach(function (ch, i) {
+        const s = document.createElement('span');
+        s.className = 'wl';
+        s.style.setProperty('--i', i);
+        s.textContent = ch === ' ' ? ' ' : ch;
+        hn.appendChild(s);
+      });
+    }
+
+    /* ---------- Räknare för studieprogression ---------- */
+    function countUp(el, target, dur, fmtFn) {
+      const t0 = performance.now();
+      function tick(t) {
+        const k = Math.min(1, (t - t0) / dur);
+        const eased = 1 - Math.pow(1 - k, 3);
+        el.textContent = fmtFn(target * eased);
+        if (k < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    const pctEl = document.getElementById('progress-pct');
+    const hpEl = document.getElementById('progress-hp');
+    if (pctEl) countUp(pctEl, 80, 1200, function (v) { return Math.round(v) + '%'; });
+    if (hpEl) countUp(hpEl, 240, 1200, function (v) { return Math.round(v) + ' / 300 hp'; });
+
+    /* ---------- Temaknapp-snurr ---------- */
+    const themeBtn = document.getElementById('theme-toggle');
+    themeBtn.addEventListener('click', function () {
+      themeBtn.classList.remove('spin');
+      void themeBtn.offsetWidth;
+      themeBtn.classList.add('spin');
+      setTimeout(function () { themeBtn.classList.remove('spin'); }, 500);
+    });
+  })();
   </script>
 </body>
 </html>
