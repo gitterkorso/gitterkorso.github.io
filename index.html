@@ -301,6 +301,65 @@
     .tool-back { display: inline-flex; align-items: center; gap: 7px; font-weight: 650; margin-bottom: 16px; }
     .tool-section { display: none; }
     .tool-section.active { display: block; animation: fadeUp 0.3s ease; }
+    #tpl-preview { margin-top: 18px; display: flex; justify-content: center; }
+    #tpl-preview svg { width: 100%; max-width: 340px; height: auto; background: #fff; border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 6px 24px rgba(0,0,0,0.18); }
+    /* Nyhetsbanderoll */
+    .news-bar { position: relative; display: flex; align-items: center; gap: 12px; height: 38px; padding: 0 8px 0 14px;
+      background: color-mix(in srgb, var(--accent) 9%, var(--surface)); border-bottom: 1px solid var(--border);
+      font-size: 0.85rem; overflow: hidden; }
+    .news-badge { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--accent); letter-spacing: .2px; }
+    .news-badge svg { width: 15px; height: 15px; }
+    .news-viewport { flex: 1 1 auto; overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 22px, #000 calc(100% - 22px), transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 22px, #000 calc(100% - 22px), transparent); }
+    .news-track { display: inline-flex; align-items: center; gap: 26px; white-space: nowrap; padding-left: 26px; animation: newsScroll linear infinite; will-change: transform; }
+    .news-bar:hover .news-track, .news-track:focus-within { animation-play-state: paused; }
+    .news-item { color: var(--text); font-weight: 600; text-decoration: none; }
+    .news-item:hover { color: var(--accent); text-decoration: underline; }
+    .news-time { color: var(--muted); font-weight: 500; }
+    .news-sep { color: var(--muted); opacity: .5; }
+    .news-close { flex-shrink: 0; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.95rem; line-height: 1; padding: 4px 7px; border-radius: 6px; }
+    .news-close:hover { color: var(--text); background: var(--border); }
+    @keyframes newsScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) { .news-track { animation-duration: 0s !important; transform: none; } }
+    /* Aktier */
+    :root { --stock-up: #16a34a; --stock-down: #e5484d; }
+    .stk-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 4px 0 12px; }
+    .stk-search { display: flex; gap: 8px; flex: 1 1 260px; }
+    .stk-search input { flex: 1; }
+    .stk-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .stk-chip { font-size: .8rem; padding: 5px 11px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); cursor: pointer; color: var(--muted); }
+    .stk-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .stk-layout { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    @media (min-width: 880px) { .stk-layout { grid-template-columns: 340px 1fr; align-items: start; } }
+    .stk-list { display: flex; flex-direction: column; gap: 8px; }
+    .stk-row { display: grid; grid-template-columns: 1fr 64px auto; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); cursor: pointer; transition: border-color .15s; }
+    .stk-row:hover { border-color: var(--accent); }
+    .stk-row.active { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+    .stk-row .nm { font-weight: 700; font-size: .88rem; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stk-row .sy { color: var(--muted); font-size: .72rem; }
+    .stk-spark { width: 64px; height: 30px; }
+    .stk-spark svg { width: 100%; height: 100%; display: block; }
+    .stk-px { text-align: right; position: relative; }
+    .stk-px .p { font-weight: 700; font-size: .88rem; }
+    .stk-px .ch { font-size: .74rem; font-weight: 600; }
+    .up { color: var(--stock-up); } .down { color: var(--stock-down); }
+    .stk-rm { background: none; border: none; color: var(--muted); cursor: pointer; font-size: .9rem; padding: 1px 5px; border-radius: 6px; margin-left: 6px; }
+    .stk-rm:hover { color: var(--stock-down); background: var(--border); }
+    .stk-detail { border: 1px solid var(--border); border-radius: 14px; padding: 18px; background: var(--surface); min-height: 320px; }
+    .stk-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+    .stk-head h3 { margin: 0; font-size: 1.12rem; }
+    .stk-head .big { font-size: 1.55rem; font-weight: 800; }
+    .stk-ranges { display: flex; gap: 6px; margin: 14px 0; flex-wrap: wrap; }
+    .stk-range { font-size: .78rem; padding: 5px 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); cursor: pointer; color: var(--muted); }
+    .stk-range.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .stk-chart { width: 100%; height: 230px; }
+    .stk-chart svg { width: 100%; height: 100%; display: block; }
+    .stk-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px 18px; margin-top: 16px; font-size: .82rem; }
+    @media (min-width: 520px) { .stk-stats { grid-template-columns: repeat(4, 1fr); } }
+    .stk-stats .k { color: var(--muted); display: block; font-size: .71rem; margin-bottom: 1px; }
+    .stk-stats .v { font-weight: 700; }
+    .stk-msg { color: var(--muted); padding: 14px 2px; font-size: .86rem; line-height: 1.5; }
 
     /* Lösenordsgenerator */
     .pw-output { display:flex; gap:8px; margin-bottom:10px; }
@@ -574,6 +633,15 @@
     </div>
   </header>
 
+  <div id="news-bar" class="news-bar" hidden role="region" aria-label="Senaste nyheter från Sveriges Radio">
+    <span class="news-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13a1 1 0 0 1 1 1v12a1 1 0 0 0 1 1 1 1 0 0 0 1-1V8"/><path d="M4 5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h15"/><path d="M7 8h7M7 11h7M7 14h4"/></svg>
+      <span id="news-source">Nyheter</span>
+    </span>
+    <div class="news-viewport"><div class="news-track" id="news-track"></div></div>
+    <button id="news-close" class="news-close" aria-label="Dölj nyheter" title="Dölj nyhetsraden">✕</button>
+  </div>
+
   <main class="page" id="main">
 
     <!-- ================= HEM / OM MIG ================= -->
@@ -828,6 +896,16 @@
             <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h3v3h-3zM20 14v2M17 20h3M14 19v1"/></svg></span>
             <b data-i18n="tools.qr.name">QR-kodgenerator</b>
             <span data-i18n="tools.qr.desc">Skapa QR-koder direkt på sidan och ladda ner som PNG.</span>
+          </a>
+          <a class="tool-card" href="#/verktyg/aktier">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5v14h16"/><path d="M7 14l3-4 3 2 4-6"/><path d="M17 6h2.5v2.5"/></svg></span>
+            <b data-i18n="tools.aktier.name">Aktier & kurser</b>
+            <span data-i18n="tools.aktier.desc">Sök aktier, index och fonder med kurser och prisdiagram – AAPL, TSLA, VOLV-B.ST, ^OMX m.fl. Data från Yahoo Finance.</span>
+          </a>
+          <a class="tool-card" href="#/verktyg/papper">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M4 15h16M9 3v18M15 3v18"/></svg></span>
+            <b data-i18n="tools.papper.name">Mallgenerator (papper)</b>
+            <span data-i18n="tools.papper.desc">Skapa rutat, linjerat, prickat, millimeter- och isometriskt papper (A4 m.fl.) och ladda ner som PDF, PNG eller SVG.</span>
           </a>
           <a class="tool-card" href="#/verktyg/losen">
             <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 15v2"/></svg></span>
@@ -1246,6 +1324,95 @@ Iz: –</div>
         </div>
       </div>
 
+      <!-- Aktier & kurser -->
+      <div class="tool-section" id="tool-aktier">
+        <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
+        <div class="card">
+          <h2 data-i18n="tools.aktier.title">Aktier & kurser</h2>
+          <p class="hint">Sök aktier, index och fonder (t.ex. <b>AAPL</b>, <b>TSLA</b>, <b>VOLV-B.ST</b>, <b>^OMX</b>) – kurs, förändring och prisdiagram med valbar period. Data hämtas från Yahoo Finance.</p>
+          <div class="stk-toolbar">
+            <div class="stk-search">
+              <input type="text" id="stk-input" placeholder="Sök symbol, t.ex. AAPL eller VOLV-B.ST" autocomplete="off" spellcheck="false" />
+              <button class="btn btn-primary" id="stk-add" type="button">Lägg till</button>
+            </div>
+          </div>
+          <div class="stk-presets" id="stk-presets"></div>
+          <div class="stk-layout">
+            <div class="stk-list" id="stk-list"></div>
+            <div class="stk-detail" id="stk-detail"><div class="stk-msg">Välj en aktie i listan för att se diagram.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mallgenerator (rutat/linjerat papper) -->
+      <div class="tool-section" id="tool-papper">
+        <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
+        <div class="card">
+          <h2 data-i18n="tools.papper.title">Mallgenerator – rutat & linjerat papper</h2>
+          <p class="hint">Skapa utskriftsfärdiga pappersmallar i exakt format och ladda ner. Allt skapas lokalt i webbläsaren – inget lämnar din dator.</p>
+          <div class="form-row">
+            <div class="field">
+              <label for="tpl-pattern">Mönster</label>
+              <select id="tpl-pattern">
+                <option value="grid">Rutat</option>
+                <option value="lined">Linjerat</option>
+                <option value="dots">Prickat</option>
+                <option value="mm">Millimeterpapper</option>
+                <option value="iso">Isometriskt (prickar)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tpl-size">Pappersstorlek</label>
+              <select id="tpl-size">
+                <option value="A3">A3</option>
+                <option value="A4" selected>A4</option>
+                <option value="A5">A5</option>
+                <option value="A6">A6</option>
+                <option value="Letter">Letter</option>
+                <option value="Legal">Legal</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tpl-orient">Orientering</label>
+              <select id="tpl-orient">
+                <option value="portrait">Stående</option>
+                <option value="landscape">Liggande</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tpl-spacing">Avstånd (mm)</label>
+              <input type="number" id="tpl-spacing" value="5" min="1" max="50" step="0.5" />
+            </div>
+            <div class="field">
+              <label for="tpl-margin">Marginal (mm)</label>
+              <input type="number" id="tpl-margin" value="0" min="0" max="40" step="1" />
+            </div>
+            <div class="field">
+              <label for="tpl-weight">Linjetjocklek</label>
+              <select id="tpl-weight">
+                <option value="thin">Tunn</option>
+                <option value="normal" selected>Normal</option>
+                <option value="thick">Tjock</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tpl-color">Linjefärg</label>
+              <input type="color" id="tpl-color" value="#9bb4cc" style="height:42px; padding:2px; min-width:64px" />
+            </div>
+          </div>
+          <label style="display:inline-flex; align-items:center; gap:8px; font-size:0.9rem; color:var(--muted); margin:2px 0 8px">
+            <input type="checkbox" id="tpl-marginline" /> Vänstermarginal-linje (för linjerat)
+          </label>
+          <div class="form-row" style="margin-top:4px">
+            <button class="btn btn-primary" id="tpl-pdf" type="button">Ladda ner PDF</button>
+            <button class="btn" id="tpl-png" type="button">Ladda ner PNG</button>
+            <button class="btn" id="tpl-svg" type="button">Ladda ner SVG</button>
+          </div>
+          <div class="hint" id="tpl-status" style="min-height:1.2em"></div>
+          <div id="tpl-preview" aria-label="Förhandsvisning"></div>
+        </div>
+      </div>
+
       <!-- Lösenordsgenerator -->
       <div class="tool-section" id="tool-losen">
         <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
@@ -1594,6 +1761,11 @@ Iz: –</div>
       'tools.pdf.merge': 'Slå ihop PDF:er', 'tools.pdf.clear': 'Rensa lista', 'tools.pdf.download': 'Ladda ner sammanslagen PDF',
       'tools.qr.name': 'QR-kodgenerator', 'tools.qr.title': 'QR-kodgenerator',
       'tools.qr.desc': 'Skapa QR-koder direkt på sidan och ladda ner som PNG.',
+      'tools.aktier.name': 'Aktier & kurser', 'tools.aktier.title': 'Aktier & kurser',
+      'tools.aktier.desc': 'Sök aktier, index och fonder med kurser och prisdiagram – AAPL, TSLA, VOLV-B.ST, ^OMX m.fl. Data från Yahoo Finance.',
+      'tools.papper.name': 'Mallgenerator (papper)', 'tools.papper.title': 'Mallgenerator – rutat & linjerat papper',
+      'tools.papper.desc': 'Skapa rutat, linjerat, prickat, millimeter- och isometriskt papper (A4 m.fl.) och ladda ner som PDF, PNG eller SVG.',
+      'news.label': 'Sveriges Radio',
       'tools.qr.text': 'Text eller URL', 'tools.qr.size': 'Storlek', 'tools.qr.generate': 'Generera',
       'tools.qr.download': 'Ladda ner QR-kod (PNG)',
       'tools.qr.colab': 'Vill du hellre använda Python? Här är min Google Colab för QR-koder:',
@@ -1697,6 +1869,11 @@ Iz: –</div>
       'tools.pdf.merge': 'Merge PDFs', 'tools.pdf.clear': 'Clear list', 'tools.pdf.download': 'Download merged PDF',
       'tools.qr.name': 'QR Code Generator', 'tools.qr.title': 'QR Code Generator',
       'tools.qr.desc': 'Create QR codes directly on the page and download as PNG.',
+      'tools.aktier.name': 'Stocks & prices', 'tools.aktier.title': 'Stocks & prices',
+      'tools.aktier.desc': 'Look up stocks, indices and funds with quotes and price charts – AAPL, TSLA, VOLV-B.ST, ^OMX and more. Data from Yahoo Finance.',
+      'tools.papper.name': 'Paper template generator', 'tools.papper.title': 'Template generator – squared & ruled paper',
+      'tools.papper.desc': 'Create squared, ruled, dotted, millimeter and isometric paper (A4 and more) and download as PDF, PNG or SVG.',
+      'news.label': 'Swedish Radio',
       'tools.qr.text': 'Text or URL', 'tools.qr.size': 'Size', 'tools.qr.generate': 'Generate',
       'tools.qr.download': 'Download QR code (PNG)',
       'tools.qr.colab': 'Prefer Python? Here is my Google Colab for QR codes:',
@@ -1979,6 +2156,136 @@ Iz: –</div>
     }, { passive: true });
     btn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
   })();
+
+  /* ▼▼▼ EGEN CLOUDFLARE WORKER (valfri) – gör BÅDE nyheter och aktier snabba & stabila.
+     Klistra in din Worker-URL mellan apostroferna. Lämna tom = publik reservproxy används. ▼▼▼ */
+  window.PROXY_WORKER = 'https://blue-wood-b488.nickwestin10.workers.dev';
+
+  /* ===================== Nyhetsbanderoll (riktiga rubriker via RSS) ===================== */
+  (function () {
+    const bar = document.getElementById('news-bar');
+    const track = document.getElementById('news-track');
+    if (!bar || !track) return;
+    const closeBtn = document.getElementById('news-close');
+    const sourceEl = document.getElementById('news-source');
+    if (closeBtn) closeBtn.addEventListener('click', function () {
+      bar.hidden = true;
+      try { localStorage.setItem('newsHidden', '1'); } catch (e) {}
+    });
+    if (localStorage.getItem('newsHidden') === '1') return;
+
+    // Riktiga nyhetsrubriker hämtas från svenska RSS-flöden via en CORS-proxy
+    // (tidningarnas feeds saknar CORS-headers och kan annars inte läsas i webbläsaren).
+    const FEEDS = [
+      { name: 'DN', url: 'https://www.dn.se/rss/' },
+      { name: 'SVT Nyheter', url: 'https://www.svt.se/rss.xml' },
+      { name: 'Expressen', url: 'https://feeds.expressen.se/nyheter/' }
+    ];
+    const proxy = function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); };
+    // Varje flöde provas mot två proxy-endpoints (/get + /raw) inuti fetchFeed
+    const ATTEMPTS = FEEDS;
+    const CACHE_KEY = 'newsCache_v2', TTL = 10 * 60 * 1000;
+    const MAX = 16;
+
+    function esc(s) { return String(s).replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
+    function fmtTime(d) { try { return d.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
+
+    function render(items, source) {
+      if (!items || !items.length) return;
+      if (sourceEl && source) sourceEl.textContent = source;
+      const html = items.map(function (it) {
+        const time = it.time ? ' <span class="news-time">· ' + esc(it.time) + '</span>' : '';
+        return '<a class="news-item" href="' + esc(it.url || '#') + '" target="_blank" rel="noopener">' + esc(it.title) + time + '</a>';
+      }).join('<span class="news-sep" aria-hidden="true">•</span>');
+      // Dubblera innehållet för en sömlös, oändlig rullning
+      track.innerHTML = html + '<span class="news-sep" aria-hidden="true">•</span>' + html;
+      track.style.animationDuration = Math.max(34, items.length * 6) + 's';
+      bar.hidden = false;
+    }
+
+    function save(items, source) { try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), items: items, source: source })); } catch (e) {} }
+    function fromCache() {
+      try {
+        const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+        if (c && Array.isArray(c.items) && Date.now() - c.t < TTL) { render(c.items, c.source); return true; }
+      } catch (e) {}
+      return false;
+    }
+
+    function fetchText(url, ms) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(function () { ctrl.abort(); }, ms || 8000);
+      return fetch(url, { signal: ctrl.signal, cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.text(); })
+        .then(function (t) { clearTimeout(timer); return t; }, function (e) { clearTimeout(timer); throw e; });
+    }
+
+    function parseRSS(text) {
+      const doc = new DOMParser().parseFromString(text, 'text/xml');
+      if (doc.querySelector('parsererror')) return [];
+      const out = [];
+      const nodes = doc.querySelectorAll('item, entry');
+      for (let i = 0; i < nodes.length; i++) {
+        const it = nodes[i];
+        const titleEl = it.querySelector('title');
+        const title = titleEl ? titleEl.textContent.trim() : '';
+        if (!title) continue;
+        const linkEl = it.querySelector('link');
+        let url = '';
+        if (linkEl) url = (linkEl.getAttribute('href') || linkEl.textContent || '').trim();
+        const dateEl = it.querySelector('pubDate, published, updated, date');
+        let time = '';
+        if (dateEl) { const d = new Date(dateEl.textContent.trim()); if (!isNaN(d.getTime())) time = fmtTime(d); }
+        out.push({ title: title, url: url, time: time });
+        if (out.length >= MAX) break;
+      }
+      return out;
+    }
+
+    // Nödfallback: Sveriges Radios öppna API (officiellt, alltid CORS) om alla RSS-flöden fallerar
+    function srFallback() {
+      return fetchText('https://api.sr.se/api/v2/news/episodes?format=json&size=60', 8000)
+        .then(function (txt) {
+          const d = JSON.parse(txt), seen = {}, items = [];
+          (d.episodes || []).forEach(function (e) {
+            const t = (e.title || '').trim();
+            if (!t || seen[t] || t.indexOf('Nyheter P4 ') === 0) return; seen[t] = 1;
+            const m = /\/Date\((\d+)/.exec(e.publishdateutc || '');
+            items.push({ title: t, url: e.url || 'https://sverigesradio.se/', time: m ? fmtTime(new Date(parseInt(m[1], 10))) : '' });
+          });
+          if (items.length) { const top = items.slice(0, MAX); save(top, 'Sveriges Radio'); render(top, 'Sveriges Radio'); }
+        });
+    }
+
+    // Hämtar en RSS-feed: egen Worker först (om konfigurerad), annars allorigins (/get + /raw)
+    function fetchFeed(feedUrl) {
+      const enc = encodeURIComponent(feedUrl);
+      const w = (window.PROXY_WORKER || '').replace(/\/$/, '');
+      const viaAllorigins = function () {
+        return fetchText('https://api.allorigins.win/get?url=' + enc, 8000)
+          .then(function (t) { const o = JSON.parse(t); return (o && typeof o.contents === 'string') ? o.contents : ''; })
+          .then(function (xml) { if (!xml || xml.indexOf('<') === -1) throw new Error('tomt'); return xml; })
+          .catch(function () { return fetchText('https://api.allorigins.win/raw?url=' + enc, 8000); });
+      };
+      if (w) return fetchText(w + '?url=' + enc, 9000).then(function (xml) { if (!xml || xml.indexOf('<') === -1) throw new Error('tomt'); return xml; }).catch(viaAllorigins);
+      return viaAllorigins();
+    }
+
+    function tryFeed(i) {
+      if (i >= ATTEMPTS.length) return srFallback();
+      const feed = ATTEMPTS[i];
+      return fetchFeed(feed.url)
+        .then(function (xml) {
+          const items = parseRSS(xml);
+          if (items.length >= 3) { save(items, feed.name); render(items, feed.name); return; }
+          throw new Error('tomt flöde');
+        })
+        .catch(function () { return tryFeed(i + 1); });
+    }
+
+    fromCache();           // visa direkt om vi har färsk cache
+    tryFeed(0).catch(function () { /* tyst – raden visas bara om vi fått data */ });
+  })();
   </script>
   <script>
   'use strict';
@@ -2008,7 +2315,344 @@ Iz: –</div>
     if (id === 'losen' && window.pwGenerate) window.pwGenerate();
     if (id === 'tid' && window.tidOpen) window.tidOpen();
     if (id === 'lastkomb' && window.lkOpen) window.lkOpen();
+    if (id === 'papper') {
+      loadScript('https://unpkg.com/pdf-lib/dist/pdf-lib.min.js').catch(function () {});
+      if (window.tplRender) window.tplRender();
+    }
+    if (id === 'aktier' && window.stocksOpen) window.stocksOpen();
   }
+
+  /* ===================== Mallgenerator (rutat/linjerat papper) ===================== */
+  (function () {
+    const root = document.getElementById('tool-papper');
+    if (!root) return;
+    // Pappersmått i mm (stående)
+    const PAPER = { A3: [297, 420], A4: [210, 297], A5: [148, 210], A6: [105, 148], Letter: [215.9, 279.4], Legal: [215.9, 355.6] };
+    const WEIGHT = { thin: 0.12, normal: 0.22, thick: 0.38 };
+    const $ = function (id) { return document.getElementById(id); };
+
+    function hx(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join(''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+    function toHex(r, g, b) { return '#' + [r, g, b].map(function (v) { v = Math.max(0, Math.min(255, Math.round(v))); return (v < 16 ? '0' : '') + v.toString(16); }).join(''); }
+    function lighten(hex, t) { const c = hx(hex); return toHex(c[0] + (255 - c[0]) * t, c[1] + (255 - c[1]) * t, c[2] + (255 - c[2]) * t); }
+    function r3(n) { return Math.round(n * 1000) / 1000; }
+
+    function readCfg() {
+      return {
+        pattern: $('tpl-pattern').value,
+        size: $('tpl-size').value,
+        orient: $('tpl-orient').value,
+        spacing: Math.min(50, Math.max(1, parseFloat($('tpl-spacing').value) || 5)),
+        margin: Math.min(40, Math.max(0, parseFloat($('tpl-margin').value) || 0)),
+        marginLine: $('tpl-marginline').checked,
+        color: $('tpl-color').value,
+        weight: $('tpl-weight').value
+      };
+    }
+
+    // Bygg listor med linjer/prickar i mm-koordinater (origo uppe till vänster)
+    function geometry(cfg) {
+      let dim = PAPER[cfg.size] || PAPER.A4, w = dim[0], h = dim[1];
+      if (cfg.orient === 'landscape') { const t = w; w = h; h = t; }
+      const m = cfg.margin, x0 = m, y0 = m, x1 = w - m, y1 = h - m;
+      const lines = [], dots = [], eps = 1e-6;
+      const s = cfg.spacing, col = cfg.color, lw = WEIGHT[cfg.weight] || 0.22;
+      if (cfg.pattern === 'lined') {
+        for (let y = y0; y <= y1 + eps; y += s) lines.push({ a: x0, b: y, c: x1, d: y, col: col, w: lw });
+        if (cfg.marginLine) { const mx = x0 + Math.min(22, (x1 - x0) * 0.12); lines.push({ a: mx, b: y0, c: mx, d: y1, col: '#e69aa0', w: Math.max(0.3, lw) }); }
+      } else if (cfg.pattern === 'grid') {
+        for (let y = y0; y <= y1 + eps; y += s) lines.push({ a: x0, b: y, c: x1, d: y, col: col, w: lw });
+        for (let x = x0; x <= x1 + eps; x += s) lines.push({ a: x, b: y0, c: x, d: y1, col: col, w: lw });
+      } else if (cfg.pattern === 'dots') {
+        const r = Math.max(0.18, lw * 1.3);
+        for (let y = y0; y <= y1 + eps; y += s) for (let x = x0; x <= x1 + eps; x += s) dots.push({ x: x, y: y, r: r, col: col });
+      } else if (cfg.pattern === 'mm') {
+        const light = lighten(col, 0.55);
+        for (let x = x0, i = 0; x <= x1 + eps; x += 1, i++) { const major = i % 10 === 0, mid = i % 5 === 0; lines.push({ a: x, b: y0, c: x, d: y1, col: (major || mid) ? col : light, w: major ? 0.3 : (mid ? 0.16 : 0.07) }); }
+        for (let y = y0, j = 0; y <= y1 + eps; y += 1, j++) { const major = j % 10 === 0, mid = j % 5 === 0; lines.push({ a: x0, b: y, c: x1, d: y, col: (major || mid) ? col : light, w: major ? 0.3 : (mid ? 0.16 : 0.07) }); }
+      } else if (cfg.pattern === 'iso') {
+        const dy = s * Math.sin(Math.PI / 3), r = Math.max(0.2, lw * 1.4); let row = 0;
+        for (let y = y0; y <= y1 + eps; y += dy) { const off = (row % 2) ? s / 2 : 0; for (let x = x0 + off; x <= x1 + eps; x += s) dots.push({ x: x, y: y, r: r, col: col }); row++; }
+      }
+      return { w: w, h: h, lines: lines, dots: dots };
+    }
+
+    // mode: undefined (preview, ingen storlek), 'mm' (utskrift), 'px' (raster)
+    function buildSVG(cfg, mode, ppm) {
+      const g = geometry(cfg);
+      let sz = '';
+      if (mode === 'mm') sz = ' width="' + g.w + 'mm" height="' + g.h + 'mm"';
+      else if (mode === 'px') sz = ' width="' + Math.round(g.w * ppm) + '" height="' + Math.round(g.h * ppm) + '"';
+      let out = '<svg xmlns="http://www.w3.org/2000/svg"' + sz + ' viewBox="0 0 ' + g.w + ' ' + g.h + '">';
+      out += '<rect x="0" y="0" width="' + g.w + '" height="' + g.h + '" fill="#ffffff"/>';
+      for (let i = 0; i < g.lines.length; i++) { const l = g.lines[i]; out += '<line x1="' + r3(l.a) + '" y1="' + r3(l.b) + '" x2="' + r3(l.c) + '" y2="' + r3(l.d) + '" stroke="' + l.col + '" stroke-width="' + l.w + '"/>'; }
+      for (let i = 0; i < g.dots.length; i++) { const d = g.dots[i]; out += '<circle cx="' + r3(d.x) + '" cy="' + r3(d.y) + '" r="' + d.r + '" fill="' + d.col + '"/>'; }
+      return out + '</svg>';
+    }
+
+    function render() {
+      const cfg = readCfg();
+      $('tpl-spacing').disabled = (cfg.pattern === 'mm');
+      $('tpl-marginline').disabled = (cfg.pattern !== 'lined');
+      $('tpl-preview').innerHTML = buildSVG(cfg);
+    }
+
+    function fname(cfg, ext) { return 'mall-' + cfg.pattern + '-' + cfg.size + (cfg.orient === 'landscape' ? '-liggande' : '') + '-' + cfg.spacing + 'mm.' + ext; }
+    function download(blob, name) { const u = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 1500); }
+    function status(msg) { $('tpl-status').textContent = msg || ''; }
+
+    $('tpl-svg').addEventListener('click', function () {
+      const cfg = readCfg();
+      download(new Blob([buildSVG(cfg, 'mm')], { type: 'image/svg+xml' }), fname(cfg, 'svg'));
+      status('SVG nedladdad.');
+    });
+
+    $('tpl-png').addEventListener('click', function () {
+      const cfg = readCfg();
+      status('Skapar PNG…');
+      const g = geometry(cfg), ppm = 200 / 25.4;
+      const url = URL.createObjectURL(new Blob([buildSVG(cfg, 'px', ppm)], { type: 'image/svg+xml' }));
+      const img = new Image();
+      img.onload = function () {
+        const cv = document.createElement('canvas');
+        cv.width = Math.round(g.w * ppm); cv.height = Math.round(g.h * ppm);
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, cv.width, cv.height);
+        ctx.drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        cv.toBlob(function (b) { download(b, fname(cfg, 'png')); status('PNG nedladdad (~200 dpi).'); }, 'image/png');
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); status('Kunde inte skapa PNG.'); };
+      img.src = url;
+    });
+
+    function ensurePdfLib() { return window.PDFLib ? Promise.resolve() : loadScript('https://unpkg.com/pdf-lib/dist/pdf-lib.min.js'); }
+
+    $('tpl-pdf').addEventListener('click', function () {
+      const cfg = readCfg();
+      status('Skapar PDF…');
+      ensurePdfLib().then(function () {
+        const g = geometry(cfg), K = 72 / 25.4, H = g.h * K;
+        return PDFLib.PDFDocument.create().then(function (doc) {
+          const page = doc.addPage([g.w * K, g.h * K]);
+          for (let i = 0; i < g.lines.length; i++) { const l = g.lines[i], c = hx(l.col); page.drawLine({ start: { x: l.a * K, y: H - l.b * K }, end: { x: l.c * K, y: H - l.d * K }, thickness: Math.max(0.1, l.w * K), color: PDFLib.rgb(c[0] / 255, c[1] / 255, c[2] / 255) }); }
+          for (let i = 0; i < g.dots.length; i++) { const d = g.dots[i], c = hx(d.col); page.drawCircle({ x: d.x * K, y: H - d.y * K, size: d.r * K, color: PDFLib.rgb(c[0] / 255, c[1] / 255, c[2] / 255) }); }
+          return doc.save();
+        });
+      }).then(function (bytes) {
+        download(new Blob([bytes], { type: 'application/pdf' }), fname(cfg, 'pdf'));
+        status('PDF nedladdad.');
+      }).catch(function () { status('Kunde inte skapa PDF – kontrollera anslutningen och försök igen.'); });
+    });
+
+    ['tpl-pattern', 'tpl-size', 'tpl-orient', 'tpl-spacing', 'tpl-margin', 'tpl-weight', 'tpl-color', 'tpl-marginline'].forEach(function (id) {
+      const el = $(id); if (!el) return;
+      el.addEventListener('input', render);
+      el.addEventListener('change', render);
+    });
+
+    window.tplRender = render;
+    render();
+  })();
+
+  /* ===================== Aktier & kurser (Yahoo Finance via proxy) ===================== */
+  (function () {
+    const root = document.getElementById('tool-aktier');
+    if (!root) return;
+    const $ = function (id) { return document.getElementById(id); };
+    const listEl = $('stk-list'), detailEl = $('stk-detail'), presetsEl = $('stk-presets');
+    const inputEl = $('stk-input'), addBtn = $('stk-add');
+
+    const PRESETS = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'VOLV-B.ST', 'ERIC-B.ST', '^OMX'];
+    const RANGES = { '1D': ['1d', '5m'], '5D': ['5d', '30m'], '1M': ['1mo', '1d'], '6M': ['6mo', '1d'], '1Y': ['1y', '1d'], '5Y': ['5y', '1wk'] };
+    const DEFAULT_RANGE = '6M', SPARK_RANGE = '1M', LS_KEY = 'stocksWatch_v1';
+    const cache = {}, CACHE_TTL = 3 * 60 * 1000, MAXW = 12;
+
+    // Använder samma globala Worker som nyheterna (window.PROXY_WORKER), satt högre upp i koden.
+    function proxyBase() { try { return (window.PROXY_WORKER || localStorage.getItem('stocksProxy') || '').replace(/\/$/, ''); } catch (e) { return window.PROXY_WORKER || ''; } }
+
+    let watch = loadWatch();
+    let selected = watch[0] || null;
+    let curRange = DEFAULT_RANGE;
+
+    function loadWatch() { try { const a = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); if (Array.isArray(a) && a.length) return a.slice(0, MAXW); } catch (e) {} return ['AAPL', 'TSLA', 'VOLV-B.ST', '^OMX']; }
+    function saveWatch() { try { localStorage.setItem(LS_KEY, JSON.stringify(watch)); } catch (e) {} }
+
+    function nf(n, d) { try { return Number(n).toLocaleString('sv-SE', { minimumFractionDigits: d, maximumFractionDigits: d }); } catch (e) { return String(n); } }
+    function compact(n) { if (n == null || isNaN(n)) return '–'; const a = Math.abs(n); if (a >= 1e9) return nf(n / 1e9, 1) + ' mdr'; if (a >= 1e6) return nf(n / 1e6, 1) + ' mn'; if (a >= 1e3) return nf(n / 1e3, 0) + ' k'; return nf(n, 0); }
+    function esc(s) { return String(s).replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
+    function cleanSym(s) { return (s || '').trim().toUpperCase().replace(/[^A-Z0-9.\-^=]/g, ''); }
+
+    function fetchJSON(url, ms) {
+      const ctrl = new AbortController(), timer = setTimeout(function () { ctrl.abort(); }, ms || 9000);
+      return fetch(url, { signal: ctrl.signal, cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+        .then(function (j) { clearTimeout(timer); return j; }, function (e) { clearTimeout(timer); throw e; });
+    }
+    function yURL(sym, range, interval) { return 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(sym) + '?range=' + range + '&interval=' + interval; }
+    function proxied(u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); }
+
+    // Proxyn klarar dåligt många samtidiga anrop – kör därför alla hämtningar
+    // i en kö (ett i taget med en liten paus) i stället för parallellt.
+    function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+    let chain = Promise.resolve();
+    function enqueue(task) {
+      const p = chain.then(function () { return task(); });
+      chain = p.then(function () { return wait(350); }, function () { return wait(350); });
+      return p;
+    }
+
+    function getChart(sym, rangeKey) {
+      const key = sym + '|' + rangeKey, c = cache[key];
+      if (c && Date.now() - c.t < CACHE_TTL) return Promise.resolve(c.data);
+      return enqueue(function () {
+        const c2 = cache[key]; // kan ha fyllts medan vi stod i kö
+        if (c2 && Date.now() - c2.t < CACHE_TTL) return c2.data;
+        const rk = RANGES[rangeKey] || RANGES['6M'], yu = yURL(sym, rk[0], rk[1]);
+        return fetchChart(yu, 4).then(function (d) {
+          const res = d && d.chart && d.chart.result && d.chart.result[0];
+          if (!res || !res.meta) { const err = d && d.chart && d.chart.error; throw new Error(err && err.description ? err.description : 'ingen data'); }
+          const data = parseRes(res); cache[key] = { t: Date.now(), data: data }; return data;
+        });
+      });
+    }
+
+    // Hämtar Yahoo-JSON genom att växla mellan flera proxy-strategier med omförsök,
+    // eftersom en enskild proxy ofta ger tillfälliga 5xx-fel.
+    function fetchChart(yu, tries) {
+      const enc = encodeURIComponent(yu);
+      const strategies = [];
+      const wb = proxyBase();
+      // Egen Cloudflare Worker först (snabb & stabil), om konfigurerad
+      if (wb) strategies.push(function () { return fetchJSON(wb + '?url=' + enc, 12000); });
+      // Publika reservproxyer (allorigins) – /get är oftast stabilast, /raw som backup
+      strategies.push(function () { return fetchJSON('https://api.allorigins.win/get?url=' + enc, 12000).then(function (o) { return (o && typeof o.contents === 'string') ? JSON.parse(o.contents) : o; }); });
+      strategies.push(function () { return fetchJSON('https://api.allorigins.win/raw?url=' + enc, 12000); });
+      function go(attempt) {
+        return strategies[attempt % strategies.length]().then(function (d) {
+          if (!(d && d.chart && d.chart.result)) throw new Error('ingen data');
+          return d;
+        }).catch(function (e) {
+          if (attempt < tries) return wait(500).then(function () { return go(attempt + 1); });
+          throw e;
+        });
+      }
+      return go(0);
+    }
+    function parseRes(res) {
+      const m = res.meta, ts = res.timestamp || [];
+      const q = (res.indicators && res.indicators.quote && res.indicators.quote[0]) || {};
+      const cl = q.close || [], pts = [];
+      for (let i = 0; i < ts.length; i++) { if (cl[i] != null) pts.push({ t: ts[i] * 1000, c: cl[i] }); }
+      const base = m.chartPreviousClose != null ? m.chartPreviousClose : (pts.length ? pts[0].c : m.regularMarketPrice);
+      const price = m.regularMarketPrice != null ? m.regularMarketPrice : (pts.length ? pts[pts.length - 1].c : base);
+      return {
+        symbol: m.symbol, name: m.shortName || m.longName || m.symbol, currency: m.currency || '', exch: m.fullExchangeName || m.exchangeName || '',
+        price: price, change: price - base, changePct: base ? (price - base) / base * 100 : 0,
+        dayHigh: m.regularMarketDayHigh, dayLow: m.regularMarketDayLow, hi52: m.fiftyTwoWeekHigh, lo52: m.fiftyTwoWeekLow,
+        volume: m.regularMarketVolume, time: (m.regularMarketTime || 0) * 1000, points: pts
+      };
+    }
+
+    function chartSVG(points, w, h, up, area) {
+      if (!points || points.length < 2) return '';
+      const ys = points.map(function (p) { return p.c; }), xs = points.map(function (p) { return p.t; });
+      let minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+      if (minY === maxY) { minY -= 1; maxY += 1; }
+      const minX = xs[0], maxX = xs[xs.length - 1], pad = 4;
+      const sx = function (t) { return pad + (t - minX) / ((maxX - minX) || 1) * (w - 2 * pad); };
+      const sy = function (c) { return pad + (1 - (c - minY) / ((maxY - minY) || 1)) * (h - 2 * pad); };
+      let d = 'M' + sx(xs[0]).toFixed(1) + ' ' + sy(ys[0]).toFixed(1);
+      for (let i = 1; i < points.length; i++) d += 'L' + sx(xs[i]).toFixed(1) + ' ' + sy(ys[i]).toFixed(1);
+      const col = up ? 'var(--stock-up)' : 'var(--stock-down)';
+      let svg = '<svg viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none">';
+      if (area) {
+        const gid = 'sg' + Math.random().toString(36).slice(2, 7);
+        const ar = d + 'L' + sx(xs[xs.length - 1]).toFixed(1) + ' ' + (h - pad) + 'L' + sx(xs[0]).toFixed(1) + ' ' + (h - pad) + 'Z';
+        svg += '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + col + '" stop-opacity="0.22"/><stop offset="1" stop-color="' + col + '" stop-opacity="0"/></linearGradient></defs>';
+        svg += '<path d="' + ar + '" fill="url(#' + gid + ')"/>';
+      }
+      svg += '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>';
+      return svg;
+    }
+    function fmtChange(d) {
+      const up = d.change >= 0, s = up ? '+' : '';
+      return '<span class="' + (up ? 'up' : 'down') + '" style="font-weight:700">' + s + nf(d.change, 2) + ' (' + s + nf(d.changePct, 2) + '%)</span>';
+    }
+    function stat(k, v) { return '<div><span class="k">' + k + '</span><span class="v">' + v + '</span></div>'; }
+
+    function renderList() {
+      listEl.innerHTML = '';
+      if (!watch.length) { listEl.innerHTML = '<div class="stk-msg">Inga aktier i listan – lägg till en symbol ovan.</div>'; return; }
+      watch.forEach(function (sym) {
+        const row = document.createElement('div');
+        row.className = 'stk-row' + (sym === selected ? ' active' : '');
+        row.innerHTML = '<div><div class="nm">' + esc(sym) + '</div><div class="sy">Laddar…</div></div><div class="stk-spark"></div><div class="stk-px"></div>';
+        row.addEventListener('click', function () { selectSym(sym); });
+        listEl.appendChild(row);
+        getChart(sym, SPARK_RANGE).then(function (d) {
+          const up = d.change >= 0;
+          row.querySelector('.nm').textContent = d.name;
+          row.querySelector('.sy').textContent = d.symbol + (d.currency ? ' · ' + d.currency : '');
+          row.querySelector('.stk-spark').innerHTML = chartSVG(d.points, 64, 30, up, false);
+          row.querySelector('.stk-px').innerHTML = '<div class="p">' + nf(d.price, 2) + '</div><div class="ch ' + (up ? 'up' : 'down') + '">' + (up ? '+' : '') + nf(d.changePct, 2) + '%<button class="stk-rm" title="Ta bort" aria-label="Ta bort">✕</button></div>';
+          row.querySelector('.stk-rm').addEventListener('click', function (ev) { ev.stopPropagation(); removeSym(sym); });
+        }).catch(function () {
+          row.querySelector('.sy').textContent = 'kunde inte hämta · klicka för att försöka igen';
+          row.querySelector('.stk-px').innerHTML = '<button class="stk-rm" title="Ta bort" aria-label="Ta bort">✕</button>';
+          row.querySelector('.stk-rm').addEventListener('click', function (ev) { ev.stopPropagation(); removeSym(sym); });
+        });
+      });
+    }
+
+    function renderDetail() {
+      if (!selected) { detailEl.innerHTML = '<div class="stk-msg">Välj en aktie i listan för att se diagram.</div>'; return; }
+      const sym = selected;
+      detailEl.innerHTML = '<div class="stk-msg">Hämtar ' + esc(sym) + ' …</div>';
+      getChart(sym, curRange).then(function (d) {
+        if (selected !== sym) return;
+        const up = d.change >= 0;
+        const ranges = Object.keys(RANGES).map(function (rk) { return '<button class="stk-range' + (rk === curRange ? ' active' : '') + '" data-r="' + rk + '">' + rk + '</button>'; }).join('');
+        const upd = d.time ? new Date(d.time).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' }) : '–';
+        detailEl.innerHTML =
+          '<div class="stk-head"><h3>' + esc(d.name) + '</h3><span style="color:var(--muted);font-size:.8rem">' + esc(d.symbol) + (d.exch ? ' · ' + esc(d.exch) : '') + '</span></div>' +
+          '<div class="stk-head" style="margin-top:8px"><span class="big">' + nf(d.price, 2) + ' <span style="font-size:.8rem;font-weight:600;color:var(--muted)">' + esc(d.currency) + '</span></span>' + fmtChange(d) + '</div>' +
+          '<div class="stk-ranges">' + ranges + '</div>' +
+          '<div class="stk-chart">' + (chartSVG(d.points, 600, 230, up, true) || '<div class="stk-msg">Ingen kursdata för vald period.</div>') + '</div>' +
+          '<div class="stk-stats">' + stat('Dag högst', d.dayHigh != null ? nf(d.dayHigh, 2) : '–') + stat('Dag lägst', d.dayLow != null ? nf(d.dayLow, 2) : '–') +
+          stat('52v högst', d.hi52 != null ? nf(d.hi52, 2) : '–') + stat('52v lägst', d.lo52 != null ? nf(d.lo52, 2) : '–') +
+          stat('Volym', compact(d.volume)) + stat('Valuta', esc(d.currency || '–')) + stat('Uppdaterad', upd) + '</div>';
+        detailEl.querySelectorAll('.stk-range').forEach(function (b) { b.addEventListener('click', function () { curRange = b.getAttribute('data-r'); renderDetail(); }); });
+      }).catch(function (e) {
+        if (selected !== sym) return;
+        detailEl.innerHTML = '<div class="stk-msg">Kunde inte hämta data för <b>' + esc(sym) + '</b>. ' + (e && e.message ? esc(e.message) : '') +
+          '<br>Kontrollera symbolen eller försök igen.</div><button class="btn" id="stk-retry" type="button" style="margin-top:8px">Försök igen</button>';
+        const rb = document.getElementById('stk-retry');
+        if (rb) rb.addEventListener('click', function () { renderDetail(); });
+      });
+    }
+
+    function selectSym(sym) { selected = sym; curRange = DEFAULT_RANGE; renderList(); renderDetail(); }
+    function addSym(raw) {
+      const sym = cleanSym(raw); if (!sym) return;
+      if (watch.indexOf(sym) === -1) { watch.unshift(sym); watch = watch.slice(0, MAXW); saveWatch(); }
+      inputEl.value = ''; selectSym(sym);
+    }
+    function removeSym(sym) {
+      watch = watch.filter(function (s) { return s !== sym; }); saveWatch();
+      if (selected === sym) selected = watch[0] || null;
+      renderList(); renderDetail();
+    }
+
+    PRESETS.forEach(function (sym) {
+      const b = document.createElement('button'); b.className = 'stk-chip'; b.type = 'button'; b.textContent = sym;
+      b.addEventListener('click', function () { addSym(sym); }); presetsEl.appendChild(b);
+    });
+    addBtn.addEventListener('click', function () { addSym(inputEl.value); });
+    inputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); addSym(inputEl.value); } });
+
+    let inited = false;
+    window.stocksOpen = function () { if (inited) return; inited = true; renderList(); renderDetail(); };
+  })();
 
   /* ===================== Lösenordsgenerator ===================== */
   (function () {
