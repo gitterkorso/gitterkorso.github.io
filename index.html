@@ -360,6 +360,30 @@
     .stk-stats .k { color: var(--muted); display: block; font-size: .71rem; margin-bottom: 1px; }
     .stk-stats .v { font-weight: 700; }
     .stk-msg { color: var(--muted); padding: 14px 2px; font-size: .86rem; line-height: 1.5; }
+    /* Väder */
+    .wx-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 4px 0 10px; }
+    .wx-search { display: flex; gap: 8px; flex: 1 1 240px; }
+    .wx-search input { flex: 1; }
+    .wx-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .wx-chip { font-size: .8rem; padding: 5px 11px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); cursor: pointer; color: var(--muted); }
+    .wx-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .wx-now { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+    .wx-now .icon { font-size: 3.2rem; line-height: 1; }
+    .wx-place { font-size: 1.05rem; font-weight: 700; }
+    .wx-temp { font-size: 2.6rem; font-weight: 800; line-height: 1.1; }
+    .wx-desc { color: var(--muted); }
+    .wx-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px 18px; margin-top: 16px; font-size: .84rem; }
+    @media (min-width: 560px) { .wx-stats { grid-template-columns: repeat(4, 1fr); } }
+    .wx-stats .k { color: var(--muted); display: block; font-size: .72rem; margin-bottom: 1px; }
+    .wx-stats .v { font-weight: 700; }
+    .wx-chart { width: 100%; height: 130px; margin-top: 18px; }
+    .wx-chart svg { width: 100%; height: 100%; display: block; }
+    .wx-days { display: grid; grid-template-columns: repeat(auto-fit, minmax(82px, 1fr)); gap: 8px; margin-top: 16px; }
+    .wx-day { text-align: center; padding: 10px 6px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+    .wx-day .d { font-weight: 700; font-size: .8rem; text-transform: capitalize; }
+    .wx-day .di { font-size: 1.5rem; margin: 4px 0; }
+    .wx-day .mx { font-weight: 700; } .wx-day .mn { color: var(--muted); }
+    .wx-msg { color: var(--muted); padding: 14px 2px; font-size: .86rem; line-height: 1.5; }
 
     /* Lösenordsgenerator */
     .pw-output { display:flex; gap:8px; margin-bottom:10px; }
@@ -902,6 +926,11 @@
             <b data-i18n="tools.aktier.name">Aktier & kurser</b>
             <span data-i18n="tools.aktier.desc">Sök aktier, index och fonder med kurser och prisdiagram – AAPL, TSLA, VOLV-B.ST, ^OMX m.fl. Data från Yahoo Finance.</span>
           </a>
+          <a class="tool-card" href="#/verktyg/vader">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.6 3.6l1 1M11.4 11.4l1 1M12.4 3.6l-1 1M4.6 11.4l-1 1"/><path d="M17.5 13.5a3.5 3.5 0 0 0-6.9-.8A3 3 0 0 0 11 18.5h6.2a2.8 2.8 0 0 0 .3-5z"/></svg></span>
+            <b data-i18n="tools.vader.name">Väder</b>
+            <span data-i18n="tools.vader.desc">Sök väder för valfri ort – aktuell temperatur, vind, soluppgång och 7-dygnsprognos. Data från Open-Meteo.</span>
+          </a>
           <a class="tool-card" href="#/verktyg/papper">
             <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M4 15h16M9 3v18M15 3v18"/></svg></span>
             <b data-i18n="tools.papper.name">Mallgenerator (papper)</b>
@@ -1344,6 +1373,24 @@ Iz: –</div>
         </div>
       </div>
 
+      <!-- Väder -->
+      <div class="tool-section" id="tool-vader">
+        <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
+        <div class="card">
+          <h2 data-i18n="tools.vader.title">Väder</h2>
+          <p class="hint">Sök väder för valfri ort i världen – aktuellt läge, timprognos och 7 dygn framåt. Data hämtas från Open-Meteo (ingen nyckel, ingen spårning).</p>
+          <div class="wx-toolbar">
+            <div class="wx-search">
+              <input type="text" id="wx-input" placeholder="Sök ort, t.ex. Stockholm" autocomplete="off" spellcheck="false" />
+              <button class="btn btn-primary" id="wx-search-btn" type="button">Sök</button>
+            </div>
+            <button class="btn" id="wx-geo" type="button">📍 Min plats</button>
+          </div>
+          <div class="wx-presets" id="wx-presets"></div>
+          <div id="wx-out"><div class="wx-msg">Laddar väder…</div></div>
+        </div>
+      </div>
+
       <!-- Mallgenerator (rutat/linjerat papper) -->
       <div class="tool-section" id="tool-papper">
         <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
@@ -1763,6 +1810,8 @@ Iz: –</div>
       'tools.qr.desc': 'Skapa QR-koder direkt på sidan och ladda ner som PNG.',
       'tools.aktier.name': 'Aktier & kurser', 'tools.aktier.title': 'Aktier & kurser',
       'tools.aktier.desc': 'Sök aktier, index och fonder med kurser och prisdiagram – AAPL, TSLA, VOLV-B.ST, ^OMX m.fl. Data från Yahoo Finance.',
+      'tools.vader.name': 'Väder', 'tools.vader.title': 'Väder',
+      'tools.vader.desc': 'Sök väder för valfri ort – aktuell temperatur, vind, soluppgång och 7-dygnsprognos. Data från Open-Meteo.',
       'tools.papper.name': 'Mallgenerator (papper)', 'tools.papper.title': 'Mallgenerator – rutat & linjerat papper',
       'tools.papper.desc': 'Skapa rutat, linjerat, prickat, millimeter- och isometriskt papper (A4 m.fl.) och ladda ner som PDF, PNG eller SVG.',
       'news.label': 'Sveriges Radio',
@@ -1871,6 +1920,8 @@ Iz: –</div>
       'tools.qr.desc': 'Create QR codes directly on the page and download as PNG.',
       'tools.aktier.name': 'Stocks & prices', 'tools.aktier.title': 'Stocks & prices',
       'tools.aktier.desc': 'Look up stocks, indices and funds with quotes and price charts – AAPL, TSLA, VOLV-B.ST, ^OMX and more. Data from Yahoo Finance.',
+      'tools.vader.name': 'Weather', 'tools.vader.title': 'Weather',
+      'tools.vader.desc': 'Look up the weather for any place – current temperature, wind, sunrise and a 7-day forecast. Data from Open-Meteo.',
       'tools.papper.name': 'Paper template generator', 'tools.papper.title': 'Template generator – squared & ruled paper',
       'tools.papper.desc': 'Create squared, ruled, dotted, millimeter and isometric paper (A4 and more) and download as PDF, PNG or SVG.',
       'news.label': 'Swedish Radio',
@@ -2320,6 +2371,7 @@ Iz: –</div>
       if (window.tplRender) window.tplRender();
     }
     if (id === 'aktier' && window.stocksOpen) window.stocksOpen();
+    if (id === 'vader' && window.weatherOpen) window.weatherOpen();
   }
 
   /* ===================== Mallgenerator (rutat/linjerat papper) ===================== */
@@ -2652,6 +2704,141 @@ Iz: –</div>
 
     let inited = false;
     window.stocksOpen = function () { if (inited) return; inited = true; renderList(); renderDetail(); };
+  })();
+
+  /* ===================== Väder (Open-Meteo, ingen nyckel) ===================== */
+  (function () {
+    const root = document.getElementById('tool-vader');
+    if (!root) return;
+    const $ = function (id) { return document.getElementById(id); };
+    const inputEl = $('wx-input'), searchBtn = $('wx-search-btn'), presetsEl = $('wx-presets'), outEl = $('wx-out'), geoBtn = $('wx-geo');
+
+    const PRESETS = ['Stockholm', 'Göteborg', 'Malmö', 'Uppsala', 'Åre', 'Visby'];
+    const LS = 'wxLast_v1';
+    const WMO = {
+      0: { t: 'Klart', e: '☀️' }, 1: { t: 'Mest klart', e: '🌤️' }, 2: { t: 'Halvklart', e: '⛅' }, 3: { t: 'Mulet', e: '☁️' },
+      45: { t: 'Dimma', e: '🌫️' }, 48: { t: 'Underkyld dimma', e: '🌫️' },
+      51: { t: 'Lätt duggregn', e: '🌦️' }, 53: { t: 'Duggregn', e: '🌦️' }, 55: { t: 'Tätt duggregn', e: '🌧️' },
+      56: { t: 'Underkylt duggregn', e: '🌧️' }, 57: { t: 'Underkylt duggregn', e: '🌧️' },
+      61: { t: 'Lätt regn', e: '🌦️' }, 63: { t: 'Regn', e: '🌧️' }, 65: { t: 'Kraftigt regn', e: '🌧️' },
+      66: { t: 'Underkylt regn', e: '🌧️' }, 67: { t: 'Underkylt regn', e: '🌧️' },
+      71: { t: 'Lätt snöfall', e: '🌨️' }, 73: { t: 'Snöfall', e: '❄️' }, 75: { t: 'Kraftigt snöfall', e: '❄️' }, 77: { t: 'Snökorn', e: '🌨️' },
+      80: { t: 'Lätta regnskurar', e: '🌦️' }, 81: { t: 'Regnskurar', e: '🌧️' }, 82: { t: 'Kraftiga regnskurar', e: '⛈️' },
+      85: { t: 'Snöbyar', e: '🌨️' }, 86: { t: 'Kraftiga snöbyar', e: '❄️' },
+      95: { t: 'Åska', e: '⛈️' }, 96: { t: 'Åska med hagel', e: '⛈️' }, 99: { t: 'Åska med hagel', e: '⛈️' }
+    };
+    function info(c) { return WMO[c] || { t: '—', e: '🌡️' }; }
+    function esc(s) { return String(s).replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
+    function compass(deg) { return ['N', 'NÖ', 'Ö', 'SÖ', 'S', 'SV', 'V', 'NV'][Math.round(deg / 45) % 8]; }
+    function rnd(n) { return Math.round(n); }
+    function stat(k, v) { return '<div><span class="k">' + k + '</span><span class="v">' + v + '</span></div>'; }
+
+    function fetchJSON(url, ms) {
+      const ctrl = new AbortController(), timer = setTimeout(function () { ctrl.abort(); }, ms || 9000);
+      return fetch(url, { signal: ctrl.signal })
+        .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+        .then(function (j) { clearTimeout(timer); return j; }, function (e) { clearTimeout(timer); throw e; });
+    }
+    function geocode(name) {
+      return fetchJSON('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(name) + '&count=1&language=sv&format=json', 9000)
+        .then(function (d) { const r = d.results && d.results[0]; if (!r) throw new Error('Hittade ingen ort som matchar.'); return { name: r.name, admin: r.admin1 || '', cc: r.country_code || '', lat: r.latitude, lon: r.longitude }; });
+    }
+    function getWeather(lat, lon) {
+      const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
+        '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,precipitation,is_day' +
+        '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset' +
+        '&hourly=temperature_2m&timezone=auto&wind_speed_unit=ms&forecast_days=7';
+      return fetchJSON(u, 9000);
+    }
+
+    function tempChart(pts, w, h) {
+      if (pts.length < 2) return '';
+      const ys = pts.map(function (p) { return p.c; });
+      let minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+      if (minY === maxY) { minY -= 1; maxY += 1; }
+      const padT = 16, padB = 20, padX = 8;
+      const sx = function (i) { return padX + i / (pts.length - 1) * (w - 2 * padX); };
+      const sy = function (c) { return padT + (1 - (c - minY) / (maxY - minY)) * (h - padT - padB); };
+      let d = 'M' + sx(0).toFixed(1) + ' ' + sy(ys[0]).toFixed(1);
+      for (let i = 1; i < pts.length; i++) d += 'L' + sx(i).toFixed(1) + ' ' + sy(ys[i]).toFixed(1);
+      const gid = 'wg' + Math.random().toString(36).slice(2, 6);
+      const area = d + 'L' + sx(pts.length - 1).toFixed(1) + ' ' + (h - padB) + 'L' + sx(0).toFixed(1) + ' ' + (h - padB) + 'Z';
+      let lab = '';
+      for (let i = 0; i < pts.length; i += 4) {
+        lab += '<text x="' + sx(i).toFixed(1) + '" y="' + (h - 6) + '" font-size="9" fill="var(--muted)" text-anchor="middle">' + pts[i].label + '</text>';
+        lab += '<text x="' + sx(i).toFixed(1) + '" y="' + (sy(ys[i]) - 5).toFixed(1) + '" font-size="9.5" fill="var(--text)" text-anchor="middle">' + rnd(ys[i]) + '°</text>';
+      }
+      return '<svg viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="xMidYMid meet">' +
+        '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity="0.25"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>' +
+        '<path d="' + area + '" fill="url(#' + gid + ')"/>' +
+        '<path d="' + d + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>' + lab + '</svg>';
+    }
+
+    function render(place, d) {
+      const c = d.current, ci = info(c.weather_code), dy = d.daily;
+      const times = d.hourly.time, temps = d.hourly.temperature_2m;
+      const key = (c.time || '').slice(0, 13);
+      let now = 0; for (let i = 0; i < times.length; i++) { if (times[i].slice(0, 13) === key) { now = i; break; } }
+      const pts = [];
+      for (let i = now; i < Math.min(now + 24, times.length); i++) pts.push({ c: temps[i], label: times[i].slice(11, 16) });
+      let days = '';
+      for (let i = 0; i < dy.time.length; i++) {
+        const di = info(dy.weather_code[i]);
+        const name = i === 0 ? 'Idag' : new Date(dy.time[i]).toLocaleDateString('sv-SE', { weekday: 'short' });
+        days += '<div class="wx-day"><div class="d">' + esc(name) + '</div><div class="di" title="' + esc(di.t) + '">' + di.e + '</div><div><span class="mx">' + rnd(dy.temperature_2m_max[i]) + '°</span> <span class="mn">' + rnd(dy.temperature_2m_min[i]) + '°</span></div></div>';
+      }
+      const placeName = esc(place.name) + (place.admin ? ', ' + esc(place.admin) : '') + (place.cc ? ' (' + esc(place.cc) + ')' : '');
+      outEl.innerHTML =
+        '<div class="wx-now"><div class="icon">' + ci.e + '</div>' +
+        '<div><div class="wx-place">' + placeName + '</div>' +
+        '<div class="wx-temp">' + rnd(c.temperature_2m) + '°<span style="font-size:1rem;font-weight:600;color:var(--muted)">C</span></div>' +
+        '<div class="wx-desc">' + esc(ci.t) + ' · känns ' + rnd(c.apparent_temperature) + '°</div></div></div>' +
+        '<div class="wx-stats">' +
+        stat('Vind', rnd(c.wind_speed_10m) + ' m/s ' + compass(c.wind_direction_10m)) +
+        stat('Luftfuktighet', c.relative_humidity_2m + ' %') +
+        stat('Nederbörd nu', c.precipitation + ' mm') +
+        stat('Nederbörd idag', dy.precipitation_sum[0] + ' mm') +
+        stat('Max / min idag', rnd(dy.temperature_2m_max[0]) + '° / ' + rnd(dy.temperature_2m_min[0]) + '°') +
+        stat('Soluppgång', (dy.sunrise[0] || '').slice(11, 16)) +
+        stat('Solnedgång', (dy.sunset[0] || '').slice(11, 16)) +
+        stat('Uppdaterad', new Date(c.time).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })) +
+        '</div>' +
+        '<div class="wx-chart">' + tempChart(pts, 600, 130) + '</div>' +
+        '<div class="wx-days">' + days + '</div>';
+    }
+
+    function showPlace(place) {
+      outEl.innerHTML = '<div class="wx-msg">Hämtar väder för ' + esc(place.name) + ' …</div>';
+      getWeather(place.lat, place.lon).then(function (d) { render(place, d); })
+        .catch(function (e) { outEl.innerHTML = '<div class="wx-msg">Kunde inte hämta väder. ' + esc(e && e.message ? e.message : '') + '<br>Försök igen om en stund.</div>'; });
+    }
+    function save(p) { try { localStorage.setItem(LS, JSON.stringify(p)); } catch (e) {} }
+    function loadLast() { try { const p = JSON.parse(localStorage.getItem(LS) || 'null'); if (p && p.lat) return p; } catch (e) {} return { name: 'Stockholm', admin: 'Stockholms län', cc: 'SE', lat: 59.3294, lon: 18.0687 }; }
+
+    function doSearch(name) {
+      name = (name || '').trim(); if (!name) return;
+      outEl.innerHTML = '<div class="wx-msg">Söker …</div>';
+      geocode(name).then(function (p) { save(p); inputEl.value = ''; showPlace(p); })
+        .catch(function (e) { outEl.innerHTML = '<div class="wx-msg">' + esc(e && e.message ? e.message : 'Hittade ingen ort.') + '</div>'; });
+    }
+
+    PRESETS.forEach(function (city) {
+      const b = document.createElement('button'); b.className = 'wx-chip'; b.type = 'button'; b.textContent = city;
+      b.addEventListener('click', function () { doSearch(city); }); presetsEl.appendChild(b);
+    });
+    searchBtn.addEventListener('click', function () { doSearch(inputEl.value); });
+    inputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); doSearch(inputEl.value); } });
+    geoBtn.addEventListener('click', function () {
+      if (!navigator.geolocation) { outEl.innerHTML = '<div class="wx-msg">Geolokalisering stöds inte i din webbläsare.</div>'; return; }
+      outEl.innerHTML = '<div class="wx-msg">Hämtar din position …</div>';
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        const p = { name: 'Min plats', admin: '', cc: '', lat: pos.coords.latitude, lon: pos.coords.longitude };
+        save(p); showPlace(p);
+      }, function () { outEl.innerHTML = '<div class="wx-msg">Kunde inte hämta din position (nekad eller otillgänglig).</div>'; }, { timeout: 10000, maximumAge: 600000 });
+    });
+
+    let inited = false;
+    window.weatherOpen = function () { if (inited) return; inited = true; showPlace(loadLast()); };
   })();
 
   /* ===================== Lösenordsgenerator ===================== */
