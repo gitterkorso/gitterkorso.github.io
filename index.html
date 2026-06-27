@@ -300,6 +300,105 @@
     .tool-section { display: none; }
     .tool-section.active { display: block; animation: fadeUp 0.3s ease; }
 
+    /* Lösenordsgenerator */
+    .pw-output { display:flex; gap:8px; margin-bottom:10px; }
+    .pw-output input {
+      flex:1 1 auto; font-family:var(--font-mono,monospace); font-size:1.05rem;
+      letter-spacing:.5px; padding:12px 14px; border:1px solid var(--border);
+      border-radius:var(--radius-sm); background:var(--surface-2); color:var(--text);
+    }
+    .pw-strength { height:8px; border-radius:6px; background:rgba(125,125,125,.2); overflow:hidden; }
+    .pw-strength-bar { height:100%; width:0; border-radius:6px; transition:width .25s ease, background .25s ease; }
+    .pw-opts { display:flex; flex-wrap:wrap; gap:10px 22px; margin-top:14px; }
+    .pw-opts label { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:.95rem; }
+    .pw-opts input { width:16px; height:16px; accent-color:var(--accent); cursor:pointer; }
+
+    /* Tidszoner & klocka */
+    .clock-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin:14px 0; }
+    .clock-card {
+      position:relative; padding:14px; border:1px solid var(--border); border-radius:12px;
+      background:var(--surface-2);
+    }
+    .clock-card .city { font-size:.82rem; color:var(--muted); display:flex; justify-content:space-between; align-items:center; }
+    .clock-card .time { font-family:var(--font-mono,monospace); font-size:1.5rem; font-weight:700; margin-top:4px; }
+    .clock-card .date { font-size:.78rem; color:var(--muted); margin-top:2px; }
+    .clock-card .rm { cursor:pointer; border:none; background:transparent; color:var(--muted); font-size:1rem; line-height:1; padding:0 2px; }
+    .clock-card .rm:hover { color:var(--accent); }
+    .tid-result { margin-top:12px; font-size:1.05rem; min-height:1.4em; }
+    .tid-result b { color:var(--accent); }
+
+    /* Lastkombinering */
+    .lk-row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:10px; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--surface-2); }
+    .lk-row .field { margin:0; }
+    .lk-row .field.grow { flex:1 1 160px; }
+    .lk-row input[type="text"], .lk-row input[type="number"], .lk-row select { font-family:var(--font); }
+    .lk-row input[type="number"] { width:110px; }
+    .lk-row .lk-del { border:none; background:transparent; color:var(--muted); cursor:pointer; font-size:1.1rem; padding:8px; }
+    .lk-row .lk-del:hover { color:#e0464f; }
+    .lk-row label.inline { display:flex; align-items:center; gap:6px; font-size:.9rem; white-space:nowrap; }
+    .lk-row label.inline input { width:15px; height:15px; accent-color:var(--accent); }
+    .lk-card { border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:12px; background:var(--surface-2); }
+    .lk-gov { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+    .lk-big { font-size:1.6rem; font-weight:800; color:var(--accent); }
+    .lk-cases { margin-top:8px; font-size:.9rem; }
+    .lk-cases table { width:100%; border-collapse:collapse; }
+    .lk-cases td { padding:3px 6px; border-bottom:1px solid var(--border); }
+    .lk-cases td:last-child { text-align:right; font-family:var(--font-mono,monospace); }
+    .lk-cases tr.gov td { color:var(--accent); font-weight:700; }
+
+    /* Spel */
+    .game-section { display: none; }
+    .game-section.active { display: block; animation: fadeUp 0.3s ease; }
+    .game-card { display:flex; flex-direction:column; }
+    .game-hud { display:flex; flex-wrap:wrap; gap:18px; align-items:center; margin-bottom:14px; }
+    .game-stat { display:flex; flex-direction:column; line-height:1.1; }
+    .game-stat b { font-size:1.5rem; color:var(--accent); }
+    .game-stat span { font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+    .m3-wrap { display:flex; justify-content:center; }
+    .m3-board {
+      display:grid; gap:4px; padding:8px; background:var(--surface-2);
+      border:1px solid var(--border); border-radius:14px; touch-action:none;
+      width:min(420px, 92vw); aspect-ratio:1/1;
+    }
+    .m3-cell {
+      display:flex; align-items:center; justify-content:center;
+      border-radius:10px; font-size:clamp(18px,5.5vw,30px); cursor:pointer;
+      user-select:none; -webkit-user-select:none;
+      transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+      will-change: transform;
+    }
+    .m3-cell.sel { box-shadow:0 0 0 3px var(--accent) inset; transform:scale(.9); }
+    .m3-cell.pop { transform:scale(0); opacity:0; }
+    .m3-cell.drop { animation: m3drop .18s ease; }
+    @keyframes m3drop { from { transform: translateY(-22px); } to { transform: translateY(0); } }
+    .game-over-msg { margin-top:12px; font-weight:650; color:var(--accent); min-height:1.2em; }
+
+    /* 2048 */
+    .g2048-wrap { display:flex; justify-content:center; }
+    .g2048-board {
+      display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr);
+      gap:10px; padding:10px;
+      background:var(--surface-2); border:1px solid var(--border); border-radius:14px;
+      width:min(420px,92vw); aspect-ratio:1/1; touch-action:none;
+    }
+    .g2048-tile { min-width:0; min-height:0; aspect-ratio:1/1; }
+    .g2048-tile {
+      display:flex; align-items:center; justify-content:center; border-radius:8px;
+      font-weight:800; font-size:clamp(16px,5.5vw,32px);
+      background:rgba(125,125,125,.12); color:var(--text);
+      transition: transform .1s ease;
+    }
+    .g2048-tile.spawn { animation: g2048spawn .14s ease; }
+    @keyframes g2048spawn { from { transform: scale(.2); } to { transform: scale(1); } }
+
+    /* Snake */
+    .snake-wrap { display:flex; justify-content:center; }
+    #snake-canvas {
+      width:min(420px,92vw); height:auto; aspect-ratio:1/1;
+      background:var(--surface-2); border:1px solid var(--border);
+      border-radius:14px; touch-action:none; display:block;
+    }
+
     /* Formulär */
     .form-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; margin: 14px 0; }
     .field { display: flex; flex-direction: column; gap: 6px; }
@@ -452,6 +551,7 @@
         <a class="nav-link" data-route="blogg" href="#/blogg" data-i18n="nav.blog">Blogg</a>
         <a class="nav-link" data-route="cv" href="#/cv" data-i18n="nav.cv">CV & Kurser</a>
         <a class="nav-link" data-route="verktyg" href="#/verktyg" data-i18n="nav.tools">Verktyg</a>
+        <a class="nav-link" data-route="spel" href="#/spel" data-i18n="nav.games">Spel</a>
       </nav>
       <div class="header-tools">
         <span class="clockchip"><span id="date-today"></span> · <span id="clock"></span></span>
@@ -519,6 +619,7 @@
               <div class="stat"><b>KTH</b><span data-i18n="hero.statSchool">Samhällsbyggnad</span></div>
               <div class="stat"><b id="stat-year">År 4</b><span data-i18n="hero.statYear">av 5</span></div>
               <div class="stat"><b id="stat-tools">10+</b><span data-i18n="hero.statTools">verktyg</span></div>
+              <div class="stat"><b id="stat-week">v.–</b><span data-i18n="hero.statWeek">denna vecka</span></div>
             </div>
           </div>
           <div class="panel">
@@ -725,6 +826,21 @@
             <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h3v3h-3zM20 14v2M17 20h3M14 19v1"/></svg></span>
             <b data-i18n="tools.qr.name">QR-kodgenerator</b>
             <span data-i18n="tools.qr.desc">Skapa QR-koder direkt på sidan och ladda ner som PNG.</span>
+          </a>
+          <a class="tool-card" href="#/verktyg/losen">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 15v2"/></svg></span>
+            <b data-i18n="tools.losen.name">Lösenordsgenerator</b>
+            <span data-i18n="tools.losen.desc">Skapa starka, slumpade lösenord och nycklar lokalt med kryptografiskt säker slump – inget lämnar din dator.</span>
+          </a>
+          <a class="tool-card" href="#/verktyg/tid">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <b data-i18n="tools.tid.name">Tidszoner & klocka</b>
+            <span data-i18n="tools.tid.desc">Live världsklocka och tidszonsomvandlare som hanterar sommartid automatiskt.</span>
+          </a>
+          <a class="tool-card" href="#/verktyg/lastkomb">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4v16h16"/><path d="M8 16V9M12 16v-5M16 16v-9M20 16v-3"/></svg></span>
+            <b data-i18n="tools.lastkomb.name">Lastkombinering (EKS)</b>
+            <span data-i18n="tools.lastkomb.desc">Brott- och bruksgränstillstånd enligt SS-EN 1990 med svensk annex och Boverkets EKS (6.10a/6.10b, ψ-faktorer).</span>
           </a>
           <a class="tool-card" href="#/verktyg/mathchad">
             <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 5H8l6 7-6 7h10"/></svg></span>
@@ -1128,6 +1244,110 @@ Iz: –</div>
         </div>
       </div>
 
+      <!-- Lösenordsgenerator -->
+      <div class="tool-section" id="tool-losen">
+        <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
+        <div class="card">
+          <h2 data-i18n="tools.losen.title">Lösenordsgenerator</h2>
+          <p class="hint" data-i18n="tools.losen.lead">Allt genereras lokalt i din webbläsare med kryptografiskt säker slump (Web Crypto). Inget skickas någonsin över nätet.</p>
+
+          <div class="pw-output">
+            <input type="text" id="pw-out" readonly placeholder="Klicka på Generera" aria-label="Genererat lösenord" />
+            <button class="btn" id="pw-copy" type="button" data-i18n="tools.losen.copy">Kopiera</button>
+          </div>
+          <div class="pw-strength"><div class="pw-strength-bar" id="pw-bar"></div></div>
+          <div class="hint" id="pw-meta"></div>
+
+          <div class="form-row" style="margin-top:14px; align-items:flex-end">
+            <div class="field" style="flex:1 1 240px">
+              <label for="pw-length"><span data-i18n="tools.losen.length">Längd</span>: <b id="pw-length-val">20</b></label>
+              <input type="range" id="pw-length" min="6" max="64" value="20" style="width:100%" />
+            </div>
+            <button class="btn btn-primary" id="pw-gen" type="button" data-i18n="tools.losen.generate">Generera</button>
+          </div>
+
+          <div class="pw-opts">
+            <label><input type="checkbox" id="pw-upper" checked /> <span data-i18n="tools.losen.upper">Versaler (A–Z)</span></label>
+            <label><input type="checkbox" id="pw-lower" checked /> <span data-i18n="tools.losen.lower">Gemener (a–z)</span></label>
+            <label><input type="checkbox" id="pw-digits" checked /> <span data-i18n="tools.losen.digits">Siffror (0–9)</span></label>
+            <label><input type="checkbox" id="pw-symbols" checked /> <span data-i18n="tools.losen.symbols">Specialtecken (!@#…)</span></label>
+            <label><input type="checkbox" id="pw-noambig" /> <span data-i18n="tools.losen.noambig">Uteslut förväxlingsbara (O0 l1I)</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tidszoner & klocka -->
+      <div class="tool-section" id="tool-tid">
+        <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
+        <div class="card">
+          <h2 data-i18n="tools.tid.title">Tidszoner & klocka</h2>
+          <p class="hint" id="tid-local"></p>
+          <div class="clock-grid" id="tid-clocks"></div>
+          <div class="form-row" style="margin-top:6px; align-items:flex-end">
+            <div class="field" style="flex:1 1 240px">
+              <label for="tid-add" data-i18n="tools.tid.add">Lägg till stad/zon</label>
+              <select id="tid-add"></select>
+            </div>
+          </div>
+
+          <hr class="divider" />
+          <h3 data-i18n="tools.tid.convTitle">Omvandla tid</h3>
+          <div class="form-row" style="align-items:flex-end">
+            <div class="field" style="flex:1 1 220px">
+              <label for="tid-when" data-i18n="tools.tid.when">Datum & tid</label>
+              <input type="datetime-local" id="tid-when" style="width:100%; font-family:var(--font)" />
+            </div>
+            <div class="field" style="flex:1 1 200px">
+              <label for="tid-from" data-i18n="tools.tid.from">Från zon</label>
+              <select id="tid-from"></select>
+            </div>
+            <div class="field" style="flex:1 1 200px">
+              <label for="tid-to" data-i18n="tools.tid.to">Till zon</label>
+              <select id="tid-to"></select>
+            </div>
+            <button class="btn" id="tid-swap" type="button" title="Byt zoner">⇄</button>
+          </div>
+          <div class="tid-result" id="tid-result"></div>
+        </div>
+      </div>
+
+      <!-- Lastkombinering (EKS / SS-EN 1990) -->
+      <div class="tool-section" id="tool-lastkomb">
+        <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
+        <div class="card">
+          <h2 data-i18n="tools.lastkomb.title">Lastkombinering (EKS)</h2>
+          <p class="hint" data-i18n="tools.lastkomb.lead">Lastkombinationer enligt SS-EN 1990 med svensk nationell annex och Boverkets EKS 11. Brottgräns (STR/GEO) via ekv. 6.10a och 6.10b, samt bruksgräns. Ange laster i valfri konsekvent enhet (t.ex. kN eller kN/m²).</p>
+
+          <div class="form-row" style="align-items:flex-end">
+            <div class="field">
+              <label for="lk-sk" data-i18n="tools.lastkomb.sk">Säkerhetsklass</label>
+              <select id="lk-sk">
+                <option value="0.83">SK1 (γd = 0,83)</option>
+                <option value="0.91" selected>SK2 (γd = 0,91)</option>
+                <option value="1.0">SK3 (γd = 1,0)</option>
+              </select>
+            </div>
+          </div>
+
+          <h3 style="margin-top:18px" data-i18n="tools.lastkomb.perm">Permanenta laster (G)</h3>
+          <div id="lk-perm"></div>
+          <button class="btn" id="lk-add-perm" type="button" data-i18n="tools.lastkomb.addPerm">+ Permanent last</button>
+
+          <h3 style="margin-top:18px" data-i18n="tools.lastkomb.var">Variabla laster (Q)</h3>
+          <div id="lk-var"></div>
+          <button class="btn" id="lk-add-var" type="button" data-i18n="tools.lastkomb.addVar">+ Variabel last</button>
+
+          <div style="margin-top:18px">
+            <button class="btn btn-primary" id="lk-calc" type="button" data-i18n="tools.lastkomb.calc">Beräkna kombinationer</button>
+          </div>
+
+          <div id="lk-result" style="margin-top:16px"></div>
+
+          <hr class="divider" />
+          <p class="hint" data-i18n="tools.lastkomb.note">⚠️ Pedagogiskt hjälpmedel. Värdena bygger på EKS 11 (BFS 2019:1). Kontrollera alltid mot den utgåva av EKS som gäller för ditt projekt – du ansvarar själv för dimensioneringen.</p>
+        </div>
+      </div>
+
       <!-- Mathchad -->
       <div class="tool-section" id="tool-mathchad">
         <a class="tool-back" href="#/verktyg" data-i18n="tools.back">← Alla verktyg</a>
@@ -1144,6 +1364,84 @@ Iz: –</div>
         <div class="card">
           <h2>AF2130</h2>
           <p data-i18n="tools.af2130.lead">Innehåll för AF2130 kommer här.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= SPEL ================= -->
+    <section id="view-spel" class="view">
+
+      <!-- Hubb -->
+      <div id="game-hub">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="games.eyebrow">Spel</span>
+          <h2 data-i18n="games.title">Spel</h2>
+          <p data-i18n="games.lead">Småspel byggda för skojs skull – allt körs direkt i webbläsaren.</p>
+        </div>
+        <div class="tool-grid">
+          <a class="tool-card" href="#/spel/match3">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/></svg></span>
+            <b data-i18n="games.match3.name">Godiskross</b>
+            <span data-i18n="games.match3.desc">Ett match-3-pussel i Candy Crush-stil. Byt godisar, matcha tre eller fler och samla poäng innan dragen tar slut.</span>
+          </a>
+          <a class="tool-card" href="#/spel/2048">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg></span>
+            <b data-i18n="games.g2048.name">2048</b>
+            <span data-i18n="games.g2048.desc">Slå ihop brickor med samma tal och försök nå 2048. Styr med piltangenter eller svep.</span>
+          </a>
+          <a class="tool-card" href="#/spel/snake">
+            <span class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5h8a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3H8a3 3 0 0 0-3 3v1a2 2 0 0 0 2 2h7"/><circle cx="18.5" cy="5.5" r="1.5"/></svg></span>
+            <b data-i18n="games.snake.name">Snake</b>
+            <span data-i18n="games.snake.desc">Den klassiska ormen – ät, väx och undvik att krocka med väggar eller dig själv.</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Godiskross (match-3) -->
+      <div class="game-section" id="game-match3">
+        <a class="tool-back" href="#/spel" data-i18n="games.back">← Alla spel</a>
+        <div class="card game-card">
+          <h2 data-i18n="games.match3.title">Godiskross</h2>
+          <div class="game-hud">
+            <div class="game-stat"><b id="m3-score">0</b><span data-i18n="games.match3.score">Poäng</span></div>
+            <div class="game-stat"><b id="m3-moves">20</b><span data-i18n="games.match3.moves">Drag kvar</span></div>
+            <button class="btn btn-primary" id="m3-new" type="button" data-i18n="games.match3.new">Nytt spel</button>
+          </div>
+          <div class="m3-wrap"><div id="m3-board" class="m3-board"></div></div>
+          <div class="game-over-msg" id="m3-msg"></div>
+        </div>
+      </div>
+
+      <!-- 2048 -->
+      <div class="game-section" id="game-2048">
+        <a class="tool-back" href="#/spel" data-i18n="games.back">← Alla spel</a>
+        <div class="card game-card">
+          <h2 data-i18n="games.g2048.title">2048</h2>
+          <div class="game-hud">
+            <div class="game-stat"><b id="g2048-score">0</b><span data-i18n="games.g2048.score">Poäng</span></div>
+            <div class="game-stat"><b id="g2048-best">0</b><span data-i18n="games.g2048.best">Bästa</span></div>
+            <button class="btn btn-primary" id="g2048-new" type="button" data-i18n="games.g2048.new">Nytt spel</button>
+          </div>
+          <div class="g2048-wrap"><div id="g2048-board" class="g2048-board"></div></div>
+          <p class="hint" data-i18n="games.g2048.help">Använd piltangenterna eller svep för att flytta brickorna.</p>
+          <div class="game-over-msg" id="g2048-msg"></div>
+        </div>
+      </div>
+
+      <!-- Snake -->
+      <div class="game-section" id="game-snake">
+        <a class="tool-back" href="#/spel" data-i18n="games.back">← Alla spel</a>
+        <div class="card game-card">
+          <h2 data-i18n="games.snake.title">Snake</h2>
+          <div class="game-hud">
+            <div class="game-stat"><b id="snake-score">0</b><span data-i18n="games.snake.score">Poäng</span></div>
+            <div class="game-stat"><b id="snake-best">0</b><span data-i18n="games.snake.best">Bästa</span></div>
+            <button class="btn btn-primary" id="snake-start" type="button" data-i18n="games.snake.start">Starta</button>
+          </div>
+          <div class="snake-wrap"><canvas id="snake-canvas" width="400" height="400"></canvas></div>
+          <p class="hint" data-i18n="games.snake.help">Styr med piltangenterna eller WASD. På mobil: svep i den riktning du vill gå.</p>
+          <div class="game-over-msg" id="snake-msg"></div>
         </div>
       </div>
 
@@ -1219,13 +1517,23 @@ Iz: –</div>
   /* ===================== Språk (SV/EN) ===================== */
   const translations = {
     sv: {
-      'nav.home': 'Hem', 'nav.projects': 'Projekt', 'nav.blog': 'Blogg', 'nav.cv': 'CV & Kurser', 'nav.tools': 'Verktyg',
+      'nav.home': 'Hem', 'nav.projects': 'Projekt', 'nav.blog': 'Blogg', 'nav.cv': 'CV & Kurser', 'nav.tools': 'Verktyg', 'nav.games': 'Spel',
+      'games.eyebrow': 'Spel', 'games.title': 'Spel', 'games.lead': 'Småspel byggda för skojs skull – allt körs direkt i webbläsaren.',
+      'games.back': '← Alla spel',
+      'games.match3.name': 'Godiskross', 'games.match3.desc': 'Ett match-3-pussel i Candy Crush-stil. Byt godisar, matcha tre eller fler och samla poäng innan dragen tar slut.',
+      'games.match3.title': 'Godiskross', 'games.match3.score': 'Poäng', 'games.match3.moves': 'Drag kvar', 'games.match3.new': 'Nytt spel',
+      'games.g2048.name': '2048', 'games.g2048.desc': 'Slå ihop brickor med samma tal och försök nå 2048. Styr med piltangenter eller svep.',
+      'games.g2048.title': '2048', 'games.g2048.score': 'Poäng', 'games.g2048.best': 'Bästa', 'games.g2048.new': 'Nytt spel',
+      'games.g2048.help': 'Använd piltangenterna eller svep för att flytta brickorna.',
+      'games.snake.name': 'Snake', 'games.snake.desc': 'Den klassiska ormen – ät, väx och undvik att krocka med väggar eller dig själv.',
+      'games.snake.title': 'Snake', 'games.snake.score': 'Poäng', 'games.snake.best': 'Bästa', 'games.snake.start': 'Starta',
+      'games.snake.help': 'Styr med piltangenterna eller WASD. På mobil: svep i den riktning du vill gå.',
       'hero.eyebrow': 'Portfölj · KTH Stockholm',
       'hero.role': 'Civilingenjörsstudent i samhällsbyggnad på KTH',
       'hero.intro': 'Hej! Jag heter Nick Westin och studerar till civilingenjör i samhällsbyggnad på KTH i Stockholm, med inriktning mot byggnadskonstruktion. Jag är särskilt intresserad av konstruktion, programmering och problemlösning. På fritiden gillar jag att lära mig nya saker, bygga projekt och träna – allt från längdskidor och alpint till vattenskidor, kajak och snickeri.',
       'hero.ctaProjects': 'Se mina projekt', 'hero.ctaCv': 'Ladda ner CV (PDF)', 'hero.ctaTools': 'Byggverktyg',
       'hero.progressTitle': 'Studieprogression', 'hero.quickTitle': 'Snabbfakta', 'hero.focusTitle': 'Inriktning',
-      'hero.statSchool': 'Samhällsbyggnad', 'hero.statYear': 'av 5', 'hero.statTools': 'verktyg',
+      'hero.statSchool': 'Samhällsbyggnad', 'hero.statYear': 'av 5', 'hero.statTools': 'verktyg', 'hero.statWeek': 'denna vecka',
       'hero.chip1': 'Byggnadskonstruktion', 'hero.chip2': 'Programmering', 'hero.chip3': 'BIM & Revit', 'hero.chip4': 'Problemlösning',
       'projects.eyebrow': 'Portfölj', 'projects.title': 'Projekt',
       'projects.lead': 'Ett urval av studie- och konstruktionsprojekt från KTH.',
@@ -1287,6 +1595,22 @@ Iz: –</div>
       'tools.qr.text': 'Text eller URL', 'tools.qr.size': 'Storlek', 'tools.qr.generate': 'Generera',
       'tools.qr.download': 'Ladda ner QR-kod (PNG)',
       'tools.qr.colab': 'Vill du hellre använda Python? Här är min Google Colab för QR-koder:',
+      'tools.losen.name': 'Lösenordsgenerator', 'tools.losen.title': 'Lösenordsgenerator',
+      'tools.losen.desc': 'Skapa starka, slumpade lösenord och nycklar lokalt med kryptografiskt säker slump – inget lämnar din dator.',
+      'tools.losen.lead': 'Allt genereras lokalt i din webbläsare med kryptografiskt säker slump (Web Crypto). Inget skickas någonsin över nätet.',
+      'tools.losen.length': 'Längd', 'tools.losen.generate': 'Generera', 'tools.losen.copy': 'Kopiera',
+      'tools.losen.upper': 'Versaler (A–Z)', 'tools.losen.lower': 'Gemener (a–z)', 'tools.losen.digits': 'Siffror (0–9)',
+      'tools.losen.symbols': 'Specialtecken (!@#…)', 'tools.losen.noambig': 'Uteslut förväxlingsbara (O0 l1I)',
+      'tools.tid.name': 'Tidszoner & klocka', 'tools.tid.title': 'Tidszoner & klocka',
+      'tools.tid.desc': 'Live världsklocka och tidszonsomvandlare som hanterar sommartid automatiskt.',
+      'tools.tid.add': 'Lägg till stad/zon', 'tools.tid.convTitle': 'Omvandla tid',
+      'tools.tid.when': 'Datum & tid', 'tools.tid.from': 'Från zon', 'tools.tid.to': 'Till zon',
+      'tools.lastkomb.name': 'Lastkombinering (EKS)', 'tools.lastkomb.title': 'Lastkombinering (EKS)',
+      'tools.lastkomb.desc': 'Brott- och bruksgränstillstånd enligt SS-EN 1990 med svensk annex och Boverkets EKS (6.10a/6.10b, ψ-faktorer).',
+      'tools.lastkomb.lead': 'Lastkombinationer enligt SS-EN 1990 med svensk nationell annex och Boverkets EKS 11. Brottgräns (STR/GEO) via ekv. 6.10a och 6.10b, samt bruksgräns. Ange laster i valfri konsekvent enhet (t.ex. kN eller kN/m²).',
+      'tools.lastkomb.sk': 'Säkerhetsklass', 'tools.lastkomb.perm': 'Permanenta laster (G)', 'tools.lastkomb.var': 'Variabla laster (Q)',
+      'tools.lastkomb.addPerm': '+ Permanent last', 'tools.lastkomb.addVar': '+ Variabel last', 'tools.lastkomb.calc': 'Beräkna kombinationer',
+      'tools.lastkomb.note': '⚠️ Pedagogiskt hjälpmedel. Värdena bygger på EKS 11 (BFS 2019:1). Kontrollera alltid mot den utgåva av EKS som gäller för ditt projekt – du ansvarar själv för dimensioneringen.',
       'tools.mathchad.desc': 'Ladda ner Mathchad – mitt eget beräkningsprogram.',
       'tools.mathchad.lead': 'Mathchad är mitt eget beräkningsprogram för macOS.',
       'tools.mathchad.download': 'Ladda ner Mathchad (macOS, Apple Silicon)',
@@ -1296,13 +1620,23 @@ Iz: –</div>
       'footer.built': 'Byggd av mig själv – först skapad 21 juni 2025'
     },
     en: {
-      'nav.home': 'Home', 'nav.projects': 'Projects', 'nav.blog': 'Blog', 'nav.cv': 'CV & Courses', 'nav.tools': 'Tools',
+      'nav.home': 'Home', 'nav.projects': 'Projects', 'nav.blog': 'Blog', 'nav.cv': 'CV & Courses', 'nav.tools': 'Tools', 'nav.games': 'Games',
+      'games.eyebrow': 'Games', 'games.title': 'Games', 'games.lead': 'Small games built for fun – everything runs directly in your browser.',
+      'games.back': '← All games',
+      'games.match3.name': 'Candy Crush', 'games.match3.desc': 'A Candy Crush–style match-3 puzzle. Swap candies, match three or more and rack up points before you run out of moves.',
+      'games.match3.title': 'Candy Crush', 'games.match3.score': 'Score', 'games.match3.moves': 'Moves left', 'games.match3.new': 'New game',
+      'games.g2048.name': '2048', 'games.g2048.desc': 'Merge tiles with the same number and try to reach 2048. Use arrow keys or swipe.',
+      'games.g2048.title': '2048', 'games.g2048.score': 'Score', 'games.g2048.best': 'Best', 'games.g2048.new': 'New game',
+      'games.g2048.help': 'Use the arrow keys or swipe to move the tiles.',
+      'games.snake.name': 'Snake', 'games.snake.desc': 'The classic snake – eat, grow and avoid hitting the walls or yourself.',
+      'games.snake.title': 'Snake', 'games.snake.score': 'Score', 'games.snake.best': 'Best', 'games.snake.start': 'Start',
+      'games.snake.help': 'Control with arrow keys or WASD. On mobile: swipe in the direction you want to go.',
       'hero.eyebrow': 'Portfolio · KTH Stockholm',
       'hero.role': 'Civil Engineering Student at KTH Stockholm',
       'hero.intro': "Hi! My name is Nick Westin and I am studying civil engineering (Built Environment) at KTH in Stockholm, specialising in structural engineering. I am especially interested in structures, programming and problem solving. In my free time I enjoy learning new things, building projects and training – everything from cross-country and alpine skiing to water skiing, kayaking and woodworking.",
       'hero.ctaProjects': 'View my projects', 'hero.ctaCv': 'Download CV (PDF)', 'hero.ctaTools': 'Engineering tools',
       'hero.progressTitle': 'Study progress', 'hero.quickTitle': 'Quick facts', 'hero.focusTitle': 'Focus areas',
-      'hero.statSchool': 'Built Environment', 'hero.statYear': 'of 5', 'hero.statTools': 'tools',
+      'hero.statSchool': 'Built Environment', 'hero.statYear': 'of 5', 'hero.statTools': 'tools', 'hero.statWeek': 'this week',
       'hero.chip1': 'Structural engineering', 'hero.chip2': 'Programming', 'hero.chip3': 'BIM & Revit', 'hero.chip4': 'Problem solving',
       'projects.eyebrow': 'Portfolio', 'projects.title': 'Projects',
       'projects.lead': 'A selection of study and engineering projects from KTH.',
@@ -1364,6 +1698,22 @@ Iz: –</div>
       'tools.qr.text': 'Text or URL', 'tools.qr.size': 'Size', 'tools.qr.generate': 'Generate',
       'tools.qr.download': 'Download QR code (PNG)',
       'tools.qr.colab': 'Prefer Python? Here is my Google Colab for QR codes:',
+      'tools.losen.name': 'Password Generator', 'tools.losen.title': 'Password Generator',
+      'tools.losen.desc': 'Create strong, random passwords and keys locally with cryptographically secure randomness – nothing leaves your computer.',
+      'tools.losen.lead': 'Everything is generated locally in your browser using cryptographically secure randomness (Web Crypto). Nothing is ever sent over the network.',
+      'tools.losen.length': 'Length', 'tools.losen.generate': 'Generate', 'tools.losen.copy': 'Copy',
+      'tools.losen.upper': 'Uppercase (A–Z)', 'tools.losen.lower': 'Lowercase (a–z)', 'tools.losen.digits': 'Digits (0–9)',
+      'tools.losen.symbols': 'Symbols (!@#…)', 'tools.losen.noambig': 'Exclude look-alikes (O0 l1I)',
+      'tools.tid.name': 'Time zones & clock', 'tools.tid.title': 'Time zones & clock',
+      'tools.tid.desc': 'Live world clock and a time-zone converter that handles daylight saving automatically.',
+      'tools.tid.add': 'Add city/zone', 'tools.tid.convTitle': 'Convert time',
+      'tools.tid.when': 'Date & time', 'tools.tid.from': 'From zone', 'tools.tid.to': 'To zone',
+      'tools.lastkomb.name': 'Load combinations (EKS)', 'tools.lastkomb.title': 'Load combinations (EKS)',
+      'tools.lastkomb.desc': 'Ultimate and serviceability limit states per SS-EN 1990 with the Swedish annex and Boverket EKS (6.10a/6.10b, ψ factors).',
+      'tools.lastkomb.lead': 'Load combinations per SS-EN 1990 with the Swedish national annex and Boverket EKS 11. Ultimate limit state (STR/GEO) via eq. 6.10a and 6.10b, plus serviceability. Enter loads in any consistent unit (e.g. kN or kN/m²).',
+      'tools.lastkomb.sk': 'Safety class', 'tools.lastkomb.perm': 'Permanent loads (G)', 'tools.lastkomb.var': 'Variable loads (Q)',
+      'tools.lastkomb.addPerm': '+ Permanent load', 'tools.lastkomb.addVar': '+ Variable load', 'tools.lastkomb.calc': 'Calculate combinations',
+      'tools.lastkomb.note': '⚠️ Educational aid. Values are based on EKS 11 (BFS 2019:1). Always verify against the EKS edition in force for your project – you are responsible for the design.',
       'tools.mathchad.desc': 'Download Mathchad – my own calculation app.',
       'tools.mathchad.lead': 'Mathchad is my own calculation app for macOS.',
       'tools.mathchad.download': 'Download Mathchad (macOS, Apple Silicon)',
@@ -1399,7 +1749,7 @@ Iz: –</div>
   document.getElementById('flag-en').addEventListener('click', function () { setLanguage('en'); });
 
   /* ===================== Routing ===================== */
-  const routes = ['hem', 'projekt', 'blogg', 'cv', 'verktyg'];
+  const routes = ['hem', 'projekt', 'blogg', 'cv', 'verktyg', 'spel'];
   const legacyMap = { 'about-me': 'hem', 'projekt': 'projekt', 'blogg': 'blogg', 'cv': 'cv',
     'program': 'verktyg/tvarsnitt', 'mathchad': 'verktyg/mathchad', 'pdf-merger': 'verktyg/pdf',
     'plot': 'verktyg/plot', 'qrcode': 'verktyg/qr', 'af2130': 'verktyg/af2130' };
@@ -1432,6 +1782,21 @@ Iz: –</div>
         hub.style.display = 'block';
       }
     }
+    if (r.view === 'spel') {
+      const ghub = document.getElementById('game-hub');
+      const gtarget = r.sub ? document.getElementById('game-' + r.sub) : null;
+      document.querySelectorAll('.game-section').forEach(function (s) { s.classList.remove('active'); });
+      if (gtarget) {
+        ghub.style.display = 'none';
+        gtarget.classList.add('active');
+        if (typeof onGameOpen === 'function') onGameOpen(r.sub);
+      } else {
+        ghub.style.display = 'block';
+        if (typeof onGameClose === 'function') onGameClose();
+      }
+    } else if (typeof onGameClose === 'function') {
+      onGameClose();
+    }
     document.getElementById('nav-links').classList.remove('open');
     window.scrollTo({ top: 0, behavior: 'auto' });
   }
@@ -1446,6 +1811,9 @@ Iz: –</div>
 
   /* ===================== Bloggdata – alla inlägg bevarade ===================== */
   const blogPosts = [
+    { date: '2026-06-26', label: '26 juni 2026', title: 'Kollade fotboll på puben och gyllene kvällspromenad i stan!', media: [{ img: 'Bilder/26juni26.jpg' }, { img: 'Bilder/26juni26.2.jpg' }] },
+    { date: '2026-06-23', label: '23 juni 2026', title: 'Fixade och bytte tätning i skrovet på Wetan!', media: [{ img: 'Bilder/23juni26.jpg' }, { img: 'Bilder/23juni26.2.jpg' }] },
+    { date: '2026-06-18', label: '18 juni 2026', title: 'Midsommarstök – lövade midsommarstången, pillade med Wetan och ny kyl på plats!', media: [{ img: 'Bilder/18juni26.jpg' }, { img: 'Bilder/18juni26.2.jpg' }, { img: 'Bilder/18juni26.3.jpg' }, { img: 'Bilder/18juni26.4.jpg' }] },
     { date: '2026-06-10', label: '10 juni 2026', title: 'Fraktade ut Korsö-Teslan till landet med nya batterier!', media: [{ img: 'Bilder/10juni26.jpg' }, { img: 'Bilder/10juni26.2.jpg' }] },
     { date: '2026-06-09', label: '9 juni 2026', title: 'Uppfarten i Årby klar – nytt grus på plats!', media: [{ img: 'Bilder/9juni26.jpg' }, { img: 'Bilder/9juni26.2.jpg' }, { img: 'Bilder/9juni26.3.jpg' }] },
     { date: '2026-06-08', label: '8 juni 2026', title: 'Packat grus på uppfarten i Årby!', media: [{ img: 'Bilder/8juni26.jpg' }, { img: 'Bilder/8juni26.2.jpg' }] },
@@ -1615,7 +1983,387 @@ Iz: –</div>
   function onToolOpen(id) {
     if (id === 'pdf') loadScript('https://unpkg.com/pdf-lib/dist/pdf-lib.min.js').catch(function () {});
     if (id === 'qr') loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js').catch(function () {});
+    if (id === 'losen' && window.pwGenerate) window.pwGenerate();
+    if (id === 'tid' && window.tidOpen) window.tidOpen();
+    if (id === 'lastkomb' && window.lkOpen) window.lkOpen();
   }
+
+  /* ===================== Lösenordsgenerator ===================== */
+  (function () {
+    const out = document.getElementById('pw-out');
+    if (!out) return;
+    const lenInput = document.getElementById('pw-length');
+    const lenVal = document.getElementById('pw-length-val');
+    const bar = document.getElementById('pw-bar');
+    const meta = document.getElementById('pw-meta');
+    const genBtn = document.getElementById('pw-gen');
+    const copyBtn = document.getElementById('pw-copy');
+    const cb = {
+      upper: document.getElementById('pw-upper'),
+      lower: document.getElementById('pw-lower'),
+      digits: document.getElementById('pw-digits'),
+      symbols: document.getElementById('pw-symbols'),
+      noambig: document.getElementById('pw-noambig')
+    };
+    const SETS = {
+      upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      lower: 'abcdefghijklmnopqrstuvwxyz',
+      digits: '0123456789',
+      symbols: '!@#$%^&*()-_=+[]{};:,.?/'
+    };
+    const AMBIG = /[O0oIl1|]/g;
+
+    // Kryptografiskt säkert, jämnt fördelat val ur ett alfabet
+    function pick(alphabet) {
+      const n = alphabet.length;
+      const max = Math.floor(256 / n) * n;        // undvik modulo-bias
+      const buf = new Uint8Array(1);
+      let r;
+      do { crypto.getRandomValues(buf); r = buf[0]; } while (r >= max);
+      return alphabet[r % n];
+    }
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = pick(Array.from({ length: i + 1 }, (_, k) => k));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function generate() {
+      let active = Object.keys(SETS).filter(k => cb[k].checked);
+      if (active.length === 0) { cb.lower.checked = true; active = ['lower']; }
+      let pool = active.map(k => SETS[k]);
+      if (cb.noambig.checked) pool = pool.map(s => s.replace(AMBIG, ''));
+      const all = pool.join('');
+      const len = parseInt(lenInput.value, 10);
+      const chars = [];
+      // garantera minst ett tecken ur varje vald grupp
+      pool.forEach(s => { if (s) chars.push(pick(s)); });
+      while (chars.length < len) chars.push(pick(all));
+      const pw = shuffle(chars).slice(0, len).join('');
+      out.value = pw;
+      updateStrength(pw, all.length);
+    }
+
+    function updateStrength(pw, poolSize) {
+      const bits = pw.length * Math.log2(poolSize || 1);
+      const pct = Math.max(6, Math.min(100, Math.round(bits / 128 * 100)));
+      bar.style.width = pct + '%';
+      let color, label;
+      if (bits < 50) { color = '#e0464f'; label = sv('Svagt', 'Weak'); }
+      else if (bits < 80) { color = '#e8a23d'; label = sv('Okej', 'Fair'); }
+      else if (bits < 120) { color = '#4f9d69'; label = sv('Starkt', 'Strong'); }
+      else { color = '#2e8b57'; label = sv('Mycket starkt', 'Very strong'); }
+      bar.style.background = color;
+      meta.textContent = label + ' · ' + Math.round(bits) + ' ' + sv('bitars entropi', 'bits of entropy');
+    }
+
+    lenInput.addEventListener('input', function () { lenVal.textContent = lenInput.value; generate(); });
+    genBtn.addEventListener('click', generate);
+    Object.values(cb).forEach(c => c.addEventListener('change', generate));
+    copyBtn.addEventListener('click', function () {
+      if (!out.value) return;
+      const done = () => { const t = copyBtn.textContent; copyBtn.textContent = sv('Kopierat!', 'Copied!'); setTimeout(() => { copyBtn.textContent = t; }, 1200); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(out.value).then(done).catch(() => { out.select(); document.execCommand('copy'); done(); });
+      } else { out.select(); document.execCommand('copy'); done(); }
+    });
+
+    window.pwGenerate = generate;
+  })();
+
+  /* ===================== Tidszoner & klocka ===================== */
+  (function () {
+    const sectionEl = document.getElementById('tool-tid');
+    if (!sectionEl) return;
+    const clocksEl = document.getElementById('tid-clocks');
+    const localEl = document.getElementById('tid-local');
+    const addSel = document.getElementById('tid-add');
+    const fromSel = document.getElementById('tid-from');
+    const toSel = document.getElementById('tid-to');
+    const whenInput = document.getElementById('tid-when');
+    const resultEl = document.getElementById('tid-result');
+    const swapBtn = document.getElementById('tid-swap');
+
+    // Kuraterad lista (etikett -> IANA-zon)
+    const CURATED = [
+      ['Stockholm', 'Europe/Stockholm'], ['London', 'Europe/London'], ['Paris', 'Europe/Paris'],
+      ['Berlin', 'Europe/Berlin'], ['Helsingfors', 'Europe/Helsinki'], ['Moskva', 'Europe/Moscow'],
+      ['New York', 'America/New_York'], ['Chicago', 'America/Chicago'], ['Denver', 'America/Denver'],
+      ['Los Angeles', 'America/Los_Angeles'], ['São Paulo', 'America/Sao_Paulo'],
+      ['UTC', 'UTC'], ['Dubai', 'Asia/Dubai'], ['Mumbai', 'Asia/Kolkata'], ['Bangkok', 'Asia/Bangkok'],
+      ['Singapore', 'Asia/Singapore'], ['Hongkong', 'Asia/Hong_Kong'], ['Shanghai', 'Asia/Shanghai'],
+      ['Tokyo', 'Asia/Tokyo'], ['Seoul', 'Asia/Seoul'], ['Sydney', 'Australia/Sydney'],
+      ['Auckland', 'Pacific/Auckland'], ['Honolulu', 'Pacific/Honolulu']
+    ];
+    const labelOf = (tz) => { const f = CURATED.find(c => c[1] === tz); return f ? f[0] : tz.split('/').pop().replace(/_/g, ' '); };
+
+    let zones = ['Europe/Stockholm', 'Europe/London', 'America/New_York', 'Asia/Tokyo', 'UTC'];
+    const localTz = (Intl.DateTimeFormat().resolvedOptions().timeZone) || 'Europe/Stockholm';
+
+    function allZones() {
+      let list = CURATED.map(c => c[1]);
+      try { if (typeof Intl.supportedValuesOf === 'function') list = Intl.supportedValuesOf('timeZone'); } catch (e) {}
+      if (list.indexOf(localTz) === -1) list = [localTz].concat(list);
+      return list;
+    }
+    function fillSelect(sel, list, selected) {
+      sel.innerHTML = '';
+      list.forEach(function (tz) {
+        const o = document.createElement('option');
+        o.value = tz; o.textContent = labelOf(tz) === tz ? tz : (labelOf(tz) + ' — ' + tz);
+        if (tz === selected) o.selected = true;
+        sel.appendChild(o);
+      });
+    }
+
+    function offsetMinutes(tz, date) {
+      const dtf = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour12: false,
+        year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const p = {};
+      dtf.formatToParts(date).forEach(function (x) { if (x.type !== 'literal') p[x.type] = x.value; });
+      let hh = p.hour === '24' ? '00' : p.hour;
+      const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +hh, +p.minute, +p.second);
+      return Math.round((asUTC - date.getTime()) / 60000);
+    }
+    function offsetLabel(tz, date) {
+      const m = offsetMinutes(tz, date);
+      const s = m < 0 ? '-' : '+';
+      const a = Math.abs(m);
+      return 'UTC' + s + String(Math.floor(a / 60)).padStart(2, '0') + ':' + String(a % 60).padStart(2, '0');
+    }
+    function fmtTime(tz, date) {
+      return new Intl.DateTimeFormat(currentLang === 'sv' ? 'sv-SE' : 'en-GB',
+        { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(date);
+    }
+    function fmtDate(tz, date) {
+      return new Intl.DateTimeFormat(currentLang === 'sv' ? 'sv-SE' : 'en-GB',
+        { timeZone: tz, weekday: 'short', day: 'numeric', month: 'short' }).format(date);
+    }
+
+    function buildClocks() {
+      clocksEl.innerHTML = '';
+      const now = new Date();
+      zones.forEach(function (tz) {
+        const card = document.createElement('div');
+        card.className = 'clock-card';
+        card.dataset.tz = tz;
+        card.innerHTML = '<div class="city"><span>' + labelOf(tz) + ' · ' + offsetLabel(tz, now) +
+          '</span><button class="rm" title="Ta bort" aria-label="Ta bort">✕</button></div>' +
+          '<div class="time">--:--:--</div><div class="date"></div>';
+        card.querySelector('.rm').addEventListener('click', function () {
+          zones = zones.filter(z => z !== tz); buildClocks(); tick();
+        });
+        clocksEl.appendChild(card);
+      });
+    }
+    function tick() {
+      const now = new Date();
+      clocksEl.querySelectorAll('.clock-card').forEach(function (card) {
+        const tz = card.dataset.tz;
+        card.querySelector('.time').textContent = fmtTime(tz, now);
+        card.querySelector('.date').textContent = fmtDate(tz, now);
+      });
+      if (localEl) localEl.textContent = sv('Din lokala zon: ', 'Your local zone: ') + localTz + ' (' + offsetLabel(localTz, now) + ')';
+    }
+
+    // ---- Omvandlare ----
+    function wallToInstant(y, mo, d, h, mi, tz) {
+      const guess = Date.UTC(y, mo - 1, d, h, mi, 0);
+      let off = offsetMinutes(tz, new Date(guess));
+      let inst = guess - off * 60000;
+      off = offsetMinutes(tz, new Date(inst));      // förfina vid DST-gräns
+      return new Date(guess - off * 60000);
+    }
+    function convert() {
+      const val = whenInput.value;
+      if (!val) { resultEl.textContent = ''; return; }
+      const m = val.match(/^(\d+)-(\d+)-(\d+)T(\d+):(\d+)/);
+      if (!m) { resultEl.textContent = ''; return; }
+      const inst = wallToInstant(+m[1], +m[2], +m[3], +m[4], +m[5], fromSel.value);
+      const tTime = fmtTime(toSel.value, inst), tDate = fmtDate(toSel.value, inst);
+      resultEl.innerHTML = '<b>' + tTime + '</b> · ' + tDate + ' (' + labelOf(toSel.value) + ', ' + offsetLabel(toSel.value, inst) + ')';
+    }
+
+    function nowLocalInputValue() {
+      const n = new Date();
+      const p = (x) => String(x).padStart(2, '0');
+      return n.getFullYear() + '-' + p(n.getMonth() + 1) + '-' + p(n.getDate()) + 'T' + p(n.getHours()) + ':' + p(n.getMinutes());
+    }
+
+    addSel.addEventListener('change', function () {
+      const tz = addSel.value;
+      if (tz && zones.indexOf(tz) === -1) { zones.push(tz); buildClocks(); tick(); }
+    });
+    [whenInput, fromSel, toSel].forEach(el => el.addEventListener('input', convert));
+    swapBtn.addEventListener('click', function () { const a = fromSel.value; fromSel.value = toSel.value; toSel.value = a; convert(); });
+
+    let timer = null, inited = false;
+    function init() {
+      if (inited) return; inited = true;
+      const list = allZones();
+      fillSelect(addSel, list, '');
+      addSel.insertBefore(new Option(sv('— välj —', '— choose —'), ''), addSel.firstChild);
+      addSel.value = '';
+      fillSelect(fromSel, list, localTz);
+      fillSelect(toSel, list, 'America/New_York');
+      whenInput.value = nowLocalInputValue();
+      buildClocks();
+      convert();
+    }
+
+    window.tidOpen = function () {
+      init(); tick();
+      if (!timer) timer = setInterval(function () { if (sectionEl.classList.contains('active')) tick(); }, 1000);
+    };
+  })();
+
+  /* ===================== Lastkombinering (EKS / SS-EN 1990) ===================== */
+  (function () {
+    const permWrap = document.getElementById('lk-perm');
+    if (!permWrap) return;
+    const varWrap = document.getElementById('lk-var');
+    const skSel = document.getElementById('lk-sk');
+    const resEl = document.getElementById('lk-result');
+    const GG = 1.35, XI = 0.89, GQ = 1.5;   // EKS: γG, ξ, γQ
+
+    // ψ-katalog enligt EKS 11 (BFS 2019:1), tabell B-1
+    const CATS = [
+      { id: 'A', label: 'A – Bostäder', p: [0.7, 0.5, 0.3] },
+      { id: 'B', label: 'B – Kontor', p: [0.7, 0.5, 0.3] },
+      { id: 'C', label: 'C – Samlingslokaler', p: [0.7, 0.7, 0.6] },
+      { id: 'D', label: 'D – Affärslokaler', p: [0.7, 0.7, 0.6] },
+      { id: 'E', label: 'E – Lager', p: [1.0, 0.9, 0.8] },
+      { id: 'F', label: 'F – Fordon ≤30 kN', p: [0.7, 0.7, 0.6] },
+      { id: 'G', label: 'G – Fordon 30–160 kN', p: [0.7, 0.5, 0.3] },
+      { id: 'H', label: 'H – Yttertak (ej tillträde)', p: [0, 0, 0] },
+      { id: 'snow3', label: 'Snö  sk ≥ 3,0 kN/m²', p: [0.8, 0.6, 0.2] },
+      { id: 'snow2', label: 'Snö  2,0 ≤ sk < 3,0', p: [0.7, 0.4, 0.2] },
+      { id: 'snow1', label: 'Snö  1,0 ≤ sk < 2,0', p: [0.6, 0.3, 0.1] },
+      { id: 'wind', label: 'Vindlast', p: [0.3, 0.2, 0] },
+      { id: 'temp', label: 'Temperatur (ej brand)', p: [0.6, 0.5, 0] }
+    ];
+
+    function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+    function numField(label, val, w) {
+      const f = el('div', 'field'); f.innerHTML = '<label>' + label + '</label>';
+      const i = el('input'); i.type = 'number'; i.step = 'any'; i.value = val; if (w) i.style.width = w;
+      f.appendChild(i); return { field: f, input: i };
+    }
+
+    function addPerm(data) {
+      data = data || {};
+      const row = el('div', 'lk-row');
+      const name = el('div', 'field grow'); name.innerHTML = '<label>' + sv('Benämning', 'Name') + '</label>';
+      const nameI = el('input'); nameI.type = 'text'; nameI.value = data.name || sv('Egentyngd', 'Self-weight'); name.appendChild(nameI);
+      const g = numField('Gk', data.G != null ? data.G : 0);
+      const favWrap = el('label', 'inline'); const favI = el('input'); favI.type = 'checkbox'; favI.checked = !!data.fav;
+      favWrap.appendChild(favI); favWrap.appendChild(document.createTextNode(' ' + sv('gynnsam', 'favourable')));
+      const del = el('button', 'lk-del', '✕'); del.type = 'button'; del.title = sv('Ta bort', 'Remove');
+      del.addEventListener('click', function () { row.remove(); calc(); });
+      row.appendChild(name); row.appendChild(g.field); row.appendChild(favWrap); row.appendChild(del);
+      row._get = function () { return { G: parseFloat(g.input.value) || 0, fav: favI.checked }; };
+      [nameI, g.input, favI].forEach(x => x.addEventListener('input', calc));
+      permWrap.appendChild(row);
+    }
+
+    function addVar(data) {
+      data = data || {};
+      const row = el('div', 'lk-row');
+      const name = el('div', 'field grow'); name.innerHTML = '<label>' + sv('Benämning', 'Name') + '</label>';
+      const nameI = el('input'); nameI.type = 'text'; nameI.value = data.name || ''; name.appendChild(nameI);
+      const q = numField('Qk', data.Q != null ? data.Q : 0);
+      const catF = el('div', 'field'); catF.innerHTML = '<label>' + sv('Kategori', 'Category') + '</label>';
+      const cat = el('select'); CATS.forEach(c => { const o = el('option'); o.value = c.id; o.textContent = c.label; cat.appendChild(o); });
+      cat.value = data.cat || 'A'; catF.appendChild(cat);
+      const p0 = numField('ψ₀', 0, '70px'), p1 = numField('ψ₁', 0, '70px'), p2 = numField('ψ₂', 0, '70px');
+      function applyCat() { const c = CATS.find(x => x.id === cat.value); if (c) { p0.input.value = c.p[0]; p1.input.value = c.p[1]; p2.input.value = c.p[2]; } }
+      applyCat();
+      cat.addEventListener('change', function () { applyCat(); calc(); });
+      const del = el('button', 'lk-del', '✕'); del.type = 'button'; del.title = sv('Ta bort', 'Remove');
+      del.addEventListener('click', function () { row.remove(); calc(); });
+      row.appendChild(name); row.appendChild(q.field); row.appendChild(catF);
+      row.appendChild(p0.field); row.appendChild(p1.field); row.appendChild(p2.field); row.appendChild(del);
+      row._get = function () {
+        return { name: nameI.value, Q: parseFloat(q.input.value) || 0,
+          p0: parseFloat(p0.input.value) || 0, p1: parseFloat(p1.input.value) || 0, p2: parseFloat(p2.input.value) || 0 };
+      };
+      [nameI, q.input, p0.input, p1.input, p2.input].forEach(x => x.addEventListener('input', calc));
+      varWrap.appendChild(row);
+    }
+
+    function collect(wrap) { return Array.prototype.map.call(wrap.querySelectorAll('.lk-row'), r => r._get()); }
+
+    function calc() {
+      const gd = parseFloat(skSel.value);
+      const P = collect(permWrap), V = collect(varWrap);
+      const sumPerm = (factorUnfav) => P.reduce((s, p) => s + (p.fav ? 1.0 : factorUnfav) * p.G, 0);
+      const sumPermSLS = () => P.reduce((s, p) => s + p.G, 0);
+
+      // ---- Brottgräns (ULS) ----
+      const cases = [];
+      // 6.10a: permanent fullt (1,35), alla variabla med ψ0
+      const a = gd * (sumPerm(GG) + V.reduce((s, v) => s + GQ * v.p0 * v.Q, 0));
+      cases.push({ name: '6.10a', val: a });
+      // 6.10b: permanent reducerad (ξ·1,35), en huvudlast i taget
+      if (V.length === 0) {
+        cases.push({ name: '6.10b', val: gd * sumPerm(XI * GG) });
+      } else {
+        V.forEach((vL, L) => {
+          let s = sumPerm(XI * GG) + GQ * vL.Q;
+          V.forEach((vi, i) => { if (i !== L) s += GQ * vi.p0 * vi.Q; });
+          cases.push({ name: '6.10b · ' + sv('huvudlast', 'leading') + ' ' + (vL.name || ('Q' + (L + 1))), val: gd * s });
+        });
+      }
+      let gov = cases[0]; cases.forEach(c => { if (c.val > gov.val) gov = c; });
+
+      // ---- Bruksgräns (SLS) ----
+      const G0 = sumPermSLS();
+      let charV = 0, freqV = 0;
+      V.forEach((vL, L) => {
+        let c = vL.Q, f = vL.p1 * vL.Q;
+        V.forEach((vi, i) => { if (i !== L) { c += vi.p0 * vi.Q; f += vi.p2 * vi.Q; } });
+        if (c > charV) charV = c; if (f > freqV) freqV = f;
+      });
+      const charR = G0 + charV;
+      const freqR = G0 + freqV;
+      const quasiR = G0 + V.reduce((s, v) => s + v.p2 * v.Q, 0);
+
+      render(gov, cases, charR, freqR, quasiR);
+    }
+
+    function render(gov, cases, charR, freqR, quasiR) {
+      let rows = cases.map(c => '<tr class="' + (c === gov ? 'gov' : '') + '"><td>' + c.name + '</td><td>' + fmt(c.val, 2) + '</td></tr>').join('');
+      resEl.innerHTML =
+        '<div class="lk-card lk-gov"><div class="city" style="color:var(--muted);font-size:.85rem">' +
+        sv('Dimensionerande lasteffekt – brottgräns (STR/GEO)', 'Design load effect – ultimate limit state (STR/GEO)') + '</div>' +
+        '<div class="lk-big">' + fmt(gov.val, 2) + '</div>' +
+        '<div style="font-size:.85rem;color:var(--muted)">' + sv('avgörande', 'governing') + ': ' + gov.name + '</div>' +
+        '<div class="lk-cases"><table><tbody>' + rows + '</tbody></table></div></div>' +
+        '<div class="lk-card"><div style="color:var(--muted);font-size:.85rem;margin-bottom:6px">' +
+        sv('Bruksgräns (karakteristisk / frekvent / kvasi-permanent)', 'Serviceability (characteristic / frequent / quasi-permanent)') + '</div>' +
+        '<table style="width:100%"><tbody>' +
+        '<tr><td>' + sv('Karakteristisk', 'Characteristic') + '</td><td style="text-align:right;font-family:var(--font-mono,monospace)"><b>' + fmt(charR, 2) + '</b></td></tr>' +
+        '<tr><td>' + sv('Frekvent', 'Frequent') + '</td><td style="text-align:right;font-family:var(--font-mono,monospace)"><b>' + fmt(freqR, 2) + '</b></td></tr>' +
+        '<tr><td>' + sv('Kvasi-permanent', 'Quasi-permanent') + '</td><td style="text-align:right;font-family:var(--font-mono,monospace)"><b>' + fmt(quasiR, 2) + '</b></td></tr>' +
+        '</tbody></table></div>';
+    }
+
+    document.getElementById('lk-add-perm').addEventListener('click', function () { addPerm(); calc(); });
+    document.getElementById('lk-add-var').addEventListener('click', function () { addVar(); calc(); });
+    document.getElementById('lk-calc').addEventListener('click', calc);
+    skSel.addEventListener('change', calc);
+
+    let inited = false;
+    window.lkOpen = function () {
+      if (inited) return; inited = true;
+      addPerm({ name: sv('Egentyngd', 'Self-weight'), G: 0 });
+      addVar({ name: sv('Nyttig last', 'Imposed'), cat: 'A', Q: 0 });
+      addVar({ name: sv('Snölast', 'Snow'), cat: 'snow1', Q: 0 });
+      calc();
+    };
+  })();
 
   /* ===================== Tvärsnittsdata ===================== */
   (function () {
@@ -2278,6 +3026,447 @@ Iz: –</div>
         status.textContent = sv('Fel vid generering: ', 'Generation error: ') + e;
       }
     });
+  })();
+
+  /* ===================== Spel: dispatcher ===================== */
+  window.GAMES = window.GAMES || {};
+  window.onGameOpen = function (id) {
+    for (var k in window.GAMES) { if (k !== id && window.GAMES[k].close) window.GAMES[k].close(); }
+    var g = window.GAMES[id];
+    if (g && g.open) g.open();
+  };
+  window.onGameClose = function () {
+    for (var k in window.GAMES) { if (window.GAMES[k].close) window.GAMES[k].close(); }
+  };
+
+  /* ===================== Spel: Godiskross (match-3) ===================== */
+  (function () {
+    const SIZE = 8;                 // 8x8 bräde
+    const TYPES = ['🍬','🍭','🍇','🍊','🍓','🍫'];
+    const START_MOVES = 20;
+    const boardEl = document.getElementById('m3-board');
+    if (!boardEl) return;
+    const scoreEl = document.getElementById('m3-score');
+    const movesEl = document.getElementById('m3-moves');
+    const msgEl = document.getElementById('m3-msg');
+    const newBtn = document.getElementById('m3-new');
+
+    let grid = [];        // grid[r][c] = type index, eller -1 (tomt)
+    let cells = [];       // DOM-celler
+    let score = 0, moves = START_MOVES, busy = false, started = false;
+    let sel = null;       // {r,c} vald cell
+
+    const rnd = () => Math.floor(Math.random() * TYPES.length);
+
+    function buildBoard() {
+      boardEl.style.gridTemplateColumns = 'repeat(' + SIZE + ', 1fr)';
+      boardEl.innerHTML = '';
+      cells = [];
+      for (let r = 0; r < SIZE; r++) {
+        cells[r] = [];
+        for (let c = 0; c < SIZE; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'm3-cell';
+          cell.dataset.r = r; cell.dataset.c = c;
+          boardEl.appendChild(cell);
+          cells[r][c] = cell;
+        }
+      }
+    }
+
+    // Skapa startbräde utan befintliga matchningar
+    function freshGrid() {
+      grid = [];
+      for (let r = 0; r < SIZE; r++) {
+        grid[r] = [];
+        for (let c = 0; c < SIZE; c++) {
+          let t;
+          do { t = rnd(); }
+          while (
+            (c >= 2 && grid[r][c-1] === t && grid[r][c-2] === t) ||
+            (r >= 2 && grid[r-1][c] === t && grid[r-2][c] === t)
+          );
+          grid[r][c] = t;
+        }
+      }
+    }
+
+    const bg = ['#ff5d8f','#ffb703','#9d4edd','#ff7b00','#ef233c','#7b4b2a'];
+    function render() {
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          const cell = cells[r][c];
+          const t = grid[r][c];
+          cell.textContent = t < 0 ? '' : TYPES[t];
+          cell.style.background = t < 0 ? 'transparent' : (bg[t] + '22');
+        }
+      }
+    }
+
+    function findMatches() {
+      const matched = new Set();
+      // horisontellt
+      for (let r = 0; r < SIZE; r++) {
+        let run = 1;
+        for (let c = 1; c <= SIZE; c++) {
+          if (c < SIZE && grid[r][c] === grid[r][c-1] && grid[r][c] >= 0) run++;
+          else {
+            if (run >= 3) for (let k = c - run; k < c; k++) matched.add(r + ',' + k);
+            run = 1;
+          }
+        }
+      }
+      // vertikalt
+      for (let c = 0; c < SIZE; c++) {
+        let run = 1;
+        for (let r = 1; r <= SIZE; r++) {
+          if (r < SIZE && grid[r][c] === grid[r-1][c] && grid[r][c] >= 0) run++;
+          else {
+            if (run >= 3) for (let k = r - run; k < r; k++) matched.add(k + ',' + c);
+            run = 1;
+          }
+        }
+      }
+      return matched;
+    }
+
+    function applyGravity() {
+      for (let c = 0; c < SIZE; c++) {
+        let write = SIZE - 1;
+        for (let r = SIZE - 1; r >= 0; r--) {
+          if (grid[r][c] >= 0) { grid[write][c] = grid[r][c]; if (write !== r) grid[r][c] = -1; write--; }
+        }
+        for (let r = write; r >= 0; r--) { grid[r][c] = rnd(); cells[r][c].classList.add('drop'); }
+      }
+      setTimeout(() => boardEl.querySelectorAll('.drop').forEach(e => e.classList.remove('drop')), 200);
+    }
+
+    async function resolve() {
+      let matched = findMatches();
+      while (matched.size > 0) {
+        score += matched.size * 10;
+        scoreEl.textContent = score;
+        matched.forEach(key => { const [r, c] = key.split(',').map(Number); cells[r][c].classList.add('pop'); });
+        await wait(140);
+        matched.forEach(key => { const [r, c] = key.split(',').map(Number); grid[r][c] = -1; cells[r][c].classList.remove('pop'); });
+        applyGravity();
+        render();
+        await wait(190);
+        matched = findMatches();
+      }
+    }
+
+    const wait = ms => new Promise(res => setTimeout(res, ms));
+    const adjacent = (a, b) => Math.abs(a.r - b.r) + Math.abs(a.c - b.c) === 1;
+
+    function swap(a, b) { const t = grid[a.r][a.c]; grid[a.r][a.c] = grid[b.r][b.c]; grid[b.r][b.c] = t; }
+
+    async function trySwap(a, b) {
+      if (busy || moves <= 0) return;
+      busy = true;
+      swap(a, b); render();
+      await wait(120);
+      if (findMatches().size === 0) {
+        swap(a, b); render();        // ogiltigt – byt tillbaka
+        busy = false;
+        return;
+      }
+      moves--; movesEl.textContent = moves;
+      await resolve();
+      if (moves <= 0) {
+        msgEl.textContent = (currentLang === 'en' ? 'Game over! Score: ' : 'Slut! Poäng: ') + score;
+      }
+      busy = false;
+    }
+
+    function clearSel() { if (sel) cells[sel.r][sel.c].classList.remove('sel'); sel = null; }
+
+    function pick(r, c) {
+      if (busy || moves <= 0) return;
+      if (!sel) { sel = { r, c }; cells[r][c].classList.add('sel'); return; }
+      if (sel.r === r && sel.c === c) { clearSel(); return; }
+      const first = sel; clearSel();
+      if (adjacent(first, { r, c })) trySwap(first, { r, c });
+      else { sel = { r, c }; cells[r][c].classList.add('sel'); }
+    }
+
+    boardEl.addEventListener('click', function (e) {
+      const cell = e.target.closest('.m3-cell');
+      if (!cell) return;
+      pick(+cell.dataset.r, +cell.dataset.c);
+    });
+
+    // Swipe/dra på touch och mus
+    let down = null;
+    function startAt(t) { if (busy || moves <= 0) return; const cell = t.closest('.m3-cell'); if (cell) down = { r: +cell.dataset.r, c: +cell.dataset.c }; }
+    function endAt(t) {
+      if (!down) return;
+      const cell = t && t.closest && t.closest('.m3-cell');
+      if (cell) { const b = { r: +cell.dataset.r, c: +cell.dataset.c }; if (adjacent(down, b)) { clearSel(); trySwap(down, b); } }
+      down = null;
+    }
+    boardEl.addEventListener('pointerdown', e => startAt(e.target));
+    boardEl.addEventListener('pointerup', e => endAt(document.elementFromPoint(e.clientX, e.clientY)));
+
+    async function newGame() {
+      score = 0; moves = START_MOVES; busy = true; sel = null;
+      scoreEl.textContent = '0'; movesEl.textContent = String(START_MOVES); msgEl.textContent = '';
+      if (cells.length === 0) buildBoard();
+      freshGrid(); render();
+      await resolve();        // rensa ev. startmatchningar (säkerhet)
+      score = 0; scoreEl.textContent = '0';
+      busy = false; started = true;
+    }
+
+    newBtn.addEventListener('click', newGame);
+
+    window.GAMES = window.GAMES || {};
+    window.GAMES.match3 = { open: function () { if (cells.length === 0) buildBoard(); if (!started) newGame(); } };
+  })();
+
+  /* ===================== Spel: 2048 ===================== */
+  (function () {
+    const N = 4;
+    const boardEl = document.getElementById('g2048-board');
+    if (!boardEl) return;
+    const scoreEl = document.getElementById('g2048-score');
+    const bestEl = document.getElementById('g2048-best');
+    const msgEl = document.getElementById('g2048-msg');
+    const newBtn = document.getElementById('g2048-new');
+    const sectionEl = document.getElementById('game-2048');
+
+    let board = [], score = 0, started = false, over = false;
+    let best = parseInt(localStorage.getItem('g2048-best') || '0', 10) || 0;
+
+    const colors = {
+      2:['#eee4da','#5b5247'], 4:['#ede0c8','#5b5247'], 8:['#f2b179','#fff'],
+      16:['#f59563','#fff'], 32:['#f67c5f','#fff'], 64:['#f65e3b','#fff'],
+      128:['#edcf72','#fff'], 256:['#edcc61','#fff'], 512:['#edc850','#fff'],
+      1024:['#edc53f','#fff'], 2048:['#edc22e','#fff']
+    };
+
+    let tiles = [];
+    function buildGrid() {
+      boardEl.innerHTML = ''; tiles = [];
+      for (let i = 0; i < N * N; i++) {
+        const t = document.createElement('div');
+        t.className = 'g2048-tile';
+        boardEl.appendChild(t); tiles.push(t);
+      }
+    }
+
+    function render(spawnIdx) {
+      for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+        const v = board[r][c], el = tiles[r * N + c];
+        el.textContent = v ? v : '';
+        if (v) {
+          const col = colors[v] || ['#3c3a32', '#fff'];
+          el.style.background = col[0]; el.style.color = col[1];
+        } else {
+          el.style.background = 'rgba(125,125,125,.12)'; el.style.color = 'transparent';
+        }
+        el.classList.remove('spawn');
+        if (spawnIdx && spawnIdx === r * N + c) el.classList.add('spawn');
+      }
+      scoreEl.textContent = score;
+      if (score > best) { best = score; localStorage.setItem('g2048-best', String(best)); }
+      bestEl.textContent = best;
+    }
+
+    function emptyCells() { const e = []; for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) if (!board[r][c]) e.push([r, c]); return e; }
+    function addRandom() {
+      const e = emptyCells(); if (!e.length) return null;
+      const [r, c] = e[Math.floor(Math.random() * e.length)];
+      board[r][c] = Math.random() < 0.9 ? 2 : 4;
+      return r * N + c;
+    }
+
+    function slide(row) {                 // skjut + slå ihop åt vänster
+      let arr = row.filter(v => v);
+      for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] === arr[i + 1]) { arr[i] *= 2; score += arr[i]; arr.splice(i + 1, 1); }
+      }
+      while (arr.length < N) arr.push(0);
+      return arr;
+    }
+    const rotateCW = (m) => m[0].map((_, c) => m.map(row => row[c]).reverse());
+
+    function move(dir) {                  // 0=vänster,1=upp,2=höger,3=ner
+      if (over) return;
+      let b = board.map(r => r.slice());
+      for (let i = 0; i < dir; i++) b = rotateCW(b);
+      const before = JSON.stringify(b);
+      b = b.map(slide);
+      if (JSON.stringify(b) === before) {  // ingen förändring i denna riktning
+        for (let i = 0; i < (4 - dir) % 4; i++) b = rotateCW(b);
+        return;
+      }
+      for (let i = 0; i < (4 - dir) % 4; i++) b = rotateCW(b);
+      board = b;
+      const spawn = addRandom();
+      render(spawn);
+      if (board.some(r => r.some(v => v >= 2048)) && !over) {
+        msgEl.textContent = (currentLang === 'en' ? 'You reached 2048! Keep going.' : 'Du nådde 2048! Fortsätt gärna.');
+      }
+      if (!canMove()) { over = true; msgEl.textContent = (currentLang === 'en' ? 'Game over! Score: ' : 'Slut! Poäng: ') + score; }
+    }
+
+    function canMove() {
+      if (emptyCells().length) return true;
+      for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+        if (c < N - 1 && board[r][c] === board[r][c + 1]) return true;
+        if (r < N - 1 && board[r][c] === board[r + 1][c]) return true;
+      }
+      return false;
+    }
+
+    function newGame() {
+      board = Array.from({ length: N }, () => Array(N).fill(0));
+      score = 0; over = false; msgEl.textContent = '';
+      if (!tiles.length) buildGrid();
+      addRandom(); render(addRandom());
+      started = true;
+    }
+
+    newBtn.addEventListener('click', newGame);
+
+    const isActive = () => sectionEl && sectionEl.classList.contains('active');
+    document.addEventListener('keydown', function (e) {
+      if (!isActive()) return;
+      const map = { ArrowLeft: 0, ArrowUp: 3, ArrowRight: 2, ArrowDown: 1, a: 0, w: 3, d: 2, s: 1 };
+      const dir = map[e.key];
+      if (dir === undefined) return;
+      e.preventDefault(); move(dir);
+    });
+
+    // Svep
+    let sx = 0, sy = 0, sw = false;
+    boardEl.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; sw = true; });
+    boardEl.addEventListener('pointerup', e => {
+      if (!sw) return; sw = false;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+      if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 2 : 0); else move(dy > 0 ? 1 : 3);
+    });
+
+    window.GAMES = window.GAMES || {};
+    window.GAMES['2048'] = { open: function () { if (!tiles.length) buildGrid(); if (!started) newGame(); else render(); } };
+  })();
+
+  /* ===================== Spel: Snake ===================== */
+  (function () {
+    const canvas = document.getElementById('snake-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('snake-score');
+    const bestEl = document.getElementById('snake-best');
+    const msgEl = document.getElementById('snake-msg');
+    const startBtn = document.getElementById('snake-start');
+    const sectionEl = document.getElementById('game-snake');
+
+    const CELLS = 20, SIZE = canvas.width, STEP = SIZE / CELLS;
+    let snake, dir, nextDir, food, score, timer = null, running = false;
+    let best = parseInt(localStorage.getItem('snake-best') || '0', 10) || 0;
+    bestEl.textContent = best;
+
+    const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim() || '#4f8cff';
+
+    function placeFood() {
+      let ok = false;
+      while (!ok) {
+        food = { x: Math.floor(Math.random() * CELLS), y: Math.floor(Math.random() * CELLS) };
+        ok = !snake.some(s => s.x === food.x && s.y === food.y);
+      }
+    }
+
+    function reset() {
+      snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+      dir = { x: 1, y: 0 }; nextDir = dir; score = 0; scoreEl.textContent = '0';
+      placeFood(); draw();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, SIZE, SIZE);
+      const acc = css('--accent');
+      ctx.fillStyle = '#e0464f';
+      ctx.beginPath(); ctx.arc(food.x * STEP + STEP / 2, food.y * STEP + STEP / 2, STEP / 2.4, 0, 7); ctx.fill();
+      snake.forEach((s, i) => {
+        ctx.fillStyle = i === 0 ? acc : (acc + 'aa');
+        ctx.fillRect(s.x * STEP + 1, s.y * STEP + 1, STEP - 2, STEP - 2);
+      });
+    }
+
+    function tick() {
+      dir = nextDir;
+      const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+      if (head.x < 0 || head.y < 0 || head.x >= CELLS || head.y >= CELLS || snake.some(s => s.x === head.x && s.y === head.y)) {
+        return gameOver();
+      }
+      snake.unshift(head);
+      if (head.x === food.x && head.y === food.y) {
+        score += 10; scoreEl.textContent = score;
+        if (score > best) { best = score; localStorage.setItem('snake-best', String(best)); bestEl.textContent = best; }
+        placeFood();
+      } else {
+        snake.pop();
+      }
+      draw();
+    }
+
+    function start() {
+      reset(); running = true; msgEl.textContent = '';
+      if (timer) clearInterval(timer);
+      timer = setInterval(function () { if (sectionEl.classList.contains('active')) tick(); }, 110);
+    }
+
+    function gameOver() {
+      running = false; if (timer) { clearInterval(timer); timer = null; }
+      msgEl.textContent = (currentLang === 'en' ? 'Game over! Score: ' : 'Slut! Poäng: ') + score;
+    }
+
+    function stop() { if (timer) { clearInterval(timer); timer = null; } running = false; }
+
+    function setDir(x, y) {
+      if (!running) return;
+      if (x === -dir.x && y === -dir.y) return;   // inte rakt bakåt
+      nextDir = { x, y };
+    }
+
+    startBtn.addEventListener('click', start);
+
+    const isActive = () => sectionEl && sectionEl.classList.contains('active');
+    document.addEventListener('keydown', function (e) {
+      if (!isActive()) return;
+      const m = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1], a: [-1, 0], d: [1, 0], w: [0, -1], s: [0, 1] };
+      const v = m[e.key]; if (!v) return;
+      e.preventDefault(); setDir(v[0], v[1]);
+    });
+
+    let sx = 0, sy = 0, sw = false;
+    canvas.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; sw = true; });
+    canvas.addEventListener('pointerup', e => {
+      if (!sw) return; sw = false;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+      if (Math.abs(dx) > Math.abs(dy)) setDir(dx > 0 ? 1 : -1, 0); else setDir(0, dy > 0 ? 1 : -1);
+    });
+
+    window.GAMES = window.GAMES || {};
+    window.GAMES.snake = { open: function () { stop(); reset(); msgEl.textContent = (currentLang === 'en' ? 'Press Start to play.' : 'Tryck Starta för att spela.'); }, close: stop };
+  })();
+
+  /* ===================== Veckonummer (ISO 8601) ===================== */
+  (function () {
+    const el = document.getElementById('stat-week');
+    if (!el) return;
+    const d = new Date();
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const day = (t.getUTCDay() + 6) % 7;          // måndag = 0
+    t.setUTCDate(t.getUTCDate() - day + 3);        // närmaste torsdag
+    const firstThu = new Date(Date.UTC(t.getUTCFullYear(), 0, 4));
+    const week = 1 + Math.round(((t - firstThu) / 86400000 - 3 + ((firstThu.getUTCDay() + 6) % 7)) / 7);
+    el.textContent = 'v.' + week;
+    el.title = 'Vecka ' + week + ' (ISO 8601)';
   })();
 
   /* ===================== Init ===================== */
