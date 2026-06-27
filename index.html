@@ -271,6 +271,8 @@
       transition: transform 0.18s ease;
     }
     @media (min-width: 640px) { .post-media img { width: auto; } }
+    .post-media img.lazy-img:not(.is-loaded) { min-height: 200px; opacity: 0; background: var(--border); }
+    .post-media img.is-loaded { opacity: 1; transition: opacity 0.35s ease; }
     .post-media img:hover { transform: scale(1.02); }
     .post-media video { max-width: 300px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
     .blog-empty { color: var(--muted); text-align: center; padding: 30px 0; }
@@ -1865,6 +1867,16 @@ Iz: –</div>
   ];
 
   let blogMonth = 'all';
+  /* Ladda bilder uppifrån och allteftersom de närmar sig vyn – inte allt på en gång */
+  const lazyObserver = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries, obs) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        if (img.dataset.src) { img.src = img.dataset.src; }
+        obs.unobserve(img);
+      }
+    });
+  }, { rootMargin: '300px 0px' }) : null;
   function renderBlog() {
     const list = document.getElementById('blog-list');
     const q = document.getElementById('blog-search').value.trim().toLowerCase();
@@ -1893,9 +1905,19 @@ Iz: –</div>
         post.media.forEach(function (m) {
           if (m.img) {
             const img = document.createElement('img');
-            img.src = m.img;
+            const thumb = m.img.replace('Bilder/', 'Bilder/thumbs/').replace(/\.(png|jpe?g)$/i, '.jpg');
+            img.className = 'lazy-img';
+            img.dataset.src = thumb;
+            img.dataset.full = m.img;
             img.alt = post.title || post.label;
             img.loading = 'lazy';
+            img.decoding = 'async';
+            img.addEventListener('load', function () { img.classList.add('is-loaded'); });
+            img.addEventListener('error', function () {
+              // Saknas komprimerad tumnagel – fall tillbaka på originalbilden
+              if (img.dataset.src !== m.img) { img.dataset.src = m.img; img.src = m.img; }
+            });
+            if (lazyObserver) { lazyObserver.observe(img); } else { img.src = thumb; }
             mediaDiv.appendChild(img);
           } else if (m.video) {
             const vid = document.createElement('video');
@@ -1933,7 +1955,7 @@ Iz: –</div>
     document.addEventListener('click', function (e) {
       const t = e.target;
       if (t.tagName === 'IMG' && (t.closest('.post-media') || t.closest('.project-gallery'))) {
-        lbImg.src = t.src;
+        lbImg.src = t.dataset.full || t.src;
         lbImg.alt = t.alt || '';
         lb.classList.add('open');
         document.body.style.overflow = 'hidden';
