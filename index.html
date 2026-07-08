@@ -505,7 +505,22 @@
       background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
       padding: 7px 12px; font-size: 0.9rem; font-family: var(--mono);
     }
-    .filelist li button { margin-left: auto; background: none; border: 0; color: var(--danger); cursor: pointer; font-size: 1rem; }
+    .filelist li { position: relative; }
+    .filelist li.dragging { opacity: 0.45; }
+    .filelist li.drag-over { box-shadow: inset 0 2px 0 var(--accent); }
+    .filelist li .fl-handle { cursor: grab; color: var(--muted); user-select: none; font-size: 0.9rem; }
+    .filelist li .fl-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .filelist li .fl-meta { color: var(--muted); font-weight: 400; }
+    .filelist li .fl-actions { margin-left: auto; display: flex; align-items: center; gap: 2px; }
+    .filelist li .fl-actions button { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 0.95rem; padding: 2px 7px; border-radius: 6px; line-height: 1; }
+    .filelist li .fl-actions button:hover:not(:disabled) { background: var(--surface); color: var(--text); }
+    .filelist li .fl-actions button:disabled { opacity: 0.3; cursor: default; }
+    .filelist li .fl-actions button.fl-remove:hover:not(:disabled) { color: var(--danger); }
+    .pdf-options { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 14px; }
+    .pdf-opt { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer; }
+    .pdf-opt input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+    .pdf-progress { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin: 12px 0 4px; }
+    .pdf-progress > div { height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width 0.2s ease; }
 
     /* ===================== Lightbox ===================== */
     .lightbox {
@@ -1290,11 +1305,16 @@ Iz: –</div>
             <input type="file" id="pdf-files" accept="application/pdf" multiple style="display:none" />
           </div>
           <ul class="filelist" id="pdf-filelist"></ul>
+          <div class="pdf-options">
+            <label class="pdf-opt"><input type="checkbox" id="pdf-opt-bookmarks" checked /> <span data-i18n="tools.pdf.optBookmarks">Skapa klickbart register (bokmärken) för navigering</span></label>
+            <label class="pdf-opt"><input type="checkbox" id="pdf-opt-links" checked /> <span data-i18n="tools.pdf.optLinks">Bevara klickbara länkar (innehållsförteckning/korsreferenser)</span></label>
+          </div>
           <div class="hero-actions">
             <button class="btn btn-primary" id="merge-pdf-btn" data-i18n="tools.pdf.merge">Slå ihop PDF:er</button>
             <button class="btn" id="clear-pdf-btn" data-i18n="tools.pdf.clear">Rensa lista</button>
             <a class="btn" id="download-merged-pdf" style="display:none" download="sammanfogad.pdf" data-i18n="tools.pdf.download">Ladda ner sammanslagen PDF</a>
           </div>
+          <div class="pdf-progress" id="pdf-progress" style="display:none"><div id="pdf-progress-bar"></div></div>
           <p class="hint" id="pdf-merge-status"></p>
         </div>
       </div>
@@ -1699,6 +1719,8 @@ Iz: –</div>
       'tools.pdf.lead': 'Slå ihop flera PDF-filer direkt i webbläsaren. Ingen fil lämnar din dator!',
       'tools.pdf.drop': 'Dra och släpp PDF-filer här – eller klicka för att välja',
       'tools.pdf.merge': 'Slå ihop PDF:er', 'tools.pdf.clear': 'Rensa lista', 'tools.pdf.download': 'Ladda ner sammanslagen PDF',
+      'tools.pdf.optBookmarks': 'Skapa klickbart register (bokmärken) för navigering',
+      'tools.pdf.optLinks': 'Bevara klickbara länkar (innehållsförteckning/korsreferenser)',
       'tools.qr.name': 'QR-kodgenerator', 'tools.qr.title': 'QR-kodgenerator',
       'tools.qr.desc': 'Skapa QR-koder direkt på sidan och ladda ner som PNG.',
       'tools.aktier.name': 'Aktier & kurser', 'tools.aktier.title': 'Aktier & kurser',
@@ -1799,6 +1821,8 @@ Iz: –</div>
       'tools.pdf.lead': 'Merge multiple PDF files directly in the browser. No file leaves your computer!',
       'tools.pdf.drop': 'Drag and drop PDF files here – or click to choose',
       'tools.pdf.merge': 'Merge PDFs', 'tools.pdf.clear': 'Clear list', 'tools.pdf.download': 'Download merged PDF',
+      'tools.pdf.optBookmarks': 'Create a clickable index (bookmarks) for navigation',
+      'tools.pdf.optLinks': 'Preserve clickable links (table of contents/cross-references)',
       'tools.qr.name': 'QR Code Generator', 'tools.qr.title': 'QR Code Generator',
       'tools.qr.desc': 'Create QR codes directly on the page and download as PNG.',
       'tools.aktier.name': 'Stocks & prices', 'tools.aktier.title': 'Stocks & prices',
@@ -3659,75 +3683,386 @@ Iz: –</div>
     const list = document.getElementById('pdf-filelist');
     const status = document.getElementById('pdf-merge-status');
     const downloadLink = document.getElementById('download-merged-pdf');
-    let files = [];
-    function renderList() {
-      list.innerHTML = '';
-      files.forEach(function (f, idx) {
-        const li = document.createElement('li');
-        const name = document.createElement('span');
-        name.textContent = (idx + 1) + '. ' + f.name + ' (' + (f.size / 1024).toFixed(0) + ' kB)';
-        const rm = document.createElement('button');
-        rm.textContent = '✕';
-        rm.setAttribute('aria-label', sv('Ta bort', 'Remove'));
-        rm.addEventListener('click', function () {
-          files.splice(idx, 1);
-          renderList();
-        });
-        li.appendChild(name);
-        li.appendChild(rm);
-        list.appendChild(li);
-      });
-      status.textContent = files.length ? files.length + sv(' PDF-fil(er) valda.', ' PDF file(s) selected.') : '';
+    const progressWrap = document.getElementById('pdf-progress');
+    const progressBar = document.getElementById('pdf-progress-bar');
+    const optBookmarks = document.getElementById('pdf-opt-bookmarks');
+    const optLinks = document.getElementById('pdf-opt-links');
+    if (!dropzone) return;
+
+    let items = [];   // { file, id, pages }
+    let uid = 0;
+    let dragId = null;
+
+    function loadPdfLib() { return window.PDFLib ? Promise.resolve() : loadScript('https://unpkg.com/pdf-lib/dist/pdf-lib.min.js'); }
+    function setProgress(p) {
+      if (p == null) { progressWrap.style.display = 'none'; progressBar.style.width = '0'; return; }
+      progressWrap.style.display = 'block';
+      progressBar.style.width = Math.max(0, Math.min(100, p)) + '%';
     }
-    function addFiles(newFiles) {
-      Array.from(newFiles).filter(function (f) { return f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'); })
-        .forEach(function (nf) {
-          if (!files.some(function (f) { return f.name === nf.name && f.size === nf.size; })) files.push(nf);
-        });
+    function fileTitle(name) { return name.replace(/\.pdf$/i, ''); }
+
+    /* ---------- File list UI (reorderable) ---------- */
+    function mkBtn(txt, label, fn) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = txt; b.title = label; b.setAttribute('aria-label', label);
+      b.addEventListener('click', fn);
+      return b;
+    }
+    function move(idx, dir) {
+      const j = idx + dir;
+      if (j < 0 || j >= items.length) return;
+      const t = items[idx]; items[idx] = items[j]; items[j] = t;
       renderList();
     }
+    function renderList() {
+      list.innerHTML = '';
+      items.forEach(function (it, idx) {
+        const li = document.createElement('li');
+        li.setAttribute('draggable', 'true');
+        li.dataset.id = it.id;
+
+        const handle = document.createElement('span');
+        handle.className = 'fl-handle'; handle.textContent = '⠿'; handle.setAttribute('aria-hidden', 'true');
+
+        const name = document.createElement('span');
+        name.className = 'fl-name';
+        name.textContent = (idx + 1) + '. ' + it.file.name;
+
+        const meta = document.createElement('span');
+        meta.className = 'fl-meta';
+        const pageTxt = it.pages ? (' · ' + it.pages + sv(' sidor', ' pages')) : '';
+        meta.textContent = ' (' + (it.file.size / 1024).toFixed(0) + ' kB' + pageTxt + ')';
+
+        const actions = document.createElement('span');
+        actions.className = 'fl-actions';
+        const up = mkBtn('▲', sv('Flytta upp', 'Move up'), function () { move(idx, -1); });
+        const down = mkBtn('▼', sv('Flytta ned', 'Move down'), function () { move(idx, 1); });
+        up.disabled = idx === 0;
+        down.disabled = idx === items.length - 1;
+        const rm = mkBtn('✕', sv('Ta bort', 'Remove'), function () { items.splice(idx, 1); renderList(); });
+        rm.classList.add('fl-remove');
+        actions.appendChild(up); actions.appendChild(down); actions.appendChild(rm);
+
+        li.appendChild(handle); li.appendChild(name); li.appendChild(meta); li.appendChild(actions);
+
+        li.addEventListener('dragstart', function (e) { dragId = it.id; li.classList.add('dragging'); if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move'; });
+        li.addEventListener('dragend', function () { dragId = null; li.classList.remove('dragging'); Array.prototype.forEach.call(list.children, function (c) { c.classList.remove('drag-over'); }); });
+        li.addEventListener('dragover', function (e) { e.preventDefault(); if (dragId != null && dragId !== it.id) li.classList.add('drag-over'); });
+        li.addEventListener('dragleave', function () { li.classList.remove('drag-over'); });
+        li.addEventListener('drop', function (e) { e.preventDefault(); li.classList.remove('drag-over'); onDrop(it.id); });
+
+        list.appendChild(li);
+      });
+      status.textContent = items.length ? items.length + sv(' PDF-fil(er) valda.', ' PDF file(s) selected.') : '';
+      if (!items.length) { downloadLink.style.display = 'none'; setProgress(null); }
+    }
+    function onDrop(targetId) {
+      if (dragId == null || dragId === targetId) return;
+      const from = items.findIndex(function (x) { return x.id === dragId; });
+      const to = items.findIndex(function (x) { return x.id === targetId; });
+      if (from < 0 || to < 0) return;
+      const moved = items.splice(from, 1)[0];
+      items.splice(to, 0, moved);
+      renderList();
+    }
+    function addFiles(newFiles) {
+      let added = false;
+      Array.from(newFiles).filter(function (f) { return f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'); })
+        .forEach(function (nf) {
+          if (!items.some(function (x) { return x.file.name === nf.name && x.file.size === nf.size; })) {
+            items.push({ file: nf, id: ++uid, pages: null });
+            added = true;
+          }
+        });
+      renderList();
+      if (added) countPages();
+    }
+    async function countPages() {
+      try { await loadPdfLib(); } catch (e) { return; }
+      for (const it of items) {
+        if (it.pages != null) continue;
+        try {
+          const buf = await it.file.arrayBuffer();
+          const doc = await PDFLib.PDFDocument.load(buf, { ignoreEncryption: true, updateMetadata: false });
+          it.pages = doc.getPageCount();
+        } catch (e) { it.pages = 0; }
+      }
+      renderList();
+    }
+
+    /* ---------- Named-destination resolution (keeps links clickable) ---------- */
+    function nameText(n) { try { return (n.encodedName || String(n)).replace(/^\//, ''); } catch (e) { return String(n); } }
+    function decodeStr(o) { try { return typeof o.decodeText === 'function' ? o.decodeText() : o.asString(); } catch (e) { return ''; } }
+    function destArrayFrom(ctx, val, L) {
+      let d = ctx.lookup(val);
+      if (d instanceof L.PDFDict) d = ctx.lookup(d.get(L.PDFName.of('D')));
+      return d instanceof L.PDFArray ? d : null;
+    }
+    function walkNameTree(ctx, node, L, cb) {
+      const dict = ctx.lookup(node);
+      if (!(dict instanceof L.PDFDict)) return;
+      const kids = dict.lookupMaybe(L.PDFName.of('Kids'), L.PDFArray);
+      if (kids) { for (let i = 0; i < kids.size(); i++) walkNameTree(ctx, kids.get(i), L, cb); return; }
+      const names = dict.lookupMaybe(L.PDFName.of('Names'), L.PDFArray);
+      if (names) {
+        for (let i = 0; i + 1 < names.size(); i += 2) {
+          const key = ctx.lookup(names.get(i));
+          if (key) cb(decodeStr(key), names.get(i + 1));
+        }
+      }
+    }
+    function collectNamedDests(src, L) {
+      const ctx = src.context, cat = src.catalog;
+      const byName = new Map(), byString = new Map();
+      try {
+        const dests = cat.lookupMaybe(L.PDFName.of('Dests'), L.PDFDict);
+        if (dests) dests.entries().forEach(function (e) {
+          const arr = destArrayFrom(ctx, e[1], L);
+          if (arr) byName.set(nameText(e[0]), arr);
+        });
+      } catch (e) {}
+      try {
+        const names = cat.lookupMaybe(L.PDFName.of('Names'), L.PDFDict);
+        if (names) walkNameTree(ctx, names.get(L.PDFName.of('Dests')), L, function (key, val) {
+          const arr = destArrayFrom(ctx, val, L);
+          if (arr) byString.set(key, arr);
+        });
+      } catch (e) {}
+      return { byName: byName, byString: byString };
+    }
+    // Resolve a /Dest reference to its explicit [pageRef, ...view] array.
+    // Named destinations (name/string) are looked up; explicit arrays pass through.
+    function resolveExplicit(dests, destObj, L, ctx) {
+      const o = ctx.lookup(destObj);
+      if (o instanceof L.PDFArray) return o;
+      if (o instanceof L.PDFName) return dests.byName.get(nameText(o)) || null;
+      if (o instanceof L.PDFString || o instanceof L.PDFHexString) return dests.byString.get(decodeStr(o)) || null;
+      return null;
+    }
+    // pdf-lib's copyPages naively follows an internal link's target-page
+    // reference and duplicates that whole page as an orphan (bloat + dead link).
+    // To avoid that we (1) resolve every internal Link's destination to an
+    // explicit [pageRef, ...view] on the source, (2) record it and STRIP the
+    // destination so copyPages can't follow it, then (3) re-attach a correctly
+    // remapped destination on the copied annotation afterwards (applyLinkFixes).
+    function stripAndRecordLinks(src, dests, L) {
+      const ctx = src.context;
+      const linkName = L.PDFName.of('Link'), goTo = L.PDFName.of('GoTo');
+      const pending = [];
+      src.getPages().forEach(function (page, pi) {
+        const annots = page.node.Annots && page.node.Annots();
+        if (!annots || !annots.size()) return;
+        for (let ai = 0; ai < annots.size(); ai++) {
+          let annot;
+          try { annot = ctx.lookup(annots.get(ai)); } catch (e) { continue; }
+          if (!(annot instanceof L.PDFDict)) continue;
+          if (annot.get(L.PDFName.of('Subtype')) !== linkName) continue;
+          let arr = null, hadAction = false;
+          const dest = annot.get(L.PDFName.of('Dest'));
+          if (dest !== undefined) {
+            arr = resolveExplicit(dests, dest, L, ctx);
+          } else {
+            const a = annot.lookupMaybe(L.PDFName.of('A'), L.PDFDict);
+            if (a && a.get(L.PDFName.of('S')) === goTo) { hadAction = true; arr = resolveExplicit(dests, a.get(L.PDFName.of('D')), L, ctx); }
+          }
+          if (!arr || !arr.size()) continue;
+          const p = arr.get(0);
+          if (!(p instanceof L.PDFRef)) continue;   // only same-doc page destinations
+          const rest = [];
+          for (let k = 1; k < arr.size(); k++) rest.push(arr.get(k));
+          pending.push({ pi: pi, ai: ai, targetTag: p.tag, rest: rest });
+          if (hadAction) annot.delete(L.PDFName.of('A'));
+          annot.delete(L.PDFName.of('Dest'));
+        }
+      });
+      return pending;
+    }
+    // Re-attach remapped destinations to the copied annotations.
+    function applyLinkFixes(copiedPages, pending, pageMap, mergedCtx, L) {
+      pending.forEach(function (e) {
+        const mergedRef = pageMap.get(e.targetTag);
+        if (!mergedRef) return;
+        const cAnnots = copiedPages[e.pi].node.Annots && copiedPages[e.pi].node.Annots();
+        if (!cAnnots || e.ai >= cAnnots.size()) return;
+        let cAnnot;
+        try { cAnnot = mergedCtx.lookup(cAnnots.get(e.ai)); } catch (x) { return; }
+        if (!(cAnnot instanceof L.PDFDict)) return;
+        const view = e.rest.length ? e.rest : [L.PDFName.of('Fit')];
+        cAnnot.set(L.PDFName.of('Dest'), mergedCtx.obj([mergedRef].concat(view)));
+      });
+    }
+
+    /* ---------- Outline (bookmark register) copy & build ---------- */
+    function readTitle(item, L) {
+      const t = item.get(L.PDFName.of('Title'));
+      return t ? decodeStr(t) : '';
+    }
+    function outlineDestRef(ctx, item, pageMap, dests, L) {
+      let dest = item.get(L.PDFName.of('Dest'));
+      if (dest === undefined) {
+        const a = item.lookupMaybe(L.PDFName.of('A'), L.PDFDict);
+        if (a && a.get(L.PDFName.of('S')) === L.PDFName.of('GoTo')) dest = a.get(L.PDFName.of('D'));
+      }
+      if (dest === undefined) return null;
+      const arr = resolveExplicit(dests, dest, L, ctx);
+      if (!arr || !arr.size()) return null;
+      const p = arr.get(0);
+      return p instanceof L.PDFRef ? (pageMap.get(p.tag) || null) : null;
+    }
+    // Read a source document's outline into a plain-JS tree with remapped page refs.
+    function walkOutlineSiblings(ctx, firstRef, pageMap, dests, L) {
+      const out = [];
+      let ref = firstRef, guard = 0;
+      while (ref && guard++ < 8000) {
+        const item = ctx.lookup(ref);
+        if (!(item instanceof L.PDFDict)) break;
+        const childFirst = item.get(L.PDFName.of('First'));
+        out.push({
+          title: readTitle(item, L),
+          destRef: outlineDestRef(ctx, item, pageMap, dests, L),
+          children: childFirst ? walkOutlineSiblings(ctx, childFirst, pageMap, dests, L) : []
+        });
+        ref = item.get(L.PDFName.of('Next'));
+      }
+      return out;
+    }
+    function copySourceOutline(src, pageMap, dests, L) {
+      const outlines = src.catalog.lookupMaybe(L.PDFName.of('Outlines'), L.PDFDict);
+      if (!outlines) return [];
+      return walkOutlineSiblings(src.context, outlines.get(L.PDFName.of('First')), pageMap, dests, L);
+    }
+    // Build a single merged /Outlines tree from the collected nodes.
+    function buildOutline(merged, roots, L) {
+      const ctx = merged.context;
+      roots = roots.filter(function (n) { return n.title || n.destRef || (n.children && n.children.length); });
+      if (!roots.length) return;
+      const outlinesRef = ctx.nextRef();
+
+      function createItems(nodes, parentRef) {
+        const refs = nodes.map(function () { return ctx.nextRef(); });
+        let visible = 0;
+        nodes.forEach(function (node, i) {
+          const d = ctx.obj({});
+          d.set(L.PDFName.of('Title'), L.PDFHexString.fromText(node.title || sv('(namnlös)', '(untitled)')));
+          d.set(L.PDFName.of('Parent'), parentRef);
+          if (i > 0) d.set(L.PDFName.of('Prev'), refs[i - 1]);
+          if (i < nodes.length - 1) d.set(L.PDFName.of('Next'), refs[i + 1]);
+          if (node.destRef) d.set(L.PDFName.of('Dest'), ctx.obj([node.destRef, L.PDFName.of('Fit')]));
+          if (node.children && node.children.length) {
+            const sub = createItems(node.children, refs[i]);
+            if (sub.firstRef) d.set(L.PDFName.of('First'), sub.firstRef);
+            if (sub.lastRef) d.set(L.PDFName.of('Last'), sub.lastRef);
+            d.set(L.PDFName.of('Count'), L.PDFNumber.of(sub.count));
+            visible += 1 + sub.count;
+          } else {
+            visible += 1;
+          }
+          ctx.assign(refs[i], d);
+        });
+        return { firstRef: refs[0] || null, lastRef: refs[refs.length - 1] || null, count: visible };
+      }
+
+      const top = createItems(roots, outlinesRef);
+      const od = ctx.obj({});
+      od.set(L.PDFName.of('Type'), L.PDFName.of('Outlines'));
+      if (top.firstRef) od.set(L.PDFName.of('First'), top.firstRef);
+      if (top.lastRef) od.set(L.PDFName.of('Last'), top.lastRef);
+      od.set(L.PDFName.of('Count'), L.PDFNumber.of(top.count));
+      ctx.assign(outlinesRef, od);
+      merged.catalog.set(L.PDFName.of('Outlines'), outlinesRef);
+      merged.catalog.set(L.PDFName.of('PageMode'), L.PDFName.of('UseOutlines'));
+    }
+
+    /* ---------- Merge ---------- */
+    async function merge() {
+      if (items.length < 2) {
+        status.textContent = sv('Välj minst två PDF-filer.', 'Choose at least two PDF files.');
+        downloadLink.style.display = 'none';
+        return;
+      }
+      downloadLink.style.display = 'none';
+      setProgress(2);
+      status.textContent = sv('Slår ihop PDF:er…', 'Merging PDFs…');
+      const wantBookmarks = optBookmarks.checked;
+      const wantLinks = optLinks.checked;
+      try {
+        await loadPdfLib();
+        const L = PDFLib;
+        const merged = await L.PDFDocument.create();
+        try { merged.setProducer('nickwestin.se – PDF Merger'); merged.setCreator('nickwestin.se'); } catch (e) {}
+        const roots = [];
+
+        for (let i = 0; i < items.length; i++) {
+          setProgress(4 + (i / items.length) * 88);
+          status.textContent = sv('Bearbetar ', 'Processing ') + (i + 1) + '/' + items.length + ': ' + items[i].file.name;
+          const buf = await items[i].file.arrayBuffer();
+          const src = await L.PDFDocument.load(buf, { ignoreEncryption: true });
+
+          const dests = collectNamedDests(src, L);
+          const pending = wantLinks ? stripAndRecordLinks(src, dests, L) : [];
+
+          const srcPages = src.getPages();
+          const copied = await merged.copyPages(src, src.getPageIndices());   // one call keeps the page set together
+          const pageMap = new Map();
+          copied.forEach(function (cp, idx) { pageMap.set(srcPages[idx].ref.tag, cp.ref); });
+          if (wantLinks) applyLinkFixes(copied, pending, pageMap, merged.context, L);
+          const firstRef = copied.length ? copied[0].ref : null;
+          copied.forEach(function (cp) { merged.addPage(cp); });
+
+          if (wantBookmarks) {
+            let children = [];
+            try { children = copySourceOutline(src, pageMap, dests, L); } catch (e) { children = []; }
+            roots.push({ title: fileTitle(items[i].file.name), destRef: firstRef, children: children });
+          }
+        }
+
+        if (wantBookmarks && roots.length) {
+          try { buildOutline(merged, roots, L); } catch (e) { /* bookmarks are best-effort */ }
+        }
+
+        setProgress(95);
+        try { merged.setTitle(sv('Sammanfogad PDF', 'Merged PDF')); } catch (e) {}
+        const bytes = await merged.save();
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        if (downloadLink.href && downloadLink.href.indexOf('blob:') === 0) URL.revokeObjectURL(downloadLink.href);
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.style.display = 'inline-flex';
+        setProgress(100);
+        const total = merged.getPageCount();
+        status.textContent = sv('Klar! ' + total + ' sidor sammanfogade – klicka för att ladda ner.',
+          'Done! ' + total + ' pages merged – click to download.');
+        setTimeout(function () { setProgress(null); }, 1400);
+      } catch (e) {
+        console.error(e);
+        status.textContent = sv('Fel vid sammanslagning: ', 'Merge error: ') + (e && e.message ? e.message : e);
+        setProgress(null);
+        downloadLink.style.display = 'none';
+      }
+    }
+
+    /* ---------- Wiring ---------- */
     dropzone.addEventListener('dragover', function (e) { e.preventDefault(); dropzone.classList.add('dragover'); });
     dropzone.addEventListener('dragleave', function () { dropzone.classList.remove('dragover'); });
     dropzone.addEventListener('drop', function (e) {
       e.preventDefault();
       dropzone.classList.remove('dragover');
       if (!e.dataTransfer.files.length) return;
+      const before = items.length;
       addFiles(e.dataTransfer.files);
-      if (!files.length) status.textContent = sv('Endast PDF-filer stöds.', 'Only PDF files are supported.');
+      if (items.length === before) status.textContent = sv('Endast PDF-filer stöds.', 'Only PDF files are supported.');
     });
     dropzone.addEventListener('click', function () { fileInput.click(); });
     fileInput.addEventListener('change', function () { addFiles(fileInput.files); fileInput.value = ''; });
     document.getElementById('clear-pdf-btn').addEventListener('click', function () {
-      files = [];
+      items = [];
       renderList();
+      if (downloadLink.href && downloadLink.href.indexOf('blob:') === 0) URL.revokeObjectURL(downloadLink.href);
+      downloadLink.removeAttribute('href');
       downloadLink.style.display = 'none';
+      status.textContent = '';
+      setProgress(null);
     });
-    document.getElementById('merge-pdf-btn').addEventListener('click', async function () {
-      if (files.length < 2) {
-        status.textContent = sv('Välj minst två PDF-filer.', 'Choose at least two PDF files.');
-        downloadLink.style.display = 'none';
-        return;
-      }
-      status.textContent = sv('Slår ihop PDF:er…', 'Merging PDFs…');
-      try {
-        await loadScript('https://unpkg.com/pdf-lib/dist/pdf-lib.min.js');
-        const mergedPdf = await PDFLib.PDFDocument.create();
-        for (let i = 0; i < files.length; i++) {
-          const arrayBuffer = await files[i].arrayBuffer();
-          const pdf = await PDFLib.PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-          const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-          copiedPages.forEach(function (page) { mergedPdf.addPage(page); });
-        }
-        const mergedBytes = await mergedPdf.save();
-        const blob = new Blob([mergedBytes], { type: 'application/pdf' });
-        downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.style.display = 'inline-flex';
-        status.textContent = sv('Klar! Klicka på länken för att ladda ner.', 'Done! Click the link to download.');
-      } catch (e) {
-        status.textContent = sv('Fel vid sammanslagning: ', 'Merge error: ') + e;
-        downloadLink.style.display = 'none';
-      }
-    });
+    document.getElementById('merge-pdf-btn').addEventListener('click', merge);
   })();
 
   /* ===================== QR-kod ===================== */
